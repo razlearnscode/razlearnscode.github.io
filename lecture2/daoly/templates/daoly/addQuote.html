@@ -1,0 +1,18 @@
+{% extends "daoly/layout.html" %}
+
+{% block body %}
+    <h1>Add a quote here</h1>
+    <form action="{% url 'daoly:addQuote' %}" method="post">
+        
+        <!-- django built in funcion for token -->
+        {% csrf_token %} 
+        
+        <!-- Passing the form from views.py add function -->
+        {{ form }} 
+        <input type="submit">
+    </form>
+
+    <!-- daoly:index is to specify that I want to get the index.html from the daoly folder, not other potential folders -->
+    <a href="{% url 'daoly:index' %}" class="myButton">Return to Ranking</a>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "daoly/layout.html" %}
+
+{% block body %}
+    <div class="container">
+        <h1>Dao Ly AI</h1>
+        <a href="{% url 'daoly:addQuote' %}" class="myButton">➕ Add a Quote</a>
+        <div>
+
+            <!-- populate the list of quotes from views.py. With this, I can add any fields I want in the NewTaskForm class -->
+            {% for quote in quotes %}
+                <div class="quote-card">
+                    <p>{{ quote }}</p>
+                </div>
+            
+                {% empty %}
+                <!-- if I'm on the for loop but it doesn't run at all because the sequence is empty, then return no quote -->
+                 <p>No quote currently avaialble</p>
+                
+
+            {% endfor %}
+
+<!--                     <div class="quote-card">
+                        <p>"Dinh noc kich tran bay phap phoi"</p>
+                        <p class="author">- Tu Long</p>
+                        <p>❤️ 150 votes</p>
+                        <a href="" class="vote-btn">Vote</a>
+                    </div>
+
+                    <div class="quote-card">
+                        <p>"Anh cu treu em"</p>
+                        <p class="author">- Tuan Hung</p>
+                        <p>❤️ 300 votes</p>
+                        <a href="" class="vote-btn">Vote</a>
+                    </div> -->
+
+<!--                     <div class="quote-card">
+                        <p>"Ai chooo"</p>
+                        <p class="author">- Duy Khanh</p>
+                        <p>❤️ 250 votes</p>
+                        <a href="" class="vote-btn">Vote</a>
+                    </div> -->
+
+                    
+
+                    
+            
+        <p>Tu dien pho cap ngon ngu Gen Z</p>
+            
+        </div>
+    </div>
+
+{% endblock %}

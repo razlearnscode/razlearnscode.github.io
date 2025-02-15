@@ -1,0 +1,22 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Create Entry
+{% endblock %}
+
+{% block body %}
+    <h1>Create New Entry</h1>
+
+    <form action="{% url 'create_entry' %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Create new Wiki page">
+        <br>
+        <label for="markdown_title">Input Markdown title:</label>
+        <input id="markdown_title" type="text" name="new_markdown_title">
+        <br>
+        <label for="markdown_body">Input Markdown content:</label>
+        <br>
+        <textarea id="markdown_body" name="new_markdown_content" rows="1" cols="100"></textarea>
+    </form>
+
+{% endblock %}

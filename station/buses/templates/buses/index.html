@@ -1,0 +1,13 @@
+{% extends "buses/layout.html" %}
+
+{% block body %}
+    <h1>Buses</h1>
+    <ul>
+        {% for bus in buses %}
+        <!-- Here, i'm specifying the bus_id in the bus.html route -->
+        <a href="{% url 'bus' bus.id %}">
+            <li>Bus {{ bus.id }}: {{ bus.start }} to {{ bus.end }}</li>
+        </a>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    {{ page_title| title }}
+{% endblock %}
+
+{% block body %}
+    
+    <!-- validation to check if content exists -->
+    {% if content %}
+        <!-- I need to use |safe here because it's a way
+        for Django to render raw HTML in the template -->
+        <div>
+            {{ content|safe }}
+        </div>
+    {% else %}
+        <p>Request not found!</p>
+    {% endif %}
+
+    I need to pass the information about the existing page
+    for further processing. So I'll use a hidden form here
+
+    <form action="{% url 'edit_page' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="existing_entry" value={{ page_title }}><br>
+        <input type="submit" class="button" value="Edit this page">
+    </form>
+
+{% endblock %}

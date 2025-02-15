@@ -1,0 +1,25 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Edit Entry
+{% endblock %}
+
+{% block body %}
+    <h1>Edit entry</h1>
+
+    <form action="{% url 'save_edit' %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Save new updates">
+        <br>
+        <label>Current Title: </label>
+        
+        <!-- // Make the text input readonly to make sure users don't accidentally update the wrong entry -->
+        <input id="existing_title" type="text" name="existing_title" value="{{ title }}" readonly>
+        <br>
+        <label for="updated_body">Edit the entry below:</label>
+        <br>
+        <!-- Note: there's no value property for text area -->
+        <textarea id="updated_body" name="updated_markdown_content" >{{ content }}</textarea>
+    </form>
+
+{% endblock %}

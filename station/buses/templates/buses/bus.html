@@ -1,0 +1,39 @@
+{% extends "buses/layout.html" %}
+
+{% block body %}
+    <!-- Note that in views, we are passing the bus variable
+    to this bus.html, thus, we can use the bus variable here -->
+    <h1>Bus {{ bus.id }}</h1>
+    <ul>
+        <li>Start from: {{ bus.start }} </li>
+        <li>End at: {{ bus.end}}</li>
+        <li>Number of stops: {{ bus.stops}}</li>
+    </ul>
+
+    <h2>Passengers</h2>
+    <ul>
+        {% for passenger in passengers %}
+            <li>{{ passenger }}</li>
+        {% empty %}
+            <li>No Passengers</li>
+        {% endfor %}
+    </ul>
+
+    <!-- action= 'book bus.id' mneaning i'm directing the result of this form
+    to the book function in views to handle the request -->
+    <form action="{% url 'book' bus.id %}" method="post">
+        {% csrf_token %}
+        <select name="passenger">
+            <!-- I only want to show here passenger who does not have any
+            bus assigned to them -->
+            
+            {% for passenger in non_passengers %}
+                <option value="{{ passenger.id }}"> {{ passenger }}</option>
+            {% endfor %}
+        
+        </select>
+        <input type="submit">
+    </form>
+    
+    <a href="{% url 'index' %}">Back to Bus List</a>
+{% endblock %}
