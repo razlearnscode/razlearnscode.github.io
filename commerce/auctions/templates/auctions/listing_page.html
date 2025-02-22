@@ -1,92 +1,114 @@
 {% extends "auctions/layout.html" %} {% load static %} {% block body %}
 <div class="listing-detail">
   <div class="listing-detail-container">
-    <div class="image-section">
-      <img
-        src="{{ listing.imageURL }}"
-        alt="{{ listing.title }}"
-        class="listing-image-detailed"
-      />
-    </div>
+    <div class="left-column">
+      <div class="image-section">
+        <img src="{{ listing.imageURL }}" alt="{{ listing.title }}" class="listing-image-detailed" />
+      </div>
 
-    <div class="info-section">
-      <h1 class="listing-title">{{ listing.title }}</h1>
-      <p class="listing-description">{{ listing.description }}</p>
-      <p class="listing-price">
-        <strong>Starting Price:</strong> ${{ listing.starting_bid }}
-      </p>
-      <p class="listing-category">
-        <strong>Category:</strong> {{ listing.category }}
-      </p>
-      <p class="listing-state"><strong>Status:</strong> {{ listing.state }}</p>
-      {% if listing.highest_bid %}
-      <p class="listing-bid">
-        <strong>Current Highest Bid:</strong> ${{ listing.highest_bid }}
-      </p>
-      {% else %}
-      <p class="listing-bid">
-        <strong>Current Highest Bid:</strong> No bids yet
-      </p>
-      {% endif %}
-
-      <div class="bid-section">
-        <h3>Place Your Bid</h3>
-
-        {% if message %}
-        <div>{{ message }}</div>
+      <div class="info-section">
+        <h1 class="listing-title">{{ listing.title }}</h1>
+        <p class="listing-description">{{ listing.description }}</p>
+        <p class="listing-price">
+          <strong>Starting Price:</strong> ${{ listing.starting_bid }}
+        </p>
+        <p class="listing-category">
+          <strong>Category:</strong> {{ listing.category }}
+        </p>
+        <p class="listing-state">
+          <strong>Status:</strong> {{ listing.state }}
+        </p>
+        {% if listing.highest_bid %}
+        <p class="listing-bid">
+          <strong>Current Highest Bid:</strong> ${{ listing.highest_bid }}
+        </p>
+        {% else %}
+        <p class="listing-bid">
+          <strong>Current Highest Bid:</strong> No bids yet
+        </p>
         {% endif %}
 
-        <!-- Note that the variable listing.id here is 
-         actually defined in urls (e.g. <int:product_id) -->
-        <form
-          method="post"
-          action="{% url 'add_bid' listing.id %}"
-          class="bid-form"
-        >
-          {% csrf_token %}
-          <label for="amount">Bid Amount:</label>
-          <input
-            type="number"
-            step="10"
-            name="new_bid_amount"
-            id="amount"
-            required
-          />
-          <button type="submit" class="btn btn-bid">Place Bid</button>
-        </form>
+        <div class="bid-section">
+          <h3>Place Your Bid</h3>
+
+          {% if user.is_authenticated %}
+            <!-- Note that the variable listing.id here is 
+          actually defined in urls (e.g. <int:product_id) -->
+            <form method="post" action="{% url 'add_bid' listing.id %}" class="bid-form">
+              {% csrf_token %}
+              <label for="amount">Bid Amount:</label>
+              <input type="number" step="10" name="new_bid_amount" id="amount" required />
+              <button type="submit" class="btn btn-bid">Place Bid</button>
+            </form>
+          {% else %}
+          <div>You need to log in to bid for this item</div>
+          {% endif %}
+
+          {% if message %}
+          <div>{{ message }}</div>
+          {% endif %}
+
+        </div>
+
+        
+        <div class="listing-actions">
+          <form method="post" action="{% url 'add_watchlist' listing.id %}">
+            {% csrf_token %}
+            {% if user.is_authenticated %}
+            <input type="submit" class="btn btn-bid" value="Add to Watchlist">
+            {% else %}
+            <input type="submit" class="btn btn-bid" value="Add to Watchlist" disabled>
+            {% endif %}
+          </form>
+        </div>
+
+        {% if watchlist_message %}
+        <div>{{ watchlist_message }}</div>
+        {% endif %}
+
       </div>
 
-      <div class="listing-actions">
-        <a class="btn btn-secondary">Add to Watchlist</a>
-      </div>
+    </div>
 
+    <div class="right-column">
       <div class="comments-section">
         <h2>Comments</h2>
+        {% if comments %}
+        {% for comment in comments %}
         <div class="comment">
-          <div class="comment">
-            <p class="username">macopolo747</p>
-            <p class="comment-text">This looks wonderful</p>
-            <p class="comment-date">Posted on: XYZ</p>
-            <p class="comment-days">3 days ago</p>
-          </div>
-
-          <div class="comment">
-            <p class="username">macopolo747</p>
-            <p class="comment-text">This looks wonderful</p>
-            <p class="comment-date">Posted on: XYZ</p>
-            <p class="comment-days">3 days ago</p>
-          </div>
-
-          <div class="comment">
-            <p class="username">macopolo747</p>
-            <p class="comment-text">This looks wonderful</p>
-            <p class="comment-date">Posted on: XYZ</p>
-            <p class="comment-days">3 days ago</p>
-          </div>
+          <p class="username">{{ comment.user.username }}</p>
+          <p class="comment-text">{{ comment.comment_text}}</p>
+          <p class="comment-date">{{ comment.comment_date }}</p>
+          {% if comment.days_since_posted < 1 %}
+          <p class="comment-days">Just now</p>
+          {% else %}
+          <p class="comment-days">{{ comment.days_since_posted }} days ago</p>
+          {% endif %}
         </div>
+        {% endfor %}
+        {% else %}
+        <p>No comments yet. Be the first to comment!</p>
+        {% endif %}
+
+        <br>
+
+      {% if user.is_authenticated %}
+        <div class="comment-form">
+          <h3>Leave a Comment</h3>
+          <form action="{% url 'add_comment' listing.id %}" method="POST">
+              {% csrf_token %}
+              <textarea placeholder="Write your comment..." id="comment_input" name="comment_input_box" rows="6"></textarea>
+              <button type="submit" class="btn btn-comment">Post Comment</button>
+          </form>
+        </div>
+      {% else %}
+        <p>You need to log in to leave a comment</p>
+      {% endif %}
+      
+        
       </div>
     </div>
-  </div>
 
-  {% endblock %}
+  </div>
 </div>
+{% endblock %}

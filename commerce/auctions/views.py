@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Listing, Bid
+from .models import User, Listing, Bid, Comment, Watchlist
 
 
 def index(request):
@@ -71,6 +71,7 @@ def register(request):
 def listing_page(request, product_id):
     
     selected_listing = Listing.objects.get(pk=product_id)
+    comments_for_listing = selected_listing.comments_by_list.all().order_by('-comment_date')
 
     # Need to handle this so that listing without highest_bid still render
     # The revision why I include a call here is so that if the user refresh, the
@@ -84,6 +85,7 @@ def listing_page(request, product_id):
 
     return render(request, "auctions/listing_page.html", {
         "listing": selected_listing,
+        "comments": comments_for_listing
     })
 
 
@@ -141,3 +143,65 @@ def place_bid(request, product_id):
                 "listing": selected_listing,
                 "message": "Make sure your bid is larger than the current highest bid"
             })
+
+
+def add_comment(request, product_id):
+
+    if request.method == 'POST':
+
+        new_comment = request.POST['comment_input_box']
+        selected_listing = Listing.objects.get(pk=product_id)
+
+        if new_comment is not None:
+
+            # Create new comment object for the user and the listing
+            Comment.objects.create(user=request.user, listing=selected_listing, comment_text=new_comment)
+
+            return HttpResponseRedirect(reverse("listing_page", args=(product_id,)))
+
+        else: 
+
+            return render(request, "auctions/listing_page.html", {
+                "listing": selected_listing,
+            })
+
+
+def watchlist(request):
+
+    watchlist_by_user = Watchlist.objects.filter(user=request.user)
+    
+
+    return render(request, "auctions/watchlist.html", {
+        "all_watchlist_request": watchlist_by_user
+    })
+
+def add_to_watchlist(request, product_id):
+
+    message = ""
+
+    remove_allow = True
+
+    if request.method == 'POST':
+
+        selected_listing = Listing.objects.get(pk=product_id)
+
+        # Use a boolean to check if the watchlist already exists before
+        # Cannot use get here because if I try to get an object that doesn't exist, the code will fail
+        duplicate_watchlist_exists = Watchlist.objects.filter(user=request.user, listing=selected_listing).first()
+
+        # Verify if the user has already added item to the watchlist before
+        if duplicate_watchlist_exists:
+            message = "This item is already in your watchlist"
+            remove_allow = True
+        else:
+            Watchlist.objects.create(user=request.user, listing=selected_listing)
+            message = "Item successfully added to your Watchlist"
+            remove_allow = False 
+            
+
+    return render(request, "auctions/listing_page.html", {
+        "listing": selected_listing,
+        "watchlist_message": message,
+        "can_remove": allow_remove
+    })
+

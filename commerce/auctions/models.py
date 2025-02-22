@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils.timezone import now
 
 
 class User(AbstractUser):
@@ -60,3 +61,33 @@ class Bid(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.listing.title} - ${self.bid_amount}"
+
+
+class Comment(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments_by_user')
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='comments_by_list')
+    comment_text = models.TextField()
+    comment_date = models.DateTimeField(auto_now_add=True)
+    
+    def days_since_posted(self):
+        # Returns the number of days since the comment was posted.
+        delta = now() - self.comment_date
+        return delta.days
+    
+    def __str__(self):
+        return f"{self.user.username} on {self.listing.title[:15]}: {self.comment_text[:50]}" 
+
+
+
+class Watchlist(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='watched_by_user')
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='watchlist_by_product')
+    add_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'listing')  # Prevent duplicate entries
+
+    def __str__(self):
+        return f"{self.user.username} added {self.listing.title[:15]} to watchlist"
