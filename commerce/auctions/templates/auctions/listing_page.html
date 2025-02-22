@@ -1,0 +1,92 @@
+{% extends "auctions/layout.html" %} {% load static %} {% block body %}
+<div class="listing-detail">
+  <div class="listing-detail-container">
+    <div class="image-section">
+      <img
+        src="{{ listing.imageURL }}"
+        alt="{{ listing.title }}"
+        class="listing-image-detailed"
+      />
+    </div>
+
+    <div class="info-section">
+      <h1 class="listing-title">{{ listing.title }}</h1>
+      <p class="listing-description">{{ listing.description }}</p>
+      <p class="listing-price">
+        <strong>Starting Price:</strong> ${{ listing.starting_bid }}
+      </p>
+      <p class="listing-category">
+        <strong>Category:</strong> {{ listing.category }}
+      </p>
+      <p class="listing-state"><strong>Status:</strong> {{ listing.state }}</p>
+      {% if listing.highest_bid %}
+      <p class="listing-bid">
+        <strong>Current Highest Bid:</strong> ${{ listing.highest_bid }}
+      </p>
+      {% else %}
+      <p class="listing-bid">
+        <strong>Current Highest Bid:</strong> No bids yet
+      </p>
+      {% endif %}
+
+      <div class="bid-section">
+        <h3>Place Your Bid</h3>
+
+        {% if message %}
+        <div>{{ message }}</div>
+        {% endif %}
+
+        <!-- Note that the variable listing.id here is 
+         actually defined in urls (e.g. <int:product_id) -->
+        <form
+          method="post"
+          action="{% url 'add_bid' listing.id %}"
+          class="bid-form"
+        >
+          {% csrf_token %}
+          <label for="amount">Bid Amount:</label>
+          <input
+            type="number"
+            step="10"
+            name="new_bid_amount"
+            id="amount"
+            required
+          />
+          <button type="submit" class="btn btn-bid">Place Bid</button>
+        </form>
+      </div>
+
+      <div class="listing-actions">
+        <a class="btn btn-secondary">Add to Watchlist</a>
+      </div>
+
+      <div class="comments-section">
+        <h2>Comments</h2>
+        <div class="comment">
+          <div class="comment">
+            <p class="username">macopolo747</p>
+            <p class="comment-text">This looks wonderful</p>
+            <p class="comment-date">Posted on: XYZ</p>
+            <p class="comment-days">3 days ago</p>
+          </div>
+
+          <div class="comment">
+            <p class="username">macopolo747</p>
+            <p class="comment-text">This looks wonderful</p>
+            <p class="comment-date">Posted on: XYZ</p>
+            <p class="comment-days">3 days ago</p>
+          </div>
+
+          <div class="comment">
+            <p class="username">macopolo747</p>
+            <p class="comment-text">This looks wonderful</p>
+            <p class="comment-date">Posted on: XYZ</p>
+            <p class="comment-days">3 days ago</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% endblock %}
+</div>
