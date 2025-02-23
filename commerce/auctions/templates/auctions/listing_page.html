@@ -50,21 +50,35 @@
 
         </div>
 
-        
         <div class="listing-actions">
-          <form method="post" action="{% url 'add_watchlist' listing.id %}">
-            {% csrf_token %}
-            {% if user.is_authenticated %}
-            <input type="submit" class="btn btn-bid" value="Add to Watchlist">
-            {% else %}
-            <input type="submit" class="btn btn-bid" value="Add to Watchlist" disabled>
-            {% endif %}
-          </form>
-        </div>
+        {% if user.is_authenticated %}
 
-        {% if watchlist_message %}
-        <div>{{ watchlist_message }}</div>
+        <!-- Show watchlist to signed in users-->
+          {% if show_watchlist == True %}
+
+            <form method="post" action="{% url 'add_watchlist' listing.id %}">
+              {% csrf_token %}
+              <input type="submit" class="btn btn-bid" value="Add to Watchlist">
+            </form>
+          
+          {% else %}
+            <!-- If the user already has the item in the watchlist, then show the Remove from Watchlist button instead -->
+            <form method="post" action="{% url 'remove_watchlist' listing.id %}">
+              {% csrf_token %}
+              <input type="submit" class="btn btn-bid" value="Remove from Watchlist">
+            </form>
+          {% endif %}
+
+          <!-- Return message if the item was added to the watchlist successfully or not -->
+          {% if watchlist_message %}
+            <div>{{ watchlist_message }}</div>
+          {% endif %}
+
+        {% else %}
+          <p>Sign in to add this item to your watchlist</p>
         {% endif %}
+
+        </div>
 
       </div>
 

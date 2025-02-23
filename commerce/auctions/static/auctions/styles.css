@@ -194,6 +194,14 @@
     background-color: #218838;
   }
 
+  .btn-remove {
+    background-color: #28a745;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+
 /* CSS for styling the two-column layout */
 
   .left-column {

@@ -72,6 +72,16 @@ def listing_page(request, product_id):
     
     selected_listing = Listing.objects.get(pk=product_id)
     comments_for_listing = selected_listing.comments_by_list.all().order_by('-comment_date')
+    show_watchlist = True
+
+    
+    if request.user.is_authenticated:
+        existing_watchlist_exists = Watchlist.objects.filter(user=request.user, listing=selected_listing).first()
+
+        if existing_watchlist_exists:
+            show_watchlist = False
+        else:
+            show_watchlist = True
 
     # Need to handle this so that listing without highest_bid still render
     # The revision why I include a call here is so that if the user refresh, the
@@ -82,10 +92,14 @@ def listing_page(request, product_id):
         # If I want to update the value to the db, I must perform save
         selected_listing.save()
 
+    # Check whether to show Add or Remove Watchlist
+
+    # Key Note: I cannot perform check for watchlist here because there's an instance that an anonymous user may access this page
 
     return render(request, "auctions/listing_page.html", {
         "listing": selected_listing,
-        "comments": comments_for_listing
+        "comments": comments_for_listing,
+        "show_watchlist": show_watchlist
     })
 
 
@@ -169,7 +183,6 @@ def add_comment(request, product_id):
 def watchlist(request):
 
     watchlist_by_user = Watchlist.objects.filter(user=request.user)
-    
 
     return render(request, "auctions/watchlist.html", {
         "all_watchlist_request": watchlist_by_user
@@ -177,9 +190,8 @@ def watchlist(request):
 
 def add_to_watchlist(request, product_id):
 
+    show_watchlist = True
     message = ""
-
-    remove_allow = True
 
     if request.method == 'POST':
 
@@ -189,19 +201,45 @@ def add_to_watchlist(request, product_id):
         # Cannot use get here because if I try to get an object that doesn't exist, the code will fail
         duplicate_watchlist_exists = Watchlist.objects.filter(user=request.user, listing=selected_listing).first()
 
+        # Why this work is because if there's no item in first, it will return None. So the below clause means
+        # if the duplicate_watchlist_exists is not None
+
         # Verify if the user has already added item to the watchlist before
         if duplicate_watchlist_exists:
             message = "This item is already in your watchlist"
-            remove_allow = True
+            show_watchlist = False
         else:
             Watchlist.objects.create(user=request.user, listing=selected_listing)
             message = "Item successfully added to your Watchlist"
-            remove_allow = False 
-            
+            show_watchlist = False
 
     return render(request, "auctions/listing_page.html", {
         "listing": selected_listing,
         "watchlist_message": message,
-        "can_remove": allow_remove
+        "show_watchlist": show_watchlist
     })
 
+
+
+def remove_from_watchlist(request, product_id):
+
+    message = ""
+    watchlist_message = ""
+    show_watchlist = False
+
+    if request.method == 'POST':
+
+        selected_listing = Listing.objects.get(pk=product_id)
+        existing_watchlist = Watchlist.objects.filter(user=request.user, listing=selected_listing)
+
+        # Since I already did a FE validation to show/hide the Remove watchlist button, I don't need to implement any logic
+        # to check if the watchlist exists here
+
+        existing_watchlist.delete()
+        show_watchlist = True
+    
+    return render(request, "auctions/listing_page.html", {
+        "listing": selected_listing,
+        "watchlist_message": "The item was succesfully removed from your watchlist",
+        "show_watchlist": show_watchlist
+    })

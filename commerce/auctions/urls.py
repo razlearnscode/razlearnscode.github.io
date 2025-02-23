@@ -18,5 +18,6 @@ urlpatterns = [
 
     # URL for watchlist
     path("Watchlist", views.watchlist, name="watchlist_page"),
-    path("add_to_watchlist/<int:product_id>", views.add_to_watchlist, name="add_watchlist")
+    path("add_to_watchlist/<int:product_id>", views.add_to_watchlist, name="add_watchlist"),
+    path("remove_from_watchlist/<int:product_id>", views.remove_from_watchlist, name="remove_watchlist")
 ]
