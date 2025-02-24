@@ -243,3 +243,33 @@ def remove_from_watchlist(request, product_id):
         "watchlist_message": "The item was succesfully removed from your watchlist",
         "show_watchlist": show_watchlist
     })
+
+
+def new_listing(request):
+
+    # Get all the values from the form
+    if request.method == 'POST':
+        title = request.POST['listing_title_input']
+        desc = request.POST['listing_desc_input']
+        start_bid = request.POST['starting_bid_input']
+        imageURL = request.POST['image_link']
+        category = request.POST['category_selection']
+
+        # Create a new Listing from the information submit
+        new_listing = Listing.objects.create(
+            title=title,
+            description=desc, 
+            starting_bid=start_bid,
+            imageURL=imageURL,
+            category=category
+        )
+
+        return HttpResponseRedirect(reverse("listing_page", args=(new_listing.id,)))
+
+    # Supposed I want to pass the list of all categories as defined in CATEGORY_OPTIONS
+    # in the Listing model. Since I already imported the Listing model, I can reference it
+    categories = Listing.CATEGORY_OPTIONS
+
+    return render(request, "auctions/new_listing.html", {
+        "categories": categories
+    })

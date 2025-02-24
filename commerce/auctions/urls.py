@@ -16,8 +16,10 @@ urlpatterns = [
     path("place_bid/<int:product_id>", views.place_bid, name="add_bid"),
     path("comment/<int:product_id>", views.add_comment, name="add_comment"),
 
-    # URL for watchlist
+    # Watchlist Feature
     path("Watchlist", views.watchlist, name="watchlist_page"),
     path("add_to_watchlist/<int:product_id>", views.add_to_watchlist, name="add_watchlist"),
-    path("remove_from_watchlist/<int:product_id>", views.remove_from_watchlist, name="remove_watchlist")
+    path("remove_from_watchlist/<int:product_id>", views.remove_from_watchlist, name="remove_watchlist"),
+
+    path("new_listing", views.new_listing, name="new_listing")
 ]
