@@ -12,6 +12,11 @@ class Listing(models.Model):
     description = models.TextField()
     starting_bid = models.DecimalField(max_digits=10, decimal_places=2)
     highest_bid = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seller', default=1)
+
+    # Set a foreign key for winner. on_delete=SET_NULL so that if the user is removed,
+    # it doesn't accidentally delete the listing
+    winner = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name="won_listing")
 
     # // URL for the user to upload image for the listing
     imageURL = models.URLField(max_length=200, blank=True, null=True)

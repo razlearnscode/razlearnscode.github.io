@@ -124,6 +124,7 @@ def get_highest_bid(product_id):
     else:
         return current_highest_bid.bid_amount
 
+
 def place_bid(request, product_id):
 
     if request.method == "POST":
@@ -272,4 +273,29 @@ def new_listing(request):
 
     return render(request, "auctions/new_listing.html", {
         "categories": categories
+    })
+
+
+def close_auction(request, product_id):
+
+    if request.method == 'POST':
+        selected_listing = Listing.objects.get(pk=product_id)
+
+        # Assign the listing to the highest bidder
+        if selected_listing.highest_bid is not None:
+            highest_bidder = selected_listing.bids.order_by('-bid_amount').first().user
+            selected_listing.winner = highest_bidder
+            
+
+        # Update the listing status to sold
+        selected_listing.state = 'SOLD'
+        selected_listing.save()
+
+    # I need to
+    # - Assign the listing to the highest bidder
+    # - Update the Listing status to Sold, removing it from Listing
+
+
+    return render(request, "auctions/listing_page.html", {
+        "listing": selected_listing
     })
