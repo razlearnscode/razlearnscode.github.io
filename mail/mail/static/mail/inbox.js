@@ -21,9 +21,9 @@ function compose_email() {
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
 
-  // Submit and POST API to send email via the submit button
-  document.querySelector()
-
+  // Add a new event handler for the Submit button
+  // Unlike button, input element has a submit event instead of click, so I'll use 'submit here instead
+  document.querySelector('#compose-form').addEventListener('submit', send_email);
 
 }
 
@@ -36,8 +36,9 @@ function load_mailbox(mailbox) {
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
-  // Get mails from Inbox using the API GET call
-  fetch('/emails/inbox')
+  console.log(mailbox);
+
+  fetch('/emails/sent')
   .then(response => response.json())
   .then(emails => {
     // Print all emails
@@ -49,4 +50,33 @@ function load_mailbox(mailbox) {
 
 
   // Get mails from Archive Mailbox
+}
+
+function send_email(event) {
+
+  event.preventDefault();
+
+  // Get all the required components from the form
+  const email_recipient = document.querySelector('#compose-recipients').value;
+  const email_subject = document.querySelector('#compose-subject').value;
+  const email_body = document.querySelector('#compose-body').value;
+
+  
+  // Sending email using POST API to send email via the submit button
+  fetch('/emails', {
+    method: 'POST',
+    body: JSON.stringify({
+        recipients: email_recipient,
+        subject: email_subject,
+        body: email_body
+    })
+  })
+  .then(response => response.json())
+  .then(result => {
+      // Print result
+      console.log(result);
+  });
+
+  // Load the user Sent mailbox after sending the email
+  
 }
