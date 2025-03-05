@@ -25,6 +25,10 @@ function compose_email() {
   document.querySelector("#compose-subject").value = "";
   document.querySelector("#compose-body").value = "";
 
+  // Remove all the potential event from previous sessions
+  document
+  .querySelector("#compose-form").removeEventListener("submit", send_email);
+
   // Add a new event handler for the Submit button
   // Unlike button, input element has a submit event instead of click, so I'll use 'submit here instead
   document
@@ -53,17 +57,24 @@ function load_mailbox(mailbox) {
       emails.forEach((email) => {
         email_view.innerHTML += `
         <div class="email-card">
-        <div class="email-header">
-          <div>
-            <span class="email-sender">${email.sender}</span>
-            <span class="email-recipients">→ ${email.recipients.join(", ")}</span>
+          <div class="email-header">
+            <div>
+              <span class="email-sender">${email.sender}</span>
+              <span class="email-recipients">→ ${email.recipients.join(", ")}</span>
+            </div>
+            <span class="email-timestamp">${email.timestamp}</span>
           </div>
-          <span class="email-timestamp">${email.timestamp}</span>
-        </div>
-        <div class="email-subject">${email.subject}</div>
+          <div class="email-subject">${email.subject}</div>
         </div>
       `;
       });
+
+      // Embed a redirect link to all the individual emails
+      document.querySelectorAll('email-card').forEach(email => {
+          email.onclick = function() {
+              console.log(this.id)
+          }
+      }),
 
       // Print all emails
       console.log(emails);
@@ -89,11 +100,20 @@ function send_email(event) {
   })
     .then((response) => response.json())
     .then((result) => {
-      // Print result
-      console.log(result);
+
+    // Print result
+    console.log(result);
+
+    // After successful submission, make sure to clear all the input again
+    document.querySelector("#compose-recipients").value = "";
+    document.querySelector("#compose-subject").value = "";
+    document.querySelector("#compose-body").value = "";
+
     });
 
-  // Load the user Sent mailbox after sending the email
+
+
+
 }
 
 function view_email(email) {
