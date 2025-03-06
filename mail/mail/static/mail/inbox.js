@@ -27,7 +27,8 @@ function compose_email() {
 
   // Remove all the potential event from previous sessions
   document
-  .querySelector("#compose-form").removeEventListener("submit", send_email);
+    .querySelector("#compose-form")
+    .removeEventListener("submit", send_email);
 
   // Add a new event handler for the Submit button
   // Unlike button, input element has a submit event instead of click, so I'll use 'submit here instead
@@ -46,37 +47,42 @@ function load_mailbox(mailbox) {
     mailbox.charAt(0).toUpperCase() + mailbox.slice(1)
   }</h3>`;
 
-  const email_view = document.querySelector("#emails-view");
+  // const email_view = document.querySelector("#emails-view");
 
   // GET emails from mailbox
   fetch(`/emails/${mailbox}`)
     .then((response) => response.json())
     .then((emails) => {
-
       // Display the snapshot for each email
-      emails.forEach((email) => {
-        email_view.innerHTML += `
-        <div class="email-card" id="email-card">
+      emails.forEach((singleEmail) => {
+        // Individual email works here because I define a new const everytime this is iterated
+
+        const email_card = document.createElement("div");
+        email_card.className = "email-card";
+        email_card.innerHTML = `
           <div class="email-header">
             <div>
-              <span class="email-sender">${email.sender}</span>
-              <span class="email-recipients">→ ${email.recipients.join(", ")}</span>
+            <span class="email-sender">${singleEmail.sender}</span>
+              <span class="email-recipients">→ ${singleEmail.recipients.join(
+                ", "
+              )}</span>
             </div>
-            <span class="email-timestamp">${email.timestamp}</span>
+            <span class="email-timestamp">${singleEmail.timestamp}</span>
           </div>
-          <div class="email-subject">${email.subject}</div>
-        </div>
+          <div class="email-subject">${singleEmail.subject}</div>
       `;
-        
-        // Make all email card clickable to redirect to individual emails
-        document.querySelectorAll('#email-card').forEach(card => {
 
-            card.addEventListener('click', function() {
-                console.log("Congrats! I can be clicked");
-            });
+        // Make each email card clickable, and trigger the redirection to view the individual emails
+        // And since the API to fetch individual emails only require id, so I'll only need to send the ID here
+        // Very important, it's useful to have the view_email function inside another function, so that it is not called immediately for every iteration
+
+        email_card.addEventListener("click", function () {
+          // Clear the view before showing the individual email
+          document.querySelector("#emails-view").innerHTML = "";
+          view_email(singleEmail.id);
         });
-        
-        
+
+        document.querySelector("#emails-view").append(email_card);
       });
     });
 }
@@ -100,20 +106,54 @@ function send_email(event) {
   })
     .then((response) => response.json())
     .then((result) => {
+      // Print result
+      console.log(result);
 
-    // Print result
-    console.log(result);
-
-    // After successful submission, make sure to clear all the input again
-    document.querySelector("#compose-recipients").value = "";
-    document.querySelector("#compose-subject").value = "";
-    document.querySelector("#compose-body").value = "";
-
+      // After successful submission, make sure to clear all the input again
+      document.querySelector("#compose-recipients").value = "";
+      document.querySelector("#compose-subject").value = "";
+      document.querySelector("#compose-body").value = "";
     });
-
-
 }
 
-function view_email(email) {
-  
+function view_email(email_id) {
+  // Show the email and hide other views
+  document.querySelector("#emails-view").style.display = "block";
+  document.querySelector("#compose-view").style.display = "none";
+
+  // Get the details from the email
+
+
+  fetch(`/emails/${email_id}`)
+    .then((response) => response.json())
+    .then((email) => {
+
+      const email_detail = document.createElement("div");
+      email_detail.className = "email-container";
+
+      email_detail.innerHTML = `
+        <div class="email-header">
+            <h2 id="email-subject">${email.subject}</h2>
+            <span id="email-timestamp">${email.timestamp}</span>
+        </div>
+        
+        <div class="email-info">
+            <p><strong>From:</strong> <span id="email-sender">${email.sender}</span></p>
+            <p><strong>To:</strong> <span id="email-recipients">>${email.recipients}</span></p>
+        </div>
+
+        <div class="email-body">
+            <p id="email-content">${email.body}</p>
+        </div>
+
+        <div class="email-actions">
+            <button id="reply-btn">Reply</button>
+            <button id="archive-btn">Archive</button>
+        </div>
+      `;
+
+      document.querySelector("#emails-view").append(email_detail);
+    });
+
+  // Make all email card clickable to redirect to individual emails
 }
