@@ -56,7 +56,7 @@ function load_mailbox(mailbox) {
       // Display the snapshot for each email
       emails.forEach((email) => {
         email_view.innerHTML += `
-        <div class="email-card">
+        <div class="email-card" id="email-card">
           <div class="email-header">
             <div>
               <span class="email-sender">${email.sender}</span>
@@ -67,17 +67,17 @@ function load_mailbox(mailbox) {
           <div class="email-subject">${email.subject}</div>
         </div>
       `;
+        
+        // Make all email card clickable to redirect to individual emails
+        document.querySelectorAll('#email-card').forEach(card => {
+
+            card.addEventListener('click', function() {
+                console.log("Congrats! I can be clicked");
+            });
+        });
+        
+        
       });
-
-      // Embed a redirect link to all the individual emails
-      document.querySelectorAll('email-card').forEach(email => {
-          email.onclick = function() {
-              console.log(this.id)
-          }
-      }),
-
-      // Print all emails
-      console.log(emails);
     });
 }
 
@@ -110,8 +110,6 @@ function send_email(event) {
     document.querySelector("#compose-body").value = "";
 
     });
-
-
 
 
 }
