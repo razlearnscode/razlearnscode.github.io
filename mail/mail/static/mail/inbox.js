@@ -227,6 +227,23 @@ function view_email(email_id, mailbox) {
         });
       };
 
+      const reply_button = document.querySelector("#reply-btn");
+      if (reply_button) {
+        reply_button.addEventListener("click", function() {
+          
+          console.log("COMPOSEEEE");
+          compose_email();
+
+          // Prefill the information from the email
+
+          document.querySelector("#compose-recipients").value = `${email.recipients}`;
+          document.querySelector("#compose-subject").value = `Re: ${email.subject}`;
+          document.querySelector("#compose-body").value = `On ${email.timestamp} ${email.recipients} wrote:\n| ${email.body}`;
+
+        });
+
+      };
+
     });
 
 }
