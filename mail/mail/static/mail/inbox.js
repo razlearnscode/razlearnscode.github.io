@@ -57,8 +57,15 @@ function load_mailbox(mailbox) {
       emails.forEach((singleEmail) => {
         // Individual email works here because I define a new const everytime this is iterated
 
+        console.log(singleEmail);
+        console.log(`${singleEmail.read}`);
+
         const email_card = document.createElement("div");
-        email_card.className = "email-card";
+
+        // Check if the card has been read or not. Depending on the result,a assign a new class to display the email card to its corresponding status
+        (singleEmail.read === true) ? email_card.className = "email-card" : email_card.className = "email-card-unread";
+
+        // Display the snapshot of the email content
         email_card.innerHTML = `
           <div class="email-header">
             <div>
@@ -77,6 +84,8 @@ function load_mailbox(mailbox) {
         // Very important, it's useful to have the view_email function inside another function, so that it is not called immediately for every iteration
 
         email_card.addEventListener("click", function () {
+          
+
           // Clear the view before showing the individual email
           document.querySelector("#emails-view").innerHTML = "";
           view_email(singleEmail.id);
@@ -128,18 +137,30 @@ function view_email(email_id) {
     .then((response) => response.json())
     .then((email) => {
 
+      // After the email is clicked. Make sure to update the read status to true
+      // I can update by using the POST API
+      fetch(`/emails/${email_id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            read: true
+        })
+      })
+
+      // Create a new div to record all the email content
       const email_detail = document.createElement("div");
       email_detail.className = "email-container";
 
+      // Populate the email content to the page
       email_detail.innerHTML = `
         <div class="email-header">
+            <h1>Email read is ${email.read}</h1>
             <h2 id="email-subject">${email.subject}</h2>
             <span id="email-timestamp">${email.timestamp}</span>
         </div>
         
         <div class="email-info">
             <p><strong>From:</strong> <span id="email-sender">${email.sender}</span></p>
-            <p><strong>To:</strong> <span id="email-recipients">>${email.recipients}</span></p>
+            <p><strong>To:</strong> <span id="email-recipients">${email.recipients}</span></p>
         </div>
 
         <div class="email-body">
@@ -152,8 +173,9 @@ function view_email(email_id) {
         </div>
       `;
 
+      // Add the email content to the DOM
+
       document.querySelector("#emails-view").append(email_detail);
     });
 
-  // Make all email card clickable to redirect to individual emails
 }
