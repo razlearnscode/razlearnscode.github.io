@@ -47,7 +47,6 @@ function load_mailbox(mailbox) {
     mailbox.charAt(0).toUpperCase() + mailbox.slice(1)
   }</h3>`;
 
-  // const email_view = document.querySelector("#emails-view");
 
   // GET emails from mailbox
   fetch(`/emails/${mailbox}`)
@@ -58,7 +57,7 @@ function load_mailbox(mailbox) {
         // Individual email works here because I define a new const everytime this is iterated
 
         console.log(singleEmail);
-        console.log(`${singleEmail.read}`);
+
 
         const email_card = document.createElement("div");
 
@@ -88,7 +87,7 @@ function load_mailbox(mailbox) {
 
           // Clear the view before showing the individual email
           document.querySelector("#emails-view").innerHTML = "";
-          view_email(singleEmail.id);
+          view_email(singleEmail.id, mailbox);
         });
 
         document.querySelector("#emails-view").append(email_card);
@@ -125,7 +124,7 @@ function send_email(event) {
     });
 }
 
-function view_email(email_id) {
+function view_email(email_id, mailbox) {
   // Show the email and hide other views
   document.querySelector("#emails-view").style.display = "block";
   document.querySelector("#compose-view").style.display = "none";
@@ -150,10 +149,16 @@ function view_email(email_id) {
       const email_detail = document.createElement("div");
       email_detail.className = "email-container";
 
+      // Custom view for which button to show depending on the mailbox
+      const button_view = document.createElement("div");
+      button_view.className = "email-actions";
+
+
+
       // Populate the email content to the page
       email_detail.innerHTML = `
         <div class="email-header">
-            <h1>Email read is ${email.read}</h1>
+            <h1>The email is from ${mailbox} mailbox</h1>
             <h2 id="email-subject">${email.subject}</h2>
             <span id="email-timestamp">${email.timestamp}</span>
         </div>
@@ -167,15 +172,89 @@ function view_email(email_id) {
             <p id="email-content">${email.body}</p>
         </div>
 
-        <div class="email-actions">
-            <button id="reply-btn">Reply</button>
-            <button id="archive-btn">Archive</button>
-        </div>
       `;
 
-      // Add the email content to the DOM
+      // Show archive button for inbox and archive
+      switch(mailbox) {
+        case 'inbox':
+          button_view.innerHTML = `
+            <button id="reply-btn">Reply</button>
+            <button id="archive-btn">Archive</button>
+          `;
+          break;
+        case 'sent':
+          button_view.innerHTML = `
+          <button id="reply-btn">Reply</button>
+        `;
+        break;
+        case 'archive':
+          button_view.innerHTML = `
+          <button id="reply-btn">Reply</button>
+          <button id="unarchive-btn">Unarchive</button>
+        `;
+        break;
+      };
 
+      // Add the email content to the DOM
       document.querySelector("#emails-view").append(email_detail);
+      document.querySelector("#emails-view").append(button_view);
+
+      // ARCHIVE BUTTON: Handling logic
+      const archive_button = document.querySelector("#archive-btn");
+      if (archive_button) {
+        archive_button.addEventListener("click", function() {
+        
+          console.log("Yay me! Initiating Archive");
+  
+          // First, call the API to update the archive status
+          archive_mail(email_id);
+  
+        });
+      };
+
+      // UNARCHIVE BUTTON: Handling logic
+      const unarchive_button = document.querySelector("#unarchive-btn");
+
+      if (unarchive_button) {
+
+        unarchive_button.addEventListener("click", function() {
+        
+          console.log("Yay me! UnArchiving");
+  
+          // First, call the API to update the archive status
+          unarchive_mail(email_id);
+
+        });
+      };
+
     });
+
+}
+
+function archive_mail(email_id) {
+
+  console.log("Tadahh! Archived successful")
+
+  // Submit a POST API request to update the archived status to True
+  fetch(`/emails/${email_id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+        archived: true
+    })
+  })
+    .then(() => {load_mailbox("archive")});
+
+}
+
+function unarchive_mail(email_id) {
+
+  // Submit a POST API request to update the archived status to True
+  fetch(`/emails/${email_id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+        archived: false
+    })
+  })
+    .then(() => {load_mailbox("inbox")});
 
 }

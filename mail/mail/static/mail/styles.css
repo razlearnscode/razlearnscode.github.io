@@ -2,14 +2,13 @@ textarea {
     min-height: 400px;
 }
 
-
-
 .email-container {
     background: #fff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     max-width: 100%;
+    margin-bottom: 30px;
 }
 
 #emails-view {
@@ -124,21 +123,34 @@ textarea {
     background: #007bff;
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    padding: 12px 20px; /* Slightly larger padding for a better feel */
+    border-radius: 25px; /* More rounded appearance */
     cursor: pointer;
     font-size: 1rem;
-    transition: background 0.3s;
+    font-weight: 600; /* Slightly bolder text */
+    transition: background 0.3s, transform 0.2s;
 }
 
 .email-actions button:hover {
     background: #0056b3;
+    transform: scale(1.05); /* Slight hover effect */
 }
 
+/* Archive Button */
 #archive-btn {
-    background: #28a745;
+    background: #dfdfdf;
+    color: rgb(35, 35, 35);
 }
 
 #archive-btn:hover {
+    background: #c0c0c0;
+}
+
+/* Unarchive Button */
+#unarchive-btn {
+    background: #28a745;
+}
+
+#unarchive-btn:hover {
     background: #218838;
 }
