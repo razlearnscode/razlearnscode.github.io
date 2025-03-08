@@ -1,0 +1,40 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+{% if user.is_authenticated %}
+
+    <h1>Welcome to see all posts!!</h1>
+    <p>is there any change here?</p>
+
+    {% if all_posts %}
+
+        {% for post in all_posts %}
+            <div class="post-container">
+                <div class="post-header">
+                    <span class="post-username">{{post.user.username}}</span>
+                    <span class="post-timestamp">{{post.timestamp}}</span>
+                </div>
+                <p class=post-body"">{{post.body}}</p>
+                
+         </div>
+         {% endfor %}
+
+    {% else %}
+         <p>Ohh noo. There's not post at all</p>
+    {% endif %}
+
+{% else %}
+
+<p>Nothing to see here. You must log in to join our social network</p>
+
+{% endif %}
+
+
+{% if message %}
+
+{{ message }}
+
+{% endif %}
+
+{% endblock %}

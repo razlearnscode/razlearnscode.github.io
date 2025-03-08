@@ -49,6 +49,9 @@ def compose(request):
             }, status=400)
 
     # Get contents of email
+    # The additional ,"" is to ensure that if the subject or body are misisng from
+    # the request JSON, then the subject and body variables will be assigned an empty string
+    # instead of None
     subject = data.get("subject", "")
     body = data.get("body", "")
 
@@ -56,6 +59,12 @@ def compose(request):
     users = set()
     users.add(request.user)
     users.update(recipients)
+
+    # Note from Duy: I learned that by sending up this way as a set,
+    # it's possible to send the same email to the sender. But that email
+    # can then be used to display in the sent mailbox. Which is also the reason why
+    # in the admin I often see the same duplicated email, one to the actual recipient,
+    # the other to the original sender
     for user in users:
         email = Email(
             user=user,
@@ -65,6 +74,9 @@ def compose(request):
             read=user == request.user
         )
         email.save()
+
+        # This is still in the loop so that each email copy
+        # to each email recipient also have the same list of recipients
         for recipient in recipients:
             email.recipients.add(recipient)
         email.save()

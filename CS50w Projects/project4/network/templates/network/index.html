@@ -1,0 +1,25 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+{% if user.is_authenticated %}
+
+<!-- First, create a sticky section to submit post in the homepage -->
+<div class="compose_post">
+    <form action="{% url 'compose_post' %}" method="POST">
+        {% csrf_token %}
+        <textarea placeholder="What's on your mind" id="post_input" name="post_input_box" rows="6"></textarea>
+        <button type="submit" class="btn btn-comment">Submit Post</button>
+    </form>
+</div>
+{% else %}
+<p>Log in to join our social network</p>
+{% endif %}
+
+{% if message %}
+
+{{ message }}
+
+{% endif %}
+
+{% endblock %}

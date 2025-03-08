@@ -1,0 +1,88 @@
+/* Dark Mode Styles */
+body {
+    display: flex;
+    flex-direction: column;   /* Stack items (nav + post-container) vertically */
+    align-items: center;      /* Centers vertically */
+    height: 100vh;            /* Full viewport height */
+    margin: 0;                /* Remove default margin */
+    background-color: #121212; /* Dark background */
+    padding-top: 60px; /* Push content below navbar (match navbar height) */
+    color: #e0e0e0; /* Light gray text for readability */
+}
+
+.navbar {
+    width: 100%; /* Ensure it spans the full width */
+    position: fixed; /* Keeps it at the top even when scrolling */
+    top: 0;
+    left: 0;
+    background-color: #1e1e1e; /* Dark navbar */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Stronger shadow */
+    z-index: 1000; /* Ensures it stays above other elements */
+    border-bottom: 1px solid #333; /* Slight border to separate navbar */
+}
+
+/* Post Container (Dark Background, Soft Borders) */
+.post-container {
+    position: relative;
+    background: #1e1e1e; /* Dark container */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); /* Subtle glow */
+    max-width: 80%;
+    margin-bottom: 30px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover Effect for Posts */
+.post-container:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(255, 255, 255, 0.15);
+}
+
+/* Post Header (User Info, Timestamp) */
+.post-header {
+    justify-content: start;
+    align-items: center;
+    border-bottom: 1px solid #333; /* Dark border */
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+/* Subtle Gray Text for Metadata */
+.post-header span {
+    font-size: 0.9rem;
+    color: #bbbbbb;
+}
+
+/* Username Style */
+.post-username {
+    font-weight: bold;
+    color: #f5f5f5; /* Brighter text for usernames */
+    margin-right: 6px;
+}
+
+/* Timestamp */
+.post-timestamp {
+    font-size: 12px;
+    color: #888; /* Softer gray */
+}
+
+/* Post Body */
+.post-body p {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    padding-bottom: 20px;
+    color: #e0e0e0; /* Lighter text for readability */
+}
+
+/* Link Colors in Dark Mode */
+a {
+    color: #1e90ff; /* Neon blue for contrast */
+    text-decoration: none;
+}
+
+a:hover {
+    color: #4da3ff;
+    text-decoration: underline;
+}
