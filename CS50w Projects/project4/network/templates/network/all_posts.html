@@ -4,25 +4,58 @@
 
 {% if user.is_authenticated %}
 
+<div class="page_title">
     <h1>Welcome to see all posts!!</h1>
-    <p>is there any change here?</p>
+</div>
 
-    {% if all_posts %}
+{% if all_posts %}
 
-        {% for post in all_posts %}
-            <div class="post-container">
-                <div class="post-header">
-                    <span class="post-username">{{post.user.username}}</span>
-                    <span class="post-timestamp">{{post.timestamp}}</span>
-                </div>
-                <p class=post-body"">{{post.body}}</p>
+{% for post in all_posts %}
+<div class="post-container">
+    <div class="post-header">
+        <div class="profile-picture">
+            <img src="{{post.user.profile_picture}}"/>
+        </div>
+
+        <div class="post-content">
+            <div class="post-content-top">
+                <span class="post-username">{{post.user.username}}</span>
+                <span class="post-timestamp">{{post.timestamp}}</span>
+                <button class="follow-btn">Follow</button>
+            </div>
+            <p class="post-body">{{post.body}}</p>
+
+            <div class="post-action">
                 
-         </div>
-         {% endfor %}
 
-    {% else %}
-         <p>Ohh noo. There's not post at all</p>
-    {% endif %}
+                {% if post.is_liked_by_user %}
+                    <!-- If the user has not liked this post before, then show Like button -->
+                    <form method="post" action="{% url 'like_post' post.id %}">
+                        {% csrf_token %}
+                        <input type="submit" class="like-action-bn" value="♡">
+                    </form>
+                {% else %}
+                    <!-- If the user has liked this post before, then show UnLike button -->
+                    <form method="post" action="{% url 'unlike_post' post.id %}">
+                        {% csrf_token %}
+                        <input type="submit" class="unlike-action-bn" value="❤️">
+                    </form>
+                {% endif %}
+                
+                <span>: X♡</span>
+                <span>Followers: X</span>
+            </div>
+        </div>♡
+    
+    </div>
+    
+
+</div>
+{% endfor %}
+
+{% else %}
+<p>Ohh noo. There's not post at all</p>
+{% endif %}
 
 {% else %}
 

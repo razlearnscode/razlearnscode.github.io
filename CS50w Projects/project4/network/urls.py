@@ -13,6 +13,10 @@ urlpatterns = [
     path('all_posts', views.all_posts_view, name="all_post"),
 
     # Submit post route
-    path("post", views.compose_post, name="compose_post")
+    path("post", views.compose_post, name="compose_post"),
+
+    # Social actions
+    path("like_post/<int:post_id>", views.like_post, name="like_post"),
+    path("unlike_post/<int:post_id>", views.unlike_post, name="unlike_post")
 
 ]

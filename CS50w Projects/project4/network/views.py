@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Post
+from .models import User, Post, Like, Follow
 
 
 def index(request):
@@ -90,9 +90,64 @@ def compose_post(request):
 
 def all_posts_view(request):
 
-    get_all_posts = []
-    get_all_posts = Post.objects.all()
+    get_all_posts = Post.objects.all().order_by('-timestamp')
+
+    # Perform validation to check if the user has already liked that post
+    for post in get_all_posts:
+        post.is_liked_by_user = Like.objects.filter(user=request.user, post=post).exists()
 
     return render(request, "network/all_posts.html", {
         "all_posts": get_all_posts
+    })
+
+
+def like_post(request, post_id):
+
+    have_liked_already = False
+    
+    # get the post
+    if request.method == 'POST':
+
+        # First, perform check if the user has liked this post before
+        duplicate_like = Like.objects.filter(user=request.user, post=post_id)
+
+        if duplicate_like:
+            # If the user liked this post already, then do nothing
+            have_liked_already = True
+            pass
+        else: 
+            Like.objects.create(user=request.user, post=post_id)
+            have_liked_already = True
+
+
+    # Just temporarily. I want that after the user like a post, they
+    # would stay on the same page
+    return render(request, "network/all_posts.html", {
+        "have_liked_already": have_liked_already,
+    })
+
+
+def unlike_post(request, post_id):
+
+    have_liked_already = False
+    
+    # get the post
+    if request.method == 'POST':
+
+        # First, perform check if the user has liked this post before
+        duplicate_like = Like.objects.filter(user=request.user, post=post_id)
+
+        if duplicate_like:
+            # If the user liked this post already, then do nothing
+            have_liked_already = True
+            pass
+        else: 
+            Like.objects.create(user=request.user, post=post_id)
+            have_liked_already = True
+
+
+    # Just temporarily. I want that after the user like a post, they
+    # would stay on the same page
+    return render(request, "network/all_posts.html", {
+        "have_liked_already": have_liked_already,
     })
