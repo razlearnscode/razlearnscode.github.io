@@ -16,7 +16,6 @@ urlpatterns = [
     path("post", views.compose_post, name="compose_post"),
 
     # Social actions
-    path("like_post/<int:post_id>", views.like_post, name="like_post"),
-    path("unlike_post/<int:post_id>", views.unlike_post, name="unlike_post")
+    path("like_post/<int:post_id>", views.like_post, name="like_post")
 
 ]

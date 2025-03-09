@@ -111,33 +111,14 @@ def like_post(request, post_id):
         # First, perform check if the user has liked this post before
 
         if Like.objects.filter(user=request.user, post=postID).exists():
-            # If the user liked this post already, then do nothing
-            pass
-        else: 
+            
+            # If the user liked this post already, allow them to unlike it
+            Like.objects.get(user=request.user, post=postID).delete()
+        else:
+
+            # Else if they haven't liked this, count this as a like request 
             Like.objects.create(user=request.user, post=postID)
 
-
-    # Redirecting users back to the all_post_view function. Note that all_posts here
-    # is the name of the urls as defined in urls.py
-    return HttpResponseRedirect(reverse("all_posts"))
-
-def unlike_post(request, post_id):
-
-    
-    # get the post
-    if request.method == 'POST':
-
-        postID = Post.objects.get(id=post_id)
-
-        already_like_this_post = Like.objects.get(user=request.user, post=postID)
-
-        # If user already liked this post, allow them to remove the like
-        if already_like_this_post:
-            
-            already_like_this_post.delete()
-        # Else if the user hasn't liked the post, do nothing
-        else: 
-            pass
 
     # Redirecting users back to the all_post_view function. Note that all_posts here
     # is the name of the urls as defined in urls.py
