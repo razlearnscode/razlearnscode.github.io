@@ -102,52 +102,43 @@ def all_posts_view(request):
 
 
 def like_post(request, post_id):
-
-    have_liked_already = False
     
     # get the post
     if request.method == 'POST':
 
-        # First, perform check if the user has liked this post before
-        duplicate_like = Like.objects.filter(user=request.user, post=post_id)
+        postID = Post.objects.get(id=post_id)
 
-        if duplicate_like:
+        # First, perform check if the user has liked this post before
+
+        if Like.objects.filter(user=request.user, post=postID).exists():
             # If the user liked this post already, then do nothing
-            have_liked_already = True
             pass
         else: 
-            Like.objects.create(user=request.user, post=post_id)
-            have_liked_already = True
+            Like.objects.create(user=request.user, post=postID)
 
 
-    # Just temporarily. I want that after the user like a post, they
-    # would stay on the same page
-    return render(request, "network/all_posts.html", {
-        "have_liked_already": have_liked_already,
-    })
-
+    # Redirecting users back to the all_post_view function. Note that all_posts here
+    # is the name of the urls as defined in urls.py
+    return HttpResponseRedirect(reverse("all_posts"))
 
 def unlike_post(request, post_id):
 
-    have_liked_already = False
     
     # get the post
     if request.method == 'POST':
 
-        # First, perform check if the user has liked this post before
-        duplicate_like = Like.objects.filter(user=request.user, post=post_id)
+        postID = Post.objects.get(id=post_id)
 
-        if duplicate_like:
-            # If the user liked this post already, then do nothing
-            have_liked_already = True
-            pass
+        already_like_this_post = Like.objects.get(user=request.user, post=postID)
+
+        # If user already liked this post, allow them to remove the like
+        if already_like_this_post:
+            
+            already_like_this_post.delete()
+        # Else if the user hasn't liked the post, do nothing
         else: 
-            Like.objects.create(user=request.user, post=post_id)
-            have_liked_already = True
+            pass
 
-
-    # Just temporarily. I want that after the user like a post, they
-    # would stay on the same page
-    return render(request, "network/all_posts.html", {
-        "have_liked_already": have_liked_already,
-    })
+    # Redirecting users back to the all_post_view function. Note that all_posts here
+    # is the name of the urls as defined in urls.py
+    return HttpResponseRedirect(reverse("all_posts"))

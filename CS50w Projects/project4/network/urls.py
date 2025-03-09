@@ -10,7 +10,7 @@ urlpatterns = [
     path("register", views.register, name="register"),
 
     # Show all posts
-    path('all_posts', views.all_posts_view, name="all_post"),
+    path('all_posts', views.all_posts_view, name="all_posts"),
 
     # Submit post route
     path("post", views.compose_post, name="compose_post"),
