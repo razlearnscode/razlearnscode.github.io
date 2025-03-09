@@ -27,29 +27,33 @@
 
             <div class="post-action">
 
-                <form method="post" action="{% url 'like_post' post.id %}">
+                <div class="like-container">
+                    <form method="post" action="{% url 'like_post' post.id %}">
 
-                    {% csrf_token %}
+                        {% csrf_token %}
+    
+                        <!-- If the user has already liked this post, show Unlike button -->
+                        {% if post.is_liked_by_user %}
+                            <input type="submit" class="social-action-bn" value="❤️">
+                        
+                        <!-- Else if the user has never liked this post, show Like button -->
+                        {% else %}
+                            <input type="submit" class="social-action-bn" value="♡">
+    
+                        {% endif %}
+    
+                    </form>
 
-                    <!-- If the user has already liked this post, show Unlike button -->
-                    {% if post.is_liked_by_user %}
-                        <input type="submit" class="unlike-action-bn" value="❤️">
-                    
-                    <!-- Else if the user has never liked this post, show Like button -->
-                    {% else %}
-                        <input type="submit" class="unlike-action-bn" value="♡">
+                    <span class="socials-count":>{{post.like_count}}</span>
 
-                    {% endif %}
+                </div>
 
-                </form>
-
-                {% if message %}
-                    {{message}}
-                {% else %}
-                {% endif %}
+                <div class="follower-container">
+                    <button class="follower-icon">☹︎</button>
+                    <span class="socials-count"">X</span>
+                </div>
                 
-                <span>: X♡</span>
-                <span>Followers: X</span>
+
             </div>
         </div>
     

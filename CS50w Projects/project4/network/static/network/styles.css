@@ -144,8 +144,13 @@ a:hover {
     padding-bottom: 10px;
 }
 
+.like-container, .follower-container {
+    display: flex;
+    align-items: flex-start;
+}
+
 /* Like Button */
-.like-action-bn {
+.social-action-bn {
     background-color: #2a2a2a;
     color: white;
     border: none;
@@ -158,26 +163,14 @@ a:hover {
 }
 
 /* Follow Button Hover */
-.like-action-bn:hover {
+.social-action-bn:hover {
     background-color: #4da3ff;
 }
 
-/* Like Button */
-.unlike-action-bn {
-    background-color: #2a2a2a;
-    color: white;
+.socials-count {
     border: none;
     padding: 5px 10px;
     font-size: 0.8rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-    margin-left: auto; /* Push button to the right */
-}
-
-/* Follow Button Hover */
-.unlike-action-bn:hover {
-    background-color: #4da3ff;
 }
 
 

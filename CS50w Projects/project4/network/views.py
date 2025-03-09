@@ -95,6 +95,7 @@ def all_posts_view(request):
     # Perform validation to check if the user has already liked that post
     for post in get_all_posts:
         post.is_liked_by_user = Like.objects.filter(user=request.user, post=post).exists()
+        post.like_count = post.post_likes.count()
 
     return render(request, "network/all_posts.html", {
         "all_posts": get_all_posts
