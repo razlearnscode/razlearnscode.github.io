@@ -24,12 +24,16 @@ class Post(models.Model):
     # for later: Likes 
     # Challenge: Comments and Replies
 
-    def serialize(self):
+
+    def serialize(self, user):
         return {
             "id": self.id,
             "content_owner": self.user.username,
             "body": self.body,
-            "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p")
+            "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
+            "like_count": self.post_likes.count(),
+            "profile_picture": self.user.profile_picture,
+            "has_liked_post": self.post_likes.filter(user=user).exists() # return boolean if the user has liked the post
         }
     
 class Like(models.Model):
@@ -37,7 +41,6 @@ class Like(models.Model):
     # I should not have a Count attribute here. Instead, I want to store
     # individual like action, which I can then query by using the user and post information
     # this is especially the cases because one user can only like a post a maximum once
-    
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user_likes")
     post = models.ForeignKey("Post", on_delete=models.CASCADE, related_name="post_likes")
     timestamp = models.DateTimeField(auto_now_add=True)

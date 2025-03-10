@@ -3,6 +3,10 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
 
 from .models import User, Post, Like, Follow
 
@@ -88,6 +92,8 @@ def compose_post(request):
             })
         
 
+@csrf_exempt
+@login_required
 def all_posts_view(request):
 
     get_all_posts = Post.objects.all().order_by('-timestamp')
@@ -97,30 +103,80 @@ def all_posts_view(request):
         post.is_liked_by_user = Like.objects.filter(user=request.user, post=post).exists()
         post.like_count = post.post_likes.count()
 
-    return render(request, "network/all_posts.html", {
+    return JsonResponse([post.serialize(request.user) for post in get_all_posts], safe=False)
+
+def all_posts_view_2(request):
+
+    get_all_posts = Post.objects.all().order_by('-timestamp')
+
+    # Perform validation to check if the user has already liked that post
+    for post in get_all_posts:
+        post.is_liked_by_user = Like.objects.filter(user=request.user, post=post).exists()
+        post.like_count = post.post_likes.count()
+
+    return render(request, "network/all_posts_2.html", {
         "all_posts": get_all_posts
     })
 
-
+@csrf_exempt
+@login_required
 def like_post(request, post_id):
     
-    # get the post
-    if request.method == 'POST':
+    # First, check if the post actually exists
+    # before doing any other query
+    post = get_object_or_404(Post, pk=post_id)
 
-        postID = Post.objects.get(id=post_id)
+    # API POST requests to handle like/unlike requests
+    if request.method == 'PUT':
 
-        # First, perform check if the user has liked this post before
+        # Using this function, I'll get a tuple with
+        # (the value of like returned by dB, 
+        # , true if new record created, false if recod was found)
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
 
-        if Like.objects.filter(user=request.user, post=postID).exists():
-            
-            # If the user liked this post already, allow them to unlike it
-            Like.objects.get(user=request.user, post=postID).delete()
+
+        # Tuple returns true --> New like was created
+        # Then increment the playcount
+        if created:
+            return JsonResponse({
+                "message": "Like added successfully!", 
+                "like_count": post.post_likes.count()
+            }, status=201)
+        
+        # But if tuple returns false
+        # --> An existing like record already exists
+        # Then treat this as a unlike request
         else:
+            like.delete()
+            return JsonResponse({
+                "message": "Like removed successfully!", 
+                "like_count": post.post_likes.count()
+            }, status=200)
 
-            # Else if they haven't liked this, count this as a like request 
-            Like.objects.create(user=request.user, post=postID)
+
+def show_profile(request, user_id):
+    return render(request, "network/index.html")
 
 
-    # Redirecting users back to the all_post_view function. Note that all_posts here
-    # is the name of the urls as defined in urls.py
-    return HttpResponseRedirect(reverse("all_posts"))
+@csrf_exempt
+def post(request, post_id):
+
+    # Query to check if a post with the post_id exists
+    try:
+        post = Post.objects.get(user=request.user, pk=post_id)
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Post not found."}, status=404)
+    
+    # Return post details upon receiving a GET request
+    if request.method == "GET":
+        return JsonResponse(post.serialize())
+    
+    # Else via PUT request, allow to increment like count
+    elif request.method == 'PUT':
+        pass
+
+    # Post must be requested via GET or PUT
+    else:
+        return JsonResponse({
+            "error": "GET or PUT request required."
+        }, status=400)

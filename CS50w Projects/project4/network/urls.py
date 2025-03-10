@@ -10,12 +10,18 @@ urlpatterns = [
     path("register", views.register, name="register"),
 
     # Show all posts
-    path('all_posts', views.all_posts_view, name="all_posts"),
+
+    path('all_posts_2', views.all_posts_view_2, name="all_posts_2"),
+
+    # API Routes
+    path('posts/all_posts', views.all_posts_view, name="all_posts"), # show all post
+    path("posts/<int:post_id>", views.post, name="post"),
+    path("like_post/<int:post_id>", views.like_post, name="like_post"), # handle likes
 
     # Submit post route
     path("post", views.compose_post, name="compose_post"),
 
-    # Social actions
-    path("like_post/<int:post_id>", views.like_post, name="like_post")
+    # Profile Page
+    path("profile/<int:user_id", views.show_profile, name="profile_view")
 
 ]
