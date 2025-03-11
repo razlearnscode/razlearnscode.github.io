@@ -66,7 +66,15 @@ document.addEventListener("DOMContentLoaded", function () {
             document.querySelector("body").append(post_card);
 
             // Handle the event when the social button is clicked
-            like_action.querySelectorAll(".social-action-bn").addEventListener("click", function() {
+            // Notice that i'm not targeting the button (or input), instead, since submit
+            // is the event of the form, I reference the form like_action instead!
+            like_action.addEventListener("submit", function(event) {
+
+                // By right, when the form is submit, the page is refreshed by default
+                // However, we don't want this to happen (we just want the counter to be incremented/decrease)
+                // so we need to use this event.preventDefaultt to prevent the page from automatically reloading
+                // this stops the form from submission and let javascript handle it instead
+                event.preventDefault(); 
                 process_like(singlePost);
             });
             
@@ -78,8 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function process_like(postID) {
 
     // Once the like button is clicked, then call the POST API to update the like
-
-    console.log("Yayy me! I got clicked!");
+    
 
 
 }
