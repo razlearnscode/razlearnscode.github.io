@@ -105,6 +105,7 @@ def all_posts_view(request):
 
     return JsonResponse([post.serialize(request.user) for post in get_all_posts], safe=False)
 
+
 def all_posts_view_2(request):
 
     get_all_posts = Post.objects.all().order_by('-timestamp')

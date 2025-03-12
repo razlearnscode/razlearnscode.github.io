@@ -29,7 +29,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div class="post-content-top">
                             <span class="post-username">${singlePost.content_owner}</span>
                             <span class="post-timestamp">${singlePost.timestamp}</span>
-                            <button class="follow-btn">Follow</button>
+
+                            <div class="socials-btn-container">
+                                <button class="follow-btn">Follow</button>
+                            </div>
+                                
+
+
                         </div>
                         <p class="post-body">${singlePost.body}</p>
 
@@ -47,6 +53,12 @@ document.addEventListener("DOMContentLoaded", function () {
             
             `;
 
+            const socials_btn = post_card.querySelector(".socials-btn-container")
+
+            if 
+
+
+            // DISPLAY for LIKE/FOLLOWS
             // Add display
             const like_action = document.createElement("form");
 

@@ -25,7 +25,11 @@ class Post(models.Model):
     # Challenge: Comments and Replies
 
 
-    def serialize(self, user):
+    # There's user here because in my all_post_views call in views.py,
+    # I include the request.user as a parameter
+    # As such, when I get back the API response, I can access the request user information
+    # for instance, i can check if the user has liked the  post, or whether they can edit post
+    def serialize(self, request_user_from_views):
         return {
             "id": self.id,
             "content_owner": self.user.username,
@@ -33,7 +37,8 @@ class Post(models.Model):
             "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
             "like_count": self.post_likes.count(),
             "profile_picture": self.user.profile_picture,
-            "has_liked_post": self.post_likes.filter(user=user).exists() # return boolean if the user has liked the post
+            "has_liked_post": self.post_likes.filter(user=request_user_from_views).exists(), # return boolean if the user has liked the post
+            "can_edit": request_user_from_views == self.user
         }
     
 class Like(models.Model):
