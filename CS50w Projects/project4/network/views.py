@@ -139,6 +139,7 @@ def like_post(request, post_id):
         # Then increment the playcount
         if created:
             return JsonResponse({
+                "action": "add",
                 "message": "Like added successfully!", 
                 "like_count": post.post_likes.count()
             }, status=201)
@@ -149,6 +150,7 @@ def like_post(request, post_id):
         else:
             like.delete()
             return JsonResponse({
+                "action": "remove",
                 "message": "Like removed successfully!", 
                 "like_count": post.post_likes.count()
             }, status=200)

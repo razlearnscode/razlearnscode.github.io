@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     <div class="post-content">
                         <div class="post-content-top">
-                            <span class="post-username">${singlePost.content_owner.username}</span>
+                            <span class="post-username">${singlePost.content_owner}</span>
                             <span class="post-timestamp">${singlePost.timestamp}</span>
                             <button class="follow-btn">Follow</button>
                         </div>
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // so we need to use this event.preventDefaultt to prevent the page from automatically reloading
                 // this stops the form from submission and let javascript handle it instead
                 event.preventDefault(); 
-                process_like(singlePost);
+                process_like(singlePost.id, like_action); // passing like_action because I want to update it's value dynamically
             });
             
         
@@ -83,10 +83,27 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-function process_like(postID) {
+function process_like(postID, like_action) {
 
     // Once the like button is clicked, then call the POST API to update the like
-    
+    fetch(`/like_post/${postID}`, {
+        method: 'PUT',
+        headers: { "Content-Type": "application/json"},
+    })
+        .then(response => response.json()) // format response as json file
+        .then(data => { // pass on all the data from the response for further processing
 
+            const like_button = like_action.querySelector(".social-action-bn");
+            const updated_like_count = like_action.querySelector(".socials-count");
+
+            if (data.action == "add") { 
+                like_button.value = "❤️"; // change to Unlike button if like is added
+            } else {
+                like_button.value = "♡"; // chagne to Like button if like is removed
+            }
+
+            updated_like_count.innerHTML = data.like_count;
+        }) 
+        .catch(error => console.error("Error:", error));     
 
 }
