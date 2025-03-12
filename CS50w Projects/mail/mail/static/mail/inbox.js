@@ -81,7 +81,6 @@ function load_mailbox(mailbox) {
         // Make each email card clickable, and trigger the redirection to view the individual emails
         // And since the API to fetch individual emails only require id, so I'll only need to send the ID here
         // Very important, it's useful to have the view_email function inside another function, so that it is not called immediately for every iteration
-
         email_card.addEventListener("click", function () {
           
 

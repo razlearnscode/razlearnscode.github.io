@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+import json
 
 from .models import User, Post, Like, Follow
 
@@ -105,18 +106,10 @@ def all_posts_view(request):
 
     return JsonResponse([post.serialize(request.user) for post in get_all_posts], safe=False)
 
-
 def all_posts_view_2(request):
 
-    get_all_posts = Post.objects.all().order_by('-timestamp')
-
-    # Perform validation to check if the user has already liked that post
-    for post in get_all_posts:
-        post.is_liked_by_user = Like.objects.filter(user=request.user, post=post).exists()
-        post.like_count = post.post_likes.count()
-
     return render(request, "network/all_posts_2.html", {
-        "all_posts": get_all_posts
+
     })
 
 @csrf_exempt
@@ -162,24 +155,20 @@ def show_profile(request, user_id):
 
 
 @csrf_exempt
-def post(request, post_id):
-
-    # Query to check if a post with the post_id exists
-    try:
-        post = Post.objects.get(user=request.user, pk=post_id)
-    except Post.DoesNotExist:
-        return JsonResponse({"error": "Post not found."}, status=404)
+@login_required
+def edit_post(request, post_id):
     
-    # Return post details upon receiving a GET request
-    if request.method == "GET":
-        return JsonResponse(post.serialize())
-    
-    # Else via PUT request, allow to increment like count
-    elif request.method == 'PUT':
-        pass
+    if request.method == 'PUT': #receive the content and update the post
+        
+        post_to_update = Post.objects.get(pk=post_id) # get the post from ID
+        data = json.loads(request.body) # get all the data from the API
 
-    # Post must be requested via GET or PUT
-    else:
+        new_content = data.get("content") # get the content from the body
+
+        post_to_update.body = new_content
+        post_to_update.save()
+
         return JsonResponse({
-            "error": "GET or PUT request required."
-        }, status=400)
+            "action": "updated",
+            "message": "Post updated successfully!"
+        }, status=200)

@@ -15,9 +15,9 @@ urlpatterns = [
 
     # API Routes
     path('posts/all_posts', views.all_posts_view, name="all_posts"), # show all post
-    path("posts/<int:post_id>", views.post, name="post"),
     path("like_post/<int:post_id>", views.like_post, name="like_post"), # handle likes
-
+    path("edit_post/<int:post_id>", views.edit_post, name="edit_post"), # handle edits
+    
     # Submit post route
     path("post", views.compose_post, name="compose_post"),
 
@@ -25,3 +25,5 @@ urlpatterns = [
     path("profile/<int:user_id", views.show_profile, name="profile_view")
 
 ]
+
+

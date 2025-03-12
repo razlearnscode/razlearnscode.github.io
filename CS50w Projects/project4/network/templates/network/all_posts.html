@@ -1,87 +1,19 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
 
 {% if user.is_authenticated %}
 
 <div class="page_title">
-    <h1>Welcome to see all posts!!</h1>
+    <h1>All Posts - but cooler, with Async</h1>
 </div>
 
-{% if all_posts %}
-
-{% for post in all_posts %}
-<div class="post-container">
-    <div class="post-header">
-        <div class="profile-picture">
-            <img src="{{post.user.profile_picture}}"/>
-        </div>
-
-        <div class="post-content">
-            <div class="post-content-top">
-                <span class="post-username">{{post.user.username}}</span>
-                <span class="post-timestamp">{{post.timestamp}}</span>
-                <button class="follow-btn">Follow</button>
-            </div>
-            <p class="post-body">{{post.body}}</p>
-
-            <div class="post-action">
-
-                <div class="like-container">
-                    <form method="post" action="{% url 'like_post' post.id %}">
-
-                        {% csrf_token %}
-    
-                        <!-- If the user has already liked this post, show Unlike button -->
-                        {% if post.is_liked_by_user %}
-                            <input type="submit" class="social-action-bn" value="❤️">
-                        
-                        <!-- Else if the user has never liked this post, show Like button -->
-                        {% else %}
-                            <input type="submit" class="social-action-bn" value="♡">
-    
-                        {% endif %}
-    
-                    </form>
-
-                    <span class="socials-count":>{{post.like_count}}</span>
-
-                </div>
-
-                <div class="follower-container">
-                    <button class="social-action-bn">☹︎</button>
-                    <span class="socials-count"">X</span>
-                </div>
-                
-
-            </div>
-        </div>
-    
-    </div>
-    
-
-</div>
-{% endfor %}
-
-{% else %}
-<p>Ohh noo. There's not post at all</p>
-{% endif %}
-
-{% else %}
-
-<p>Nothing to see here. You must log in to join our social network</p>
-
-{% endif %}
-
-
-{% if message %}
-
-{{ message }}
 
 {% endif %}
 
 {% endblock %}
 
 {% block script %}
-
+    <script src="{% static 'network/network.js' %}"></script>
 {% endblock %}
