@@ -68,37 +68,33 @@ def register(request):
         return render(request, "network/register.html")
 
 
+def user(request):
+    # send all logged in user information to the API request for display
+    if request.method == 'GET':
+        logged_in_user = request.user
+        return JsonResponse(logged_in_user.serialize())
+
+@csrf_exempt
+@login_required
 def compose_post(request):
 
-    if request.method == 'GET':
-        
-        logged_in_user = request.user
-
-        return JsonResponse(logged_in_user.serialize())
-    
-
-
     if request.method == 'POST':
-        
-        new_post = request.POST['post_input_box'].strip() # Remove the extra space
-        
-        # I use strip because if the post is empty, then after removing whitespace,
-        # the return content is truly null. So my condition below will work
 
-        if new_post:
+        data = json.loads(request.body)
+        post_owner_username = data.get("owner_username")
+        new_post_content = data.get("body")
 
-            Post.objects.create(
-                user=request.user,
-                body=new_post,
+        post_owner = User.objects.get(username=post_owner_username)
+
+        if (new_post_content): # if content is not empty
+            new_post = Post.objects.create(
+                user=post_owner,
+                body=new_post_content,
             )
-
-            return HttpResponseRedirect(reverse("index"))
-        
+            new_post.save()
+            return JsonResponse({"message": "Post submitted successfully."}, status=201)
         else:
-
-            return render(request, "network/index.html", {
-                "message": "Cannot submit empty post"
-            })
+            return JsonResponse({"error": "Post content cannot be empty."}, status=404)
         
 
 @csrf_exempt

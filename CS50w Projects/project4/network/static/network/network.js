@@ -10,9 +10,11 @@ document.addEventListener("DOMContentLoaded", function () {
 function show_compose_view() {
   
   // First, I need to get the logged in user information first
-  fetch("compose_post")
+  fetch("/user")
     .then((response) => response.json())
     .then((data) => {
+
+      const logged_in_user = data;
 
       // First, create and display the component for
       const compose_post_container = document.createElement("div");
@@ -22,14 +24,14 @@ function show_compose_view() {
       compose_post_container.innerHTML = `
         <div class="post-header">
             <div class="profile-picture">
-                <img src="${data.profile_picture}"/>
-                <span class="post-username">${data.username}</span>
+                <img src="${logged_in_user.profile_picture}"/>
+                <span class="post-username">${logged_in_user.username}</span>
             </div>
 
             <div class="post-content">
-                <form method="POST">
+                <form id="compose-form" method="POST">
                     <textarea placeholder="What's on your mind" id="post_input" name="post_input_box" rows="6"></textarea>
-                    <button type="submit" class="btn btn-comment">Submit Post</button>
+                    <input type="submit" class="submit-post-btn" value="Post">
                 </form>
             </div>
 
@@ -38,9 +40,29 @@ function show_compose_view() {
 
       document.querySelector("body").append(compose_post_container);
       
-    });
+      // Next, gather the input from the form to submit a new post
+      const new_post_input = compose_post_container.querySelector("#post_input");
+      const new_post_content = new_post_input.value.trim();
 
-  
+      document.querySelector("#compose-form").addEventListener("submit", function() {
+
+        fetch("/compose_post", {
+          method: "POST",
+          body: JSON.stringify({
+            owner_username: logged_in_user.username,
+            body: new_post_content,
+          }),
+        })
+          .then((response) => response.json())
+          .then((result) => {});
+            console.log(result);
+        
+      });
+
+
+    
+
+    });
 
 }
 

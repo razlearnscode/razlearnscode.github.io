@@ -14,6 +14,7 @@ urlpatterns = [
     path('all_posts_2', views.all_posts_view_2, name="all_posts_2"),
 
     # API Routes
+    path("user", views.user, name="user"), # used to get logged in user information
     path('posts/all_posts', views.all_posts_view, name="all_posts"), # show all post
     path("like_post/<int:post_id>", views.like_post, name="like_post"), # handle likes
     path("edit_post/<int:post_id>", views.edit_post, name="edit_post"), # handle edits

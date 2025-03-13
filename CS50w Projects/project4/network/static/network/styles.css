@@ -43,7 +43,7 @@ h1 {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); /* Subtle glow */
-    max-width: 60%;
+    max-width: 40%;
     width: 100%;
     margin: 0 auto 30px auto; /* Centers the container */
     transition: all 0.3s ease-in-out;
@@ -131,6 +131,19 @@ h1 {
     
 }
 
+.submit-post-btn {
+    background-color: #2a2a2a;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-left: auto;
+    display: block;
+}
+
 
 /* Follow Button Hover */
 .follow-btn:hover, .edit-btn:hover, .save-edit-btn:hover {
@@ -207,7 +220,7 @@ a:hover {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); /* Subtle glow */
-    max-width: 60%;
+    max-width: 40%;
     width: 100%;
     margin: 0 auto 30px auto; /* Centers the container */
     transition: all 0.3s ease-in-out;
