@@ -126,20 +126,23 @@ function show_all_post_view() {
         if (singlePost.can_edit) {
           socials_btn.innerHTML = `<button class="edit-btn">Edit</button>`;
         } else {
-          socials_btn.innerHTML = `<button class="follow-btn">Follow</button>`;
-        }
 
-        // Need to handle the display if the user has followed the user before
+          // I don't want to set the unfollow/follow button everytime and update elsewhere
+          // which may affect the integrity of the data. So rather than create them in advance,
+          // i'll create them only in this section
 
-        // Handle the follow action
-        const follow_button = socials_btn.querySelector(".follow-btn");
+          // if already follow, show Unfollow. If not, show Follow
+          let followButtonText = singlePost.content_owner.following_this_user ? "Unfollow" : "Follow";
 
-        if (follow_button) {
+          const followButton = document.createElement("button");
+          followButton.className = "follow-btn";
+          followButton.innerText = followButtonText;
 
-            follow_button.addEventListener("click", function() {
-              follow_request(singlePost.content_owner.id);
-            })
+          followButton.addEventListener("click", function() {
+            follow_request(singlePost.content_owner.id, followButton);
+          })
 
+          socials_btn.append(followButton)
         }
 
         // Handle click event for Edit button
@@ -264,7 +267,7 @@ function append_new_post_dynamically() {
 
 }
 
-function follow_request(target_userID) {
+function follow_request(target_userID, followButton) {
 
   fetch(`follow/${target_userID}`, {
     method: "PUT",
@@ -274,11 +277,13 @@ function follow_request(target_userID) {
   .then((data) => {
 
     console.log(data);
-    
-    // If action is add follow --> Then hide the follow button
-    // If action is to unfollow --> Then show the follow button again
 
-    // Reload the change in all posts
+    // If action is add follow --> Then hide the follow button
+    if (data.action == "add_follow") {
+      followButton.innerText = "Unfollow";
+    } else if (data.action == "unfollow") {
+      followButton.innerText = "Follow";
+    }
 
   })
   .catch((error) => console.error("Error:", error));

@@ -107,15 +107,10 @@ def compose_post(request):
 @csrf_exempt
 @login_required
 def all_posts_view(request):
-
     get_all_posts = Post.objects.all().order_by('-timestamp')
-
-    # Perform validation to check if the user has already liked that post
-    for post in get_all_posts:
-        post.is_liked_by_user = Like.objects.filter(user=request.user, post=post).exists()
-        post.like_count = post.post_likes.count()
-
-    return JsonResponse([post.serialize(request.user) for post in get_all_posts], safe=False)
+    # pass the logged_in_user as paraeter because I don't have this information at the Post level
+    # I do have the content_owner info at the post level though, so I can already use that information
+    return JsonResponse([post.serialize(request.user) for post in get_all_posts], safe=False) 
 
 
 @csrf_exempt

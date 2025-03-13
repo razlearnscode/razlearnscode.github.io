@@ -30,7 +30,7 @@ class Post(models.Model):
     # for later: Likes 
     # Challenge: Comments and Replies
 
-
+ 
     # There's user here because in my all_post_views call in views.py,
     # I include the request.user as a parameter
     # As such, when I get back the API response, I can access the request user information
@@ -42,6 +42,7 @@ class Post(models.Model):
                 "username": self.user.username,
                 "id": self.user.id,
                 "profile_picture": self.user.profile_picture,
+                "following_this_user": self.user.followers.filter(user=request_user_from_views).exists()
             },
             "body": self.body,
             "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
