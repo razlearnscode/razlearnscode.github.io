@@ -6,6 +6,12 @@ from django.core.validators import MaxLengthValidator
 class User(AbstractUser):
     profile_picture = models.URLField(max_length=200, blank=True, null=True)
 
+    def serialize(self):
+        return {
+            "username": self.username,
+            "profile_picture": self.profile_picture,
+        }
+
 
 class Post(models.Model):
 

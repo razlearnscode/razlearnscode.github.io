@@ -70,6 +70,14 @@ def register(request):
 
 def compose_post(request):
 
+    if request.method == 'GET':
+        
+        logged_in_user = request.user
+
+        return JsonResponse(logged_in_user.serialize())
+    
+
+
     if request.method == 'POST':
         
         new_post = request.POST['post_input_box'].strip() # Remove the extra space

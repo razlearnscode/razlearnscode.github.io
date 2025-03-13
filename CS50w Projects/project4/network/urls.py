@@ -19,7 +19,7 @@ urlpatterns = [
     path("edit_post/<int:post_id>", views.edit_post, name="edit_post"), # handle edits
     
     # Submit post route
-    path("post", views.compose_post, name="compose_post"),
+    path("compose_post", views.compose_post, name="compose_post"),
 
     # Profile Page
     path("profile/<int:user_id", views.show_profile, name="profile_view")

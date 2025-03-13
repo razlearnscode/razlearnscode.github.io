@@ -1,11 +1,54 @@
 // Async compute this at the beginning whenever this page is load
 // Meaning: Always load all the post details the first time this page loads
 document.addEventListener("DOMContentLoaded", function () {
+  // Display the compose post component at the top of the page
+  show_compose_view();
   // By default, show all posts
   show_all_post_view();
 });
 
+function show_compose_view() {
+  
+  // First, I need to get the logged in user information first
+  fetch("compose_post")
+    .then((response) => response.json())
+    .then((data) => {
+
+      // First, create and display the component for
+      const compose_post_container = document.createElement("div");
+      compose_post_container.className = "compose-post-container";
+
+      // Create the HTML elements for the form
+      compose_post_container.innerHTML = `
+        <div class="post-header">
+            <div class="profile-picture">
+                <img src="${data.profile_picture}"/>
+                <span class="post-username">${data.username}</span>
+            </div>
+
+            <div class="post-content">
+                <form method="POST">
+                    <textarea placeholder="What's on your mind" id="post_input" name="post_input_box" rows="6"></textarea>
+                    <button type="submit" class="btn btn-comment">Submit Post</button>
+                </form>
+            </div>
+
+        </div>
+      `;
+
+      document.querySelector("body").append(compose_post_container);
+      
+    });
+
+  
+
+}
+
 function show_all_post_view() {
+
+  const post_wrapper = document.createElement("div");
+  post_wrapper.className = "post-wrapper";
+  
   // POST API to get all posts
   fetch("/posts/all_posts")
     .then((response) => response.json())
@@ -52,7 +95,6 @@ function show_all_post_view() {
           
           `;
 
-
         const socials_btn = post_card.querySelector(".socials-btn-container");
 
         // Display Edit or Follow button depending on the logged in users
@@ -67,54 +109,53 @@ function show_all_post_view() {
 
         // Only proceeds if the edit button is available
         if (edit_button) {
-            // Handle the click event on the Edit button
-            edit_button.addEventListener("click", function () {
+          // Handle the click event on the Edit button
+          edit_button.addEventListener("click", function () {
+            // Only after entering save mode, create the new Save button
+            const save_button = document.createElement("button");
+            save_button.className = "save-edit-btn";
+            save_button.innerHTML = `Save`;
+            socials_btn.append(save_button);
 
-                // Only after entering save mode, create the new Save button
-                const save_button = document.createElement("button");
-                save_button.className = "save-edit-btn";
-                save_button.innerHTML = `Save`;
-                socials_btn.append(save_button);
+            // Concurrently, hide the edit button
+            edit_button.style.display = "none";
 
-                // Concurrently, hide the edit button
-                edit_button.style.display = "none";
+            // First, hide the post content. Make the edit box visible again
+            post_card.querySelector(".post-body").style.display = "none";
+            post_card.querySelector(".textarea-body").style.display = "block";
 
-                // First, hide the post content. Make the edit box visible again
-                post_card.querySelector(".post-body").style.display = "none";
-                post_card.querySelector(".textarea-body").style.display = "block";
+            // After all this, handle when the user attempts to save
 
-                // After all this, handle when the user attempts to save
+            save_button.addEventListener("click", function () {
+              // Get the content of the text area
+              const textarea_input = post_card.querySelector(".textarea-body");
+              const updated_post_content = textarea_input.value.trim();
 
-                save_button.addEventListener("click", function () {
-                    // Get the content of the text area
-                    const textarea_input = post_card.querySelector(".textarea-body");
-                    const updated_post_content = textarea_input.value.trim();
+              // Call the API to update the content
+              fetch(`edit_post/${singlePost.id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ content: updated_post_content }),
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  const post_updated = post_card.querySelector(".post-body");
 
-                    // Call the API to update the content 
-                    fetch(`edit_post/${singlePost.id}`, {
-                        method: "PUT",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ content: updated_post_content }),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
+                  if (data.action == "updated") {
+                    // If updated, then save
+                    post_card.querySelector(".textarea-body").style.display =
+                      "none"; // Hide the textarea
+                    post_card.querySelector(".post-body").style.display =
+                      "block"; // display the post content again
+                    edit_button.style.display = "block";
+                    save_button.style.display = "none";
 
-                        const post_updated = post_card.querySelector(".post-body");
-
-                        if (data.action == "updated") { // If updated, then save
-                            post_card.querySelector(".textarea-body").style.display = "none"; // Hide the textarea
-                            post_card.querySelector(".post-body").style.display = "block"; // display the post content again
-                            edit_button.style.display = "block";
-                            save_button.style.display = "none";
-
-                            // Most importantly, I need to reload the latest content again
-                            post_updated.innerText = updated_post_content; // temporarily populate the data locally, avoid unnecssary server requests
-                        }
-                    })
-                    .catch(error => console.error("Error:", error));
-
-                });
-
+                    // Most importantly, I need to reload the latest content again
+                    post_updated.innerText = updated_post_content; // temporarily populate the data locally, avoid unnecssary server requests
+                  }
+                })
+                .catch((error) => console.error("Error:", error));
+            });
           });
         }
 
@@ -136,7 +177,7 @@ function show_all_post_view() {
 
         // I want to target the like-container class inside the post_card component
 
-        document.querySelector("body").append(post_card);
+        post_wrapper.append(post_card);
 
         // Handle the event when the social button is clicked
         // Notice that i'm not targeting the button (or input), instead, since submit
@@ -151,6 +192,7 @@ function show_all_post_view() {
         });
       });
     });
+    document.querySelector("body").append(post_wrapper);
 }
 
 function process_like(postID, like_action) {
@@ -177,7 +219,3 @@ function process_like(postID, like_action) {
     .catch((error) => console.error("Error:", error));
 }
 
-function edit_post(post_card) {
-
-
-}
