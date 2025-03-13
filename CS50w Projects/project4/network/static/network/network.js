@@ -93,12 +93,12 @@ function show_all_post_view() {
               
               <div class="post-header">
                   <div class="profile-picture">
-                      <img src="${singlePost.profile_picture}"/>
+                      <img src="${singlePost.content_owner.profile_picture}"/>
                   </div>
 
                   <div class="post-content">
                       <div class="post-content-top">
-                          <span class="post-username">${singlePost.content_owner}</span>
+                          <span class="post-username">${singlePost.content_owner.username}</span>
                           <span class="post-timestamp">${singlePost.timestamp}</span>
                           <div class="socials-btn-container"></div>
                       </div>
@@ -127,6 +127,19 @@ function show_all_post_view() {
           socials_btn.innerHTML = `<button class="edit-btn">Edit</button>`;
         } else {
           socials_btn.innerHTML = `<button class="follow-btn">Follow</button>`;
+        }
+
+        // Need to handle the display if the user has followed the user before
+
+        // Handle the follow action
+        const follow_button = socials_btn.querySelector(".follow-btn");
+
+        if (follow_button) {
+
+            follow_button.addEventListener("click", function() {
+              follow_request(singlePost.content_owner.id);
+            })
+
         }
 
         // Handle click event for Edit button
@@ -248,5 +261,26 @@ function process_like(postID, like_action) {
 // Wishlist - separate the post component from show_all_post_view into a separate function so I can call it
 function append_new_post_dynamically() {
 
+
+}
+
+function follow_request(target_userID) {
+
+  fetch(`follow/${target_userID}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+  })
+  .then((response) => response.json()) // get the response from the API
+  .then((data) => {
+
+    console.log(data);
+    
+    // If action is add follow --> Then hide the follow button
+    // If action is to unfollow --> Then show the follow button again
+
+    // Reload the change in all posts
+
+  })
+  .catch((error) => console.error("Error:", error));
 
 }

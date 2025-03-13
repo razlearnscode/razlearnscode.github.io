@@ -178,3 +178,37 @@ def edit_post(request, post_id):
             "action": "updated",
             "message": "Post updated successfully!"
         }, status=200)
+    
+
+def show_profile(request, target_user_id):
+    pass
+
+
+@csrf_exempt
+@login_required
+def follow_user(request, target_userID):
+
+    # Validation to make sure the user exists
+    user = get_object_or_404(User, id=target_userID)
+
+    if request.method == 'PUT':
+        
+        # Get the users required for the request
+        request_user = request.user # users who want to perform the follow action
+        target_user = User.objects.get(id=target_userID) # user to be followed
+
+        # Perform check if the user has already followed this user before
+        follow, created = Follow.objects.get_or_create(user=request_user, target_user=target_user)
+
+        if (created):
+            return JsonResponse({
+                "action": "add_follow",
+                "message": "{request_user} has started following {target_user}"
+            }, status=201)
+        else:
+            follow.delete()
+            return JsonResponse({
+                "action": "unfollow",
+                "message": "{request_user} has unfollowed {target_user}"
+            }, status=200)
+

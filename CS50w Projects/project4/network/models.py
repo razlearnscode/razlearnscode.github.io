@@ -38,11 +38,14 @@ class Post(models.Model):
     def serialize(self, request_user_from_views):
         return {
             "id": self.id,
-            "content_owner": self.user.username,
+            "content_owner": {
+                "username": self.user.username,
+                "id": self.user.id,
+                "profile_picture": self.user.profile_picture,
+            },
             "body": self.body,
             "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
             "like_count": self.post_likes.count(),
-            "profile_picture": self.user.profile_picture,
             "has_liked_post": self.post_likes.filter(user=request_user_from_views).exists(), # return boolean if the user has liked the post
             "can_edit": request_user_from_views == self.user
         }
@@ -68,7 +71,7 @@ class Follow(models.Model):
     # user who performs the follow action
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="following")
     
-    # users who receive the follow action (who are followed
+    # users who receive the follow action (who are followed)
     target_user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="followers")
     
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -80,4 +83,4 @@ class Follow(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.user.username} liked {self.post.id}"
+        return f"{self.user.username} followed {self.target_user.username}"
