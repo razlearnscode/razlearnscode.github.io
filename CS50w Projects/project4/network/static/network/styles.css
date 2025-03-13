@@ -66,14 +66,14 @@ h1 {
 }
 
 /* Profile Picture */
-.profile-picture {
+.profile {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
 
-.profile-picture img {
+.profile img {
     width: 36px;
     height: 36px;
     border-radius: 50%; /* Makes it circular */
@@ -285,4 +285,85 @@ a:hover {
 /* Button Click Effect */
 .compose-post-container button:active {
     background: #005bbb;
+}
+
+
+
+/* Profile Container */
+.profile-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    background: #1e1e1e;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+/* Profile Header */
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Profile Picture */
+.profile-picture-full {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+}
+
+/* Username */
+.profile-username {
+    font-size: 24px;
+    margin: 10px 0;
+    color: #e0e0e0;
+}
+
+/* Follow Button */
+.follow-btn {
+    background-color: #444;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.follow-btn:hover {
+    background-color: #666;
+}
+
+/* Profile Stats */
+.profile-stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    background: #2b2b2b;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #a0a0a0;
+}
+
+/* User's Posts */
+.profile-posts {
+    margin-top: 20px;
 }

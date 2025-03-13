@@ -20,8 +20,6 @@ urlpatterns = [
     # Submit post route
     path("compose_post", views.compose_post, name="compose_post"),
 
-    # Profile Page
-    path("profile/<int:user_id", views.show_profile, name="profile_view")
 
 ]
 

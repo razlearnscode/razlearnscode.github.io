@@ -24,8 +24,8 @@ function show_compose_view() {
       // Create the HTML elements for the form
       compose_post_container.innerHTML = `
         <div class="post-header">
-            <div class="profile-picture">
-                <img src="${logged_in_user.profile_picture}"/>
+            <div class="profile">
+                <img class="profile-picture" src="${logged_in_user.profile_picture}"/>
                 <span class="post-username">${logged_in_user.username}</span>
             </div>
 
@@ -92,13 +92,15 @@ function show_all_post_view() {
         post_card.innerHTML = `
               
               <div class="post-header">
-                  <div class="profile-picture">
-                      <img src="${singlePost.content_owner.profile_picture}"/>
+                  <div class="profile">
+                      <img class="profile-picture" src="${singlePost.content_owner.profile_picture}"/>
                   </div>
 
                   <div class="post-content">
                       <div class="post-content-top">
-                          <span class="post-username">${singlePost.content_owner.username}</span>
+                          <span class="post-username">
+                            <a class="user-redirect" href="/profile/${singlePost.content_owner.id}">${singlePost.content_owner.username}</a>
+                          </span>
                           <span class="post-timestamp">${singlePost.timestamp}</span>
                           <div class="socials-btn-container"></div>
                       </div>
@@ -199,6 +201,7 @@ function show_all_post_view() {
             });
           });
         }
+
 
         // DISPLAY for LIKE/FOLLOWS
         // Add display

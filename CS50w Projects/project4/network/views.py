@@ -12,7 +12,6 @@ import json
 from .models import User, Post, Like, Follow
 
 @csrf_exempt
-@login_required
 def index(request):
     return render(request, "network/index.html")
 
@@ -175,9 +174,8 @@ def edit_post(request, post_id):
         }, status=200)
     
 
-def show_profile(request, target_user_id):
-    pass
-
+def show_profile(request, user_id):
+    return render(request, "network/profile.html")
 
 @csrf_exempt
 @login_required
