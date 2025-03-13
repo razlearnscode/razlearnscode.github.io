@@ -9,10 +9,6 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
 
-    # Show all posts
-
-    path('all_posts_2', views.all_posts_view_2, name="all_posts_2"),
-
     # API Routes
     path("user", views.user, name="user"), # used to get logged in user information
     path('posts/all_posts', views.all_posts_view, name="all_posts"), # show all post

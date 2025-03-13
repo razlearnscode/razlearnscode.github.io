@@ -11,7 +11,8 @@ import json
 
 from .models import User, Post, Like, Follow
 
-
+@csrf_exempt
+@login_required
 def index(request):
     return render(request, "network/index.html")
 
@@ -74,6 +75,7 @@ def user(request):
         logged_in_user = request.user
         return JsonResponse(logged_in_user.serialize())
 
+
 @csrf_exempt
 @login_required
 def compose_post(request):
@@ -92,9 +94,14 @@ def compose_post(request):
                 body=new_post_content,
             )
             new_post.save()
-            return JsonResponse({"message": "Post submitted successfully."}, status=201)
+            return JsonResponse({""
+                "message": "Post submitted successfully.",
+                "new_post": new_post.serialize(post_owner)
+            }, status=201)
         else:
-            return JsonResponse({"error": "Post content cannot be empty."}, status=404)
+            return JsonResponse({
+                "error": "Post content cannot be empty."
+            }, status=404)
         
 
 @csrf_exempt
@@ -110,11 +117,6 @@ def all_posts_view(request):
 
     return JsonResponse([post.serialize(request.user) for post in get_all_posts], safe=False)
 
-def all_posts_view_2(request):
-
-    return render(request, "network/all_posts_2.html", {
-
-    })
 
 @csrf_exempt
 @login_required

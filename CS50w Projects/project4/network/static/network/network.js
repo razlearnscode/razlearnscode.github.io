@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
   show_compose_view();
   // By default, show all posts
   show_all_post_view();
+
 });
 
 function show_compose_view() {
@@ -40,11 +41,13 @@ function show_compose_view() {
 
       document.querySelector("body").append(compose_post_container);
       
-      // Next, gather the input from the form to submit a new post
-      const new_post_input = compose_post_container.querySelector("#post_input");
-      const new_post_content = new_post_input.value.trim();
+      document.querySelector("#compose-form").addEventListener("submit", function(event) {
 
-      document.querySelector("#compose-form").addEventListener("submit", function() {
+        // Next, gather the input from the form to submit a new post
+        const new_post_input = compose_post_container.querySelector("#post_input");
+        const new_post_content = new_post_input.value.trim();
+
+        event.preventDefault();
 
         fetch("/compose_post", {
           method: "POST",
@@ -54,16 +57,16 @@ function show_compose_view() {
           }),
         })
           .then((response) => response.json())
-          .then((result) => {});
+          .then((result) => {
             console.log(result);
-        
+
+            // Append the new post dynamically
+
+            
+          })
+          .catch((error) => console.error("Error:", error));
       });
-
-
-    
-
     });
-
 }
 
 function show_all_post_view() {
@@ -241,3 +244,9 @@ function process_like(postID, like_action) {
     .catch((error) => console.error("Error:", error));
 }
 
+
+// Wishlist - separate the post component from show_all_post_view into a separate function so I can call it
+function append_new_post_dynamically() {
+
+
+}

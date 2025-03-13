@@ -1,41 +1,17 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
 
 {% if user.is_authenticated %}
-<div class="page_title">
-<h1>Home Feeds</h1>
-</div>
-<!-- First, create a sticky section to submit post in the homepage -->
-<div class="compose-post-container">
-    <div class="post-header">
-        
-        <div class="profile-picture">
-            <img src="{{ user.profile_picture }}"/>
-            <span class="post-username">{{ user.username}}</span>
-        </div>
-
-        <div class="post-content">
-            <form action="{% url 'compose_post' %}" method="POST">
-                {% csrf_token %}
-                <textarea placeholder="What's on your mind" id="post_input" name="post_input_box" rows="6"></textarea>
-                <button type="submit" class="btn btn-comment">Submit Post</button>
-            </form>
-        </div>
-
-    </div>
-
-</div>
 
 {% else %}
 <p>Log in to join our social network</p>
 
 {% endif %}
 
-{% if message %}
+{% endblock %}
 
-{{ message }}
-
-{% endif %}
-
+{% block script %}
+    <script src="{% static 'network/network.js' %}"></script>
 {% endblock %}

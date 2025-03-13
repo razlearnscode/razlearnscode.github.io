@@ -33,7 +33,7 @@ h1 {
     position: relative;
     max-width: 100%;
     width: 100%;
-    padding-top: 280px; /* to position the posts below the compose-post */
+    padding-top: 240px; /* to position the posts below the compose-post */
 }
 
 /* Post Container (Dark Background, Soft Borders) */
