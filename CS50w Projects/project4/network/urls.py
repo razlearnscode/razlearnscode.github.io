@@ -14,7 +14,8 @@ urlpatterns = [
     path('posts/all_posts', views.all_posts_view, name="all_posts"), # show all post
     path("like_post/<int:post_id>", views.like_post, name="like_post"), # handle likes
     path("edit_post/<int:post_id>", views.edit_post, name="edit_post"), # handle edits
-    path("profile/<int:user_id>", views.show_profile, name="show_profile"), # handle the user profile page
+    path("get/<int:user_id>", views.get_profile, name="get_profile"), # get the data for the profile
+    path("profile/<int:user_id>", views.show_profile, name="show_profile"), # get the data for the profile
     path("follow/<int:target_userID>", views.follow_user, name="follow_user"), # handle follow users
     
     # Submit post route

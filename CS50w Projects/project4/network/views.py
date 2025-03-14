@@ -150,8 +150,29 @@ def like_post(request, post_id):
             }, status=200)
 
 
+def get_profile(request, user_id):
+
+    if request.method == 'GET':
+
+        request_profile = User.objects.get(pk=user_id)
+
+        # Rather than relying on the serialize definition in Models.py, I can get most of the information
+        # I want directly here in this views.py function
+
+        return JsonResponse({
+            "message": "request successful",
+            "username": request_profile.username,
+            "profile_picture": request_profile.profile_picture,
+            "follower": request_profile.followers.count(),
+            "follow": request_profile.following.count(),
+            "following_this_user": Follow.objects.filter(user=request.user, target_user=request_profile).exists(),
+            "user_own_account": request.user == request_profile,
+        }, status=201)
+    
+
 def show_profile(request, user_id):
-    return render(request, "network/index.html")
+    return render(request, "network/profile.html")
+
 
 
 @csrf_exempt
@@ -173,9 +194,6 @@ def edit_post(request, post_id):
             "message": "Post updated successfully!"
         }, status=200)
     
-
-def show_profile(request, user_id):
-    return render(request, "network/profile.html")
 
 @csrf_exempt
 @login_required

@@ -324,7 +324,7 @@ a:hover {
 }
 
 /* Follow Button */
-.follow-btn {
+.profile-header .follow-btn, .profile-header .edit-btn {
     background-color: #444;
     color: #ffffff;
     border: none;
@@ -335,7 +335,7 @@ a:hover {
     transition: background 0.3s;
 }
 
-.follow-btn:hover {
+.profile-header .follow-btn:hover, .profile-header .edit-btn:hover {
     background-color: #666;
 }
 

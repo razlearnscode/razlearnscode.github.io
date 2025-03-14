@@ -4,31 +4,7 @@
 {% block body %}
 
 {% if user.is_authenticated %}
-<div class="profile-container">
-    <div class="profile-header">
-        <img src="" alt="Profile Picture" class="profile-picture-full">
-        <h1 class="profile-username">@username</h1>
-        <button class="follow-btn">Follow</button>
-    </div>
 
-    <div class="profile-stats">
-        <div class="stat">
-            <span class="stat-number">120</span>
-            <span class="stat-label">Followers</span>
-        </div>
-        <div class="stat">
-            <span class="stat-number">90</span>
-            <span class="stat-label">Following</span>
-        </div>
-    </div>
-
-    <div class="profile-posts">
-        <h2>User's Posts</h2>
-        <div class="post-container">
-            <p class="post-content">This is an example post...</p>
-        </div>
-    </div>
-</div>
 {% else %}
 
 {% endif %}

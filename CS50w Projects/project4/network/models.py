@@ -10,8 +10,9 @@ class User(AbstractUser):
         return {
             "username": self.username,
             "profile_picture": self.profile_picture,
+            "followers": self.following.count(),
+            "following": self.followers.count()
         }
-
 
 class Post(models.Model):
 
