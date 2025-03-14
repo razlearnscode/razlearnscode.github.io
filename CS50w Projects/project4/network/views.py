@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 import json
 
 from .models import User, Post, Like, Follow
@@ -107,9 +108,20 @@ def compose_post(request):
 @login_required
 def all_posts_view(request):
     get_all_posts = Post.objects.all().order_by('-timestamp')
+    paginator = Paginator(get_all_posts, 3) # show 3 posts per page
+
+    # get the page number from the website URL
+    # the URL for page 2 may have the endign ?page=2
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     # pass the logged_in_user as paraeter because I don't have this information at the Post level
     # I do have the content_owner info at the post level though, so I can already use that information
-    return JsonResponse([post.serialize(request.user) for post in get_all_posts], safe=False) 
+    return JsonResponse({
+        "all_posts": [post.serialize(request.user) for post in page_obj], # formating all posts as component of paginator page objects
+        "num_pages": paginator.num_pages
+        }
+        , safe=False)  #I'm also passiong the paginator to the js file to use
 
 @csrf_exempt
 @login_required

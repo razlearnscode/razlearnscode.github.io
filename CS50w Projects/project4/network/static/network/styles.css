@@ -387,3 +387,38 @@ a:hover {
     color: #a0a0a0;
 }
 
+
+/* ✅ Pagination Container */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;  /* Add spacing above pagination */
+    gap: 10px;  /* Add spacing between buttons */
+}
+
+/* ✅ Pagination Buttons */
+.pagination button {
+    background-color: #222;  /* Dark background */
+    color: #ddd;  /* Light text */
+    border: 1px solid #444;  /* Subtle border */
+    padding: 8px 16px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+/* ✅ Hover Effect */
+.pagination button:hover {
+    background-color: #444;  /* Lighter dark on hover */
+    color: #fff;
+    border-color: #666;
+}
+
+/* ✅ Disabled State (for first & last page) */
+.pagination button:disabled {
+    background-color: #333;
+    color: #777;
+    cursor: not-allowed;
+    border-color: #555;
+}

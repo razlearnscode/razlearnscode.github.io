@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Display the compose post component at the top of the page
   show_compose_view();
   // By default, show all posts
-  show_all_post_view();
+  show_all_post_view(1);
 
 });
 
@@ -18,8 +18,7 @@ function show_compose_view() {
       const logged_in_user = data;
 
       // First, create and display the component for
-      const compose_post_container = document.createElement("div");
-      compose_post_container.className = "compose-post-container";
+      const compose_post_container = document.querySelector(".compose-post-container");
 
       // Create the HTML elements for the form
       compose_post_container.innerHTML = `
@@ -69,15 +68,30 @@ function show_compose_view() {
     });
 }
 
-function show_all_post_view() {
+function show_all_post_view(pageNumber = 1) {  // make page number = 1 by default
 
-  const post_wrapper = document.createElement("div");
-  post_wrapper.className = "post-wrapper";
+
+  const post_wrapper = document.querySelector(".post-wrapper");
+
+  // ✅ Fix: Clear previous posts properly
+  if (post_wrapper) {
+    post_wrapper.innerHTML = "";
+  } else {
+    post_wrapper = document.createElement("div");
+    post_wrapper.className = "post-wrapper";
+    document.querySelector("body").append(postWrapper);
+  }
   
   // POST API to get all posts
-  fetch("/posts/all_posts")
+  fetch(`/posts/all_posts?page=${pageNumber}`)
     .then((response) => response.json())
-    .then((get_all_posts) => {
+    .then((data) => {
+
+      console.log(data);
+      post_wrapper.innerHTML = ""; // empty the previous post before updating
+
+      const get_all_posts = data.all_posts;
+      
       get_all_posts.forEach((singlePost) => {
         console.log(singlePost);
 
@@ -235,8 +249,40 @@ function show_all_post_view() {
           process_like(singlePost.id, like_action); // passing like_action because I want to update it's value dynamically
         });
       });
+      
+      update_pagination_buttons(pageNumber, data.num_pages, post_wrapper); // paginate the buttons
+
     });
     document.querySelector("body").append(post_wrapper);
+}
+
+function update_pagination_buttons(currentPage, totalPages, post_wrapper) {
+
+  const pagination_container = document.createElement("div");
+  pagination_container.className = "pagination";
+
+  // Display previous button if not on index page
+  if (currentPage > 1) {
+    const prevButton = document.createElement("button");
+    prevButton.innerText = "Previous";
+    prevButton.addEventListener("click", function() {
+      show_all_post_view(currentPage - 1);
+    });
+    pagination_container.append(prevButton);
+  };
+
+  // Display NEXT button
+  if (currentPage < totalPages) {
+    const nextButton = document.createElement("button");
+    nextButton.innerText = "Next";
+    nextButton.addEventListener("click", function() {
+      show_all_post_view(currentPage + 1);
+    });
+    pagination_container.append(nextButton);
+  };
+
+  post_wrapper.append(pagination_container);
+
 }
 
 function process_like(postID, like_action) {
@@ -262,6 +308,7 @@ function process_like(postID, like_action) {
     })
     .catch((error) => console.error("Error:", error));
 }
+
 
 
 // Wishlist - separate the post component from show_all_post_view into a separate function so I can call it
