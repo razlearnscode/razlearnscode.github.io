@@ -111,6 +111,15 @@ def all_posts_view(request):
     # I do have the content_owner info at the post level though, so I can already use that information
     return JsonResponse([post.serialize(request.user) for post in get_all_posts], safe=False) 
 
+@csrf_exempt
+@login_required
+def user_posts_view(request, user_id):
+
+    user_profile = get_object_or_404(User, id=user_id)
+    all_post_from_users = Post.objects.filter(user=user_profile).all().order_by('-timestamp')
+
+    return JsonResponse([post.serialize(request.user) for post in all_post_from_users], safe=False) 
+
 
 @csrf_exempt
 @login_required

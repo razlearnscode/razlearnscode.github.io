@@ -50,10 +50,14 @@ h1 {
 }
 
 /* Hover Effect for Posts */
-.post-container:hover {
+.post-container:hover, .profile-post-container:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 12px rgba(255, 255, 255, 0.15);
 }
+
+
+
+
 
 /* Post Header (User Info, Timestamp) */
 .post-header {
@@ -291,13 +295,33 @@ a:hover {
 
 /* Profile Container */
 .profile-container {
-    max-width: 600px;
+
+    display: flex;
+    flex-direction: column;
     margin: 0 auto;
     padding: 20px;
-    text-align: center;
+    width: 60%;
     background: #1e1e1e;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+.profile-post-container {
+    position: relative;
+    background: #1e1e1e; /* Dark container */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); /* Subtle glow */
+    width: 100%;
+    max-width: 90%;
+    margin: 0 auto 30px auto; /* Centers the container */
+    transition: all 0.3s ease-in-out;
+}
+
+/* User's Posts */
+.profile-post {
+    padding-top: 30px;
+    width: 100%;
 }
 
 /* Profile Header */
@@ -363,7 +387,3 @@ a:hover {
     color: #a0a0a0;
 }
 
-/* User's Posts */
-.profile-posts {
-    margin-top: 20px;
-}
