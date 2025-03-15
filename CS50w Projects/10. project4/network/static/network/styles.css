@@ -1,0 +1,424 @@
+/* Dark Mode Styles */
+body {
+    display: flex;
+    flex-direction: column;   /* Stack items (nav + post-container) vertically */
+    align-items: center;      /* Centers vertically */
+    height: 100vh;            /* Full viewport height */
+    margin: 0;                /* Remove default margin */
+    background-color: #121212; /* Dark background */
+    padding-top: 60px; /* Push content below navbar (match navbar height) */
+    color: #e0e0e0; /* Light gray text for readability */
+}
+
+h1 {
+    text-align: center;
+    padding: 20px;
+    width 100%;
+    margin: 20px 0;
+}
+
+
+.navbar {
+    width: 100%; /* Ensure it spans the full width */
+    position: fixed; /* Keeps it at the top even when scrolling */
+    top: 0;
+    left: 0;
+    background-color: #1e1e1e; /* Dark navbar */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Stronger shadow */
+    z-index: 1000; /* Ensures it stays above other elements */
+    border-bottom: 1px solid #333; /* Slight border to separate navbar */
+}
+
+.post-wrapper {
+    position: relative;
+    max-width: 100%;
+    width: 100%;
+    padding-top: 240px; /* to position the posts below the compose-post */
+}
+
+/* Post Container (Dark Background, Soft Borders) */
+.post-container {
+    position: relative;
+    background: #1e1e1e; /* Dark container */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); /* Subtle glow */
+    max-width: 40%;
+    width: 100%;
+    margin: 0 auto 30px auto; /* Centers the container */
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover Effect for Posts */
+.post-container:hover, .profile-post-container:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(255, 255, 255, 0.15);
+}
+
+
+
+
+
+/* Post Header (User Info, Timestamp) */
+.post-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px; /* Space between profile picture & content */
+    border-bottom: 1px solid #333; /* Dark border */
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+/* Profile Picture */
+.profile {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+.profile img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%; /* Makes it circular */
+    object-fit: cover;
+}
+
+/* Right Section: Post Content */
+.post-content {
+    flex: 1; /* Takes up remaining space */
+}
+
+/* Post Top Row: Username, Timestamp & Follow Button */
+.post-content-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+/* Subtle Gray Text for Metadata */
+.post-header span {
+    font-size: 0.9rem;
+    color: #bbbbbb;
+}
+
+/* Username Style */
+.post-username {
+    font-weight: bold;
+    color: #f5f5f5; /* Brighter text for usernames */
+}
+
+/* Timestamp */
+.post-timestamp {
+    font-size: 12px;
+    color: #888; /* Softer gray */
+}
+
+.socials-btn-container {
+    margin-left: auto; /* Push button to the right */
+    display: flex;
+    align-items: flex-start;
+    gap: 15px; /* Space between the buttons */
+}
+
+/* All Buttons */
+.follow-btn, .edit-btn, .save-edit-btn {
+    background-color: #2a2a2a;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    
+}
+
+.submit-post-btn {
+    background-color: #2a2a2a;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-left: auto;
+    display: block;
+}
+
+
+/* Follow Button Hover */
+.follow-btn:hover, .edit-btn:hover, .save-edit-btn:hover {
+    background-color: #4da3ff;
+}
+
+.edit_post_view {
+    display: none;
+}
+
+
+/* Post Body */
+.post-body p {
+    margin: 0;
+    font-size: 1rem;
+    padding-bottom: 20px;
+    color: #e0e0e0; /* Lighter text for readability */
+}
+
+/* Link Colors in Dark Mode */
+a {
+    color: #1e90ff; /* Neon blue for contrast */
+    text-decoration: none;
+}
+
+a:hover {
+    color: #4da3ff;
+    text-decoration: underline;
+}
+
+/* Post Actions */
+.post-action {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px; /* Space between profile picture & content */
+    padding-bottom: 10px;
+}
+
+.like-container, .follower-container {
+    display: flex;
+    align-items: flex-start;
+}
+
+/* Like Button */
+.social-action-bn {
+    background-color: #2a2a2a;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-left: auto; /* Push button to the right */
+}
+
+/* Follow Button Hover */
+.social-action-bn:hover {
+    background-color: #4da3ff;
+}
+
+.socials-count {
+    border: none;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+}
+
+
+/* Input Box */
+.compose-post-container {
+    position: fixed;
+    z-index: 900; /* Ensures it stays above other elements */
+    background: #1e1e1e; /* Dark container */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); /* Subtle glow */
+    max-width: 40%;
+    width: 100%;
+    margin: 0 auto 30px auto; /* Centers the container */
+    transition: all 0.3s ease-in-out;
+}
+
+.compose-post-container textarea {
+    width: 100%;
+    height: 120px;
+    background-color: #252525;
+    color: #e0e0e0;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 1rem;
+    resize: none;
+    outline: none;
+    transition: 0.3s;
+}
+
+.textarea-body {
+    width: 100%;
+    height: 120px;
+    background-color: #252525;
+    color: #e0e0e0;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 1rem;
+    resize: none;
+    outline: none;
+    transition: 0.3s;
+    margin-bottom: 10px;
+}
+
+/* Input Box: Focus Effect */
+.compose-post-container textarea:focus {
+    border-color: #1e90ff;
+    box-shadow: 0 0 8px rgba(30, 144, 255, 0.6);
+}
+
+/* Submit Button */
+.compose-post-container button {
+    width: 100%;
+    margin-top: 15px;
+    padding: 10px 0;
+    background: #2a2a2a;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Button Hover Effect */
+.compose-post-container button:hover {
+    background: #4da3ff;
+    box-shadow: 0 0 10px rgba(30, 144, 255, 0.8);
+}
+
+/* Button Click Effect */
+.compose-post-container button:active {
+    background: #005bbb;
+}
+
+
+
+/* Profile Container */
+.profile-container {
+
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    padding: 20px;
+    width: 60%;
+    background: #1e1e1e;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+.profile-post-container {
+    position: relative;
+    background: #1e1e1e; /* Dark container */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); /* Subtle glow */
+    width: 100%;
+    max-width: 90%;
+    margin: 0 auto 30px auto; /* Centers the container */
+    transition: all 0.3s ease-in-out;
+}
+
+/* User's Posts */
+.profile-post {
+    padding-top: 30px;
+    width: 100%;
+}
+
+/* Profile Header */
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Profile Picture */
+.profile-picture-full {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+}
+
+/* Username */
+.profile-username {
+    font-size: 24px;
+    margin: 10px 0;
+    color: #e0e0e0;
+}
+
+/* Follow Button */
+.profile-header .follow-btn, .profile-header .edit-btn {
+    background-color: #444;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.profile-header .follow-btn:hover, .profile-header .edit-btn:hover {
+    background-color: #666;
+}
+
+/* Profile Stats */
+.profile-stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    background: #2b2b2b;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #a0a0a0;
+}
+
+
+/* ✅ Pagination Container */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;  /* Add spacing above pagination */
+    gap: 10px;  /* Add spacing between buttons */
+}
+
+/* ✅ Pagination Buttons */
+.pagination button {
+    background-color: #222;  /* Dark background */
+    color: #ddd;  /* Light text */
+    border: 1px solid #444;  /* Subtle border */
+    padding: 8px 16px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+/* ✅ Hover Effect */
+.pagination button:hover {
+    background-color: #444;  /* Lighter dark on hover */
+    color: #fff;
+    border-color: #666;
+}
+
+/* ✅ Disabled State (for first & last page) */
+.pagination button:disabled {
+    background-color: #333;
+    color: #777;
+    cursor: not-allowed;
+    border-color: #555;
+}
