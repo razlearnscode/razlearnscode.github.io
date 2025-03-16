@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
-from .models import User
+from .models import User, Workout, Exercise, Set
 
 # Create your views here.
 def index(request):
