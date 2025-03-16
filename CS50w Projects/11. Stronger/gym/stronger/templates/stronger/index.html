@@ -1,0 +1,18 @@
+{% extends "stronger/layout.html" %}
+{% load static %}
+
+{% block body %}
+<h1>Welcome to your first session</h1>
+
+{% if user.is_authenticated %}
+
+{% else %}
+<p>Sign up to become a member</p>
+
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'stronger/tracker.js' %}"></script>
+{% endblock %}
