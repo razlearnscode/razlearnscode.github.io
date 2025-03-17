@@ -1,0 +1,70 @@
+/* Table Container */
+.set-table-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Table Styling */
+.set-table {
+    width: 60%;
+    border-collapse: separate; /* Ensures consistent alignment */
+    text-align: center; /* Ensures uniform alignment */
+}
+
+/* Table Header */
+.set-table thead th {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    padding: 12px;
+}
+
+/* Table Rows */
+.set-table tbody tr {
+    background: white;
+}
+
+
+/* Set Number Styling */
+.set-table tbody .set-number {
+    font-weight: bold;
+    font-size: 1.1rem;
+    background: #e0e0e0;
+    color: black;
+    border-radius: 20px;
+    padding: 5px 10px;
+    width: 50px;
+}
+
+/* Previous Values - Light Gray */
+.set-table tbody .set-description {
+    color: #999;
+    font-size: 1.1rem;
+    padding: 5px 10px;
+    border-radius: 20px;
+    max-width: 100px; /* Limit max width */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Adds '...' if content overflows */
+    white-space: nowrap; /* Prevents multi-line wrapping */
+}
+
+/* Set Value */
+.set-table tbody .set-value {
+    background: #e0e0e0;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    width: 60px;
+}
+
+/* Status Column */
+.set-table tbody .set-status {
+    font-size: 1.4rem;
+    text-align: center;
+    color: black;
+    width: 50px; /* Fix the width */
+    white-space: nowrap; /* Ensures ✔️ doesn't expand */
+}
