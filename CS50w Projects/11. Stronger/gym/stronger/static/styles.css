@@ -1,16 +1,50 @@
 /* Table Container */
-.set-table-container {
-    width: 100%;
+.workout-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     padding: 20px;
+    align-items: center;
+    
+}
+
+/* Exercise Container */
+.exercise-container {
+    max-width: 100%;
+    width: 50%;
+}
+
+
+.exercise-container span {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    padding-left: 10px;
+}
+
+.exercise-container button {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    padding: 5px 10px;
+    margin: 20px auto;
+    width: 100%;
+    border-radius: 20px;
+    border: none;
+    min-width: 200px; /* Ensures it never shrinks */
+    width: 100%;
+
 }
 
 /* Table Styling */
 .set-table {
-    width: 60%;
+    width: 100%;
+    max-width: 600px; /* Limits how wide the table can go */
+    table-layout: auto; /* Forces columns to follow set width */
     border-collapse: separate; /* Ensures consistent alignment */
     text-align: center; /* Ensures uniform alignment */
+    border-spacing: 10px 20px;
+    padding-left: 0px;
 }
 
 /* Table Header */
@@ -18,10 +52,11 @@
     font-size: 1.2rem;
     font-weight: bold;
     color: #333;
-    padding: 12px;
+    white-space: nowrap;  /* Prevents line breaks */
 }
 
 /* Table Rows */
+/* Interestingly, tr doesn't have border or magin */
 .set-table tbody tr {
     background: white;
 }
@@ -44,9 +79,11 @@
     font-size: 1.1rem;
     padding: 5px 10px;
     border-radius: 20px;
-    max-width: 100px; /* Limit max width */
+    width: auto;
+    min-width: 100px; /* Allows it to shrink */
+    max-width: 250px; /* Prevents excessive stretching */
     overflow: hidden;
-    text-overflow: ellipsis; /* Adds '...' if content overflows */
+    text-overflow: ellipsis; /* Adds "..." if text is too long */
     white-space: nowrap; /* Prevents multi-line wrapping */
 }
 
@@ -62,9 +99,20 @@
 
 /* Status Column */
 .set-table tbody .set-status {
-    font-size: 1.4rem;
+    background: #e0e0e0;
+    font-size: 1.2rem;
+    border-radius: 20px;
     text-align: center;
     color: black;
     width: 50px; /* Fix the width */
     white-space: nowrap; /* Ensures ✔️ doesn't expand */
+}
+
+/* Ensure buttons, spans, and tables have the same width */
+.exercise-container,
+.exercise-container span,
+.exercise-container button {
+    width: 100%;
+    min-width: 600px;
+    max-width: 600px;
 }
