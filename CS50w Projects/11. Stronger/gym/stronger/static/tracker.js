@@ -13,10 +13,11 @@ function start_work_out() {
         <h2>New Workout</h2>
         <p>Notes</p>
         <div class="exercise-list"></div>
-        <button class="add-excercise-btn">+ Add Exercises</button>
+        <button class="button add-exercise-btn">+ Add Exercises</button>
+        <button class="button cancel-btn">Cancel Workout</button>
     `;
 
-    const add_exercise_btn = new_workout.querySelector(".add-excercise-btn")
+    const add_exercise_btn = new_workout.querySelector(".add-exercise-btn")
     const exercise_list = new_workout.querySelector(".exercise-list");
 
     add_exercise_btn.addEventListener('click', function() {
@@ -75,7 +76,7 @@ function add_exercise() {
                 </tr>
             </tbody>
         </table>
-        <button class="add-set-btn">+ Add Set</button>
+        <button class="button add-set-btn">+ Add Set</button>
     `;
 
     return exercise_container

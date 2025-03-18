@@ -47,29 +47,42 @@
     padding-bottom: 
 }
 
-.add-excercise-btn {
+/* Base Button Style - Applies to All Buttons */
+.button {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #34a7ff;
-    background-color: #ebf6ff ;
-    padding: 5px 10px;
+    padding: 10px 15px;
     margin: 20px auto;
     border-radius: 20px;
     border: none;
     width: 100%;
-    margin-top: 20px; /* Pushes button to the bottom */
+    max-width: 600px;
+    margin-top: 15px; /* Pushes button down */
+    cursor: pointer; /* Improves UX */
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
+/* Add Exercise Button */
+.add-exercise-btn {
+    color: #34a7ff;
+    background-color: #ebf6ff;
+}
+
+/* Add Set Button */
 .add-set-btn {
-    font-size: 1.2rem;
-    font-weight: bold;
     color: #333;
-    padding: 5px 10px;
-    margin: 20px auto;
-    border-radius: 20px;
-    border: none;
-    width: 100%;
-    margin-top: 20px; /* Pushes button to the bottom */
+    background-color: #e0e0e0;
+}
+
+/* Cancel Button */
+.cancel-btn {
+    color: #ff5963;
+    background-color: #ffeef0;
+}
+
+/* Hover Effects for Buttons */
+.button:hover {
+    opacity: 0.8;
 }
 
 
