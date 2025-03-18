@@ -1,5 +1,5 @@
 /* Table Container */
-.workout-container {
+.container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -8,10 +8,34 @@
     
 }
 
+/* Workout Container */
+.workout-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Pushes button to bottom */
+}
+
+.workout-container h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.workout-container p {
+    font-size: 1.25rem;
+    color: #999;
+    text-align: left;
+    padding-left: 10px;
+    margin-bottom: 30px;
+}
+
 /* Exercise Container */
 .exercise-container {
     max-width: 100%;
     width: 50%;
+    margin-top: 20px;
 }
 
 
@@ -20,21 +44,34 @@
     font-weight: bold;
     color: #333;
     padding-left: 10px;
+    padding-bottom: 
 }
 
-.exercise-container button {
+.add-excercise-btn {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #34a7ff;
+    background-color: #ebf6ff ;
+    padding: 5px 10px;
+    margin: 20px auto;
+    border-radius: 20px;
+    border: none;
+    width: 100%;
+    margin-top: 20px; /* Pushes button to the bottom */
+}
+
+.add-set-btn {
     font-size: 1.2rem;
     font-weight: bold;
     color: #333;
     padding: 5px 10px;
     margin: 20px auto;
-    width: 100%;
     border-radius: 20px;
     border: none;
-    min-width: 200px; /* Ensures it never shrinks */
     width: 100%;
-
+    margin-top: 20px; /* Pushes button to the bottom */
 }
+
 
 /* Table Styling */
 .set-table {
@@ -109,9 +146,10 @@
 }
 
 /* Ensure buttons, spans, and tables have the same width */
+.workout-container,
 .exercise-container,
 .exercise-container span,
-.exercise-container button {
+.add-btn {
     width: 100%;
     min-width: 600px;
     max-width: 600px;
