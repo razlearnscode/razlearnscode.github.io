@@ -36,7 +36,9 @@ function add_exercise() {
 
     // Requirement: New exercise will automatically create 3 sets
     const exercise_container = document.createElement("div");
-    exercise_container.className = "exercise-container"
+    exercise_container.className = "exercise-container";
+
+    const setNumber = 1;
 
     exercise_container.innerHTML = `
         <span>Name Your Exercise</span>
@@ -50,34 +52,58 @@ function add_exercise() {
                     <th>Status</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td class="set-number">-</td> 
-                    <td class="set-description">-</td>
-                    <td><input type="number" class="set-value"></td>
-                    <td><input type="number" class="set-value"></td>
-                    <td class="set-status">✔️</td>
-                </tr>
-    
-                <tr>
-                    <td class="set-number">-</td> 
-                    <td class="set-description">-</td>
-                    <td><input type="number" class="set-value"></td>
-                    <td><input type="number" class="set-value"></td>
-                    <td class="set-status">✔️</td>
-                </tr>
-    
-                <tr>
-                    <td class="set-number">-</td> 
-                    <td class="set-description">-</td>
-                    <td><input type="number" class="set-value"></td>
-                    <td><input type="number" class="set-value"></td>
-                    <td class="set-status">✔️</td>
-                </tr>
+            <tbody class="set-body">
+                <!-- Rows will be generated dynamically -->
             </tbody>
         </table>
         <button class="button add-set-btn">+ Add Set</button>
     `;
 
+    const set_body = exercise_container.querySelector(".set-body");
+
+    function add_set_row() {
+        
+        const setRow = document.createElement("tr");
+
+        setRow.innerHTML = `
+            <td class="set-number"></td> 
+            <td class="set-description">-</td>
+            <td><input type="number" class="set-value"></td>
+            <td><input type="number" class="set-value"></td>
+            <td class="set-status">✔️</td>
+        `;
+
+        set_body.append(setRow);
+        update_set_index();
+    }
+
+    // Reupdate all the index everytime this function is called
+    function update_set_index() {
+        const all_set_rows = set_body.querySelectorAll("tr");
+
+        all_set_rows.forEach((row, index) => {
+            // + 1 here because index starts at zero. But I want the first row to be 1
+            // Not to confused that we need + 1 to increment for each row, index is already
+            // recording the position of the current element
+            row.querySelector(".set-number").textContent = index + 1;
+        });
+
+        // don't need to append here because I've updated the text content directly
+    }
+
+    // Add 3 initial sets
+    for (let i = 0; i < 3; i++) {
+        add_set_row();
+    }
+
+    // Auto index and add new set when + Add set button is clicked
+    exercise_container.querySelector(".add-set-btn").addEventListener('click', function() {
+        add_set_row();
+    })
+
+
     return exercise_container;
 }
+
+
+
