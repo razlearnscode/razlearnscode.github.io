@@ -54,24 +54,24 @@ function add_exercise() {
                 <tr>
                     <td class="set-number">-</td> 
                     <td class="set-description">-</td>
-                    <td class="set-value">-</td>
-                    <td class="set-value">-</td>
+                    <td><input type="number" class="set-value"></td>
+                    <td><input type="number" class="set-value"></td>
                     <td class="set-status">✔️</td>
                 </tr>
     
                 <tr>
                     <td class="set-number">-</td> 
                     <td class="set-description">-</td>
-                    <td class="set-value">-</td>
-                    <td class="set-value">-</td>
+                    <td><input type="number" class="set-value"></td>
+                    <td><input type="number" class="set-value"></td>
                     <td class="set-status">✔️</td>
                 </tr>
     
                 <tr>
                     <td class="set-number">-</td> 
                     <td class="set-description">-</td>
-                    <td class="set-value">-</td>
-                    <td class="set-value">-</td>
+                    <td><input type="number" class="set-value"></td>
+                    <td><input type="number" class="set-value"></td>
                     <td class="set-status">✔️</td>
                 </tr>
             </tbody>
@@ -79,5 +79,5 @@ function add_exercise() {
         <button class="button add-set-btn">+ Add Set</button>
     `;
 
-    return exercise_container
+    return exercise_container;
 }
