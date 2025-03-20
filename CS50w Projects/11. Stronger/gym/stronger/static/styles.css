@@ -179,27 +179,27 @@
 
 /* SAVED: Special styling when the set is saved */
 
-.set-table tbody .set-row.saved {
+.set-table tbody .set-row.freeze {
     padding-top: 15px;
     padding-bottom: 15px;
     box-shadow: inset 0 0 0 1000px #eaf9f0; /* Creates a full background effect */
 }
 
-.set-table tbody .set-row.saved td {
+.set-table tbody .set-row.freeze td {
     padding-top: 5px;
     padding-bottom: 5px;
     vertical-align: middle;
 }
 
 /* Set Number Styling */
-.set-table tbody .set-row.saved .set-number,
-.set-table tbody .set-row.saved .set-description,
-.set-table tbody .set-row.saved input {
+.set-table tbody .set-row.freeze .set-number,
+.set-table tbody .set-row.freeze .set-description,
+.set-table tbody .set-row.freeze input {
     border: transparent;
     background: transparent;
 }
 
-.set-table tbody .set-row.saved .set-status {
+.set-table tbody .set-row.freeze .set-status {
     color: white;
     background: #2dcd70;
     font-size: 1.4rem;

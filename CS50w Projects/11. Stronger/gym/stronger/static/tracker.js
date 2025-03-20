@@ -75,26 +75,26 @@ function add_exercise() {
         `;
 
         set_body.append(setRow);
-
-        const all_set_rows = set_body.querySelectorAll("tr");
         
-        update_set_index(all_set_rows); // auto index each row
-        save_set(all_set_rows);
+        update_set_index(); // auto index each row
+        freeze_set(); // freeze completed set - technically saving it
         
     }
 
-    function save_set(all_set_rows) {
+    function freeze_set() {
+
+        const all_set_rows = set_body.querySelectorAll("tr");
         
         all_set_rows.forEach((row) => {
-            const value_completed = set_body.querySelector(".set-value");
-            const rep_completed = set_body.querySelector(".set-rep");
-            const save_button = row.querySelector(".set-status");
+            const freeze_button = row.querySelector(".set-status");
 
-            save_button.addEventListener('click', function() {
-                row.classList.toggle('saved'); // toggle between adding and removing "saved" upon each click
-                // Don't do anything else here since only class with saved will be sent to server upon clicking the Finish button
+            // Remove any existing event listeners to prevent duplication
+            freeze_button.replaceWith(freeze_button.cloneNode(true)); // Reset button to remove old listeners
+            const new_save_button = row.querySelector(".set-status");
+    
+            new_save_button.addEventListener('click', function() {
+                row.classList.toggle('freeze');
             });
-        
         });
 
 
@@ -102,8 +102,9 @@ function add_exercise() {
     }
     
     // Reupdate all the index everytime this function is called
-    function update_set_index(all_set_rows) {
+    function update_set_index() {
         
+        const all_set_rows = set_body.querySelectorAll("tr");
 
         all_set_rows.forEach((row, index) => {
             // + 1 here because index starts at zero. But I want the first row to be 1
