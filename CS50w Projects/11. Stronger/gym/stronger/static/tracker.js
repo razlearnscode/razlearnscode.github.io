@@ -64,22 +64,46 @@ function add_exercise() {
     function add_set_row() {
         
         const setRow = document.createElement("tr");
+        setRow.className = "set-row";
 
         setRow.innerHTML = `
             <td class="set-number"></td> 
             <td class="set-description">-</td>
-            <td><input type="number" class="set-value"></td>
-            <td><input type="number" class="set-value"></td>
-            <td class="set-status">✔️</td>
+            <td><input type="number" class="set-value" placeholder="16"></td>
+            <td><input type="number" class="set-rep" placeholder="16"></td>
+            <td><button class="set-status">✓</button></td>
         `;
 
         set_body.append(setRow);
-        update_set_index();
+
+        const all_set_rows = set_body.querySelectorAll("tr");
+        
+        update_set_index(all_set_rows); // auto index each row
+        save_set(all_set_rows);
+        
     }
 
+    function save_set(all_set_rows) {
+        
+        all_set_rows.forEach((row) => {
+            const value_completed = set_body.querySelector(".set-value");
+            const rep_completed = set_body.querySelector(".set-rep");
+            const save_button = row.querySelector(".set-status");
+
+            save_button.addEventListener('click', function() {
+                row.classList.toggle('saved'); // toggle between adding and removing "saved" upon each click
+                // Don't do anything else here since only class with saved will be sent to server upon clicking the Finish button
+            });
+        
+        });
+
+
+
+    }
+    
     // Reupdate all the index everytime this function is called
-    function update_set_index() {
-        const all_set_rows = set_body.querySelectorAll("tr");
+    function update_set_index(all_set_rows) {
+        
 
         all_set_rows.forEach((row, index) => {
             // + 1 here because index starts at zero. But I want the first row to be 1
@@ -100,7 +124,6 @@ function add_exercise() {
     exercise_container.querySelector(".add-set-btn").addEventListener('click', function() {
         add_set_row();
     })
-
 
     return exercise_container;
 }
