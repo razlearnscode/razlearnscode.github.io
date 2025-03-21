@@ -69,8 +69,8 @@ function add_exercise() {
     setRow.innerHTML = `
             <td class="set-number"></td> 
             <td class="set-description">-</td>
-            <td><input type="number" class="set-value" placeholder="16"></td>
-            <td><input type="number" class="set-rep" placeholder="16"></td>
+            <td><input type="number" class="set-value" placeholder="0"></td>
+            <td><input type="number" class="set-rep" placeholder="0"></td> 
             <td><button type="button" class="set-status">✓</button></td>
         `;
 
@@ -80,6 +80,8 @@ function add_exercise() {
 
     update_set_index(all_set_rows); // auto index each row
     freeze_set(all_set_rows); // freeze completed set - technically saving it
+    copy_latest_input(all_set_rows); // mimic the latest input as the placeholder
+
   }
 
   function toggleFreeze(event) {
@@ -113,7 +115,32 @@ function add_exercise() {
   }
 
   // Auto copy/paste the last input when creating the new set 
-  function copy_latest_input() {
+  function copy_latest_input(all_set_rows) {
+
+    // if first row, then pull from best record
+    let bestValue = 0;
+    let bestRep = 0;
+ 
+    all_set_rows.forEach((row,index) => {
+
+        if (index === 0) return; // skip the first row
+
+        const prevValue = all_set_rows[index-1].querySelector(".set-value").value; // get previous value
+        const prevRep = all_set_rows[index-1].querySelector(".set-rep").value; // get previous rep
+
+        // Default to current best
+        row.querySelector(".set-value").placeholder = bestValue;
+        row.querySelector(".set-rep").placeholder = bestRep;
+        
+        // Get the best record input (if prevValue exists and is greater than bestRep, then update)
+        if (prevValue && + +prevValue > bestValue) bestValue = +prevValue;
+        if (prevRep && + +prevRep > bestRep) bestRep = +prevRep;
+
+        // Update the placeholders again with the latest record (if available)
+        row.querySelector(".set-value").placeholder = bestValue;
+        row.querySelector(".set-rep").placeholder = bestRep;
+
+    }); 
 
   }
 
