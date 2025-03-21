@@ -15,36 +15,63 @@
     justify-content: space-between; /* Pushes button to bottom */
 }
 
-.workout-container h2 {
+.workout-form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.finish-button {
+    margin-left: auto;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background: #2dcd70;
+    color: white;
+    border: transparent;
+    border-radius: 10px;
+    padding: 10px 15px;
+    text-align: center;
+    white-space: nowrap; /* Ensures ✔️ doesn't expand */
+    cursor: pointer; /* Improves UX */
+    transition: background 0.3s ease, color 0.3s ease;
+
+}
+
+.workout-name {
     font-size: 2rem;
     font-weight: bold;
     color: #333;
     text-align: left;
     padding-left: 10px;
+    border: transparent;
 }
 
-.workout-container p {
+.workout-notes {
     font-size: 1.25rem;
     color: #999;
     text-align: left;
     padding-left: 10px;
     margin-bottom: 30px;
+    border: transparent;
 }
 
 /* Exercise Container */
 .exercise-container {
     max-width: 100%;
     width: 50%;
-    margin-top: 20px;
 }
 
 
-.exercise-container span {
-    font-size: 1.5rem;
+.exercise-container .exercise-name {
+    font-size: 1.4rem;
     font-weight: bold;
-    color: #333;
+    color: #34a7ff;
     padding-left: 10px;
-    padding-bottom: 
+    border: none;
+}
+
+.exercise-container .exercise-name::placeholder {  /* Also makes the placeholder blue */
+    color: #34a7ff;
 }
 
 /* Base Button Style - Applies to All Buttons */

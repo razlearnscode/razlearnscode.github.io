@@ -1,47 +1,48 @@
 document.addEventListener("DOMContentLoaded", function () {
-    start_work_out();
-
+  start_work_out();
 });
 
 function start_work_out() {
+  // Start a blank workout
+  const new_workout = document.createElement("div");
+  new_workout.className = "workout-container";
 
-    // Start a blank workout
-    const new_workout = document.createElement("div");
-    new_workout.className = "workout-container";
+  new_workout.innerHTML = `
+        <form class="workout-form">
+            <input type="submit" class="finish-button" value="Finish">
+            <input type="text" class="workout-name" placeholder="New Workout">
+            <textarea placeholder="Notes" id="workout-notes" class="workout-notes" name="workout-notes" rows="4"></textarea>
+            <div class="exercise-list"></div>
+            <button class="button add-exercise-btn">+ Add Exercises</button>
+            <button class="button cancel-btn">Cancel Workout</button>
+        </form>   
 
-    new_workout.innerHTML = `
-        <h2>New Workout</h2>
-        <p>Notes</p>
-        <div class="exercise-list"></div>
-        <button class="button add-exercise-btn">+ Add Exercises</button>
-        <button class="button cancel-btn">Cancel Workout</button>
     `;
 
-    const add_exercise_btn = new_workout.querySelector(".add-exercise-btn")
-    const exercise_list = new_workout.querySelector(".exercise-list");
+  const add_exercise_btn = new_workout.querySelector(".add-exercise-btn");
+  const exercise_list = new_workout.querySelector(".exercise-list");
 
-    add_exercise_btn.addEventListener('click', function() {
-        const empty_exercise = add_exercise();
-        exercise_list.append(empty_exercise)
-    })
+  add_exercise_btn.addEventListener("click", function (event) {
+    event.preventDefault(); // ✅ Prevent form from submitting
+    const empty_exercise = add_exercise();
+    exercise_list.append(empty_exercise);
+  });
 
-    document.querySelector(".container").append(new_workout);
-
-};
+  document.querySelector(".container").append(new_workout);
+}
 
 function add_exercise() {
+  // Assume for the MVP, users won't be able to select existing exercises
+  // Thus, we will generate new exercises from scratch
 
-    // Assume for the MVP, users won't be able to select existing exercises
-    // Thus, we will generate new exercises from scratch
+  // Requirement: New exercise will automatically create 3 sets
+  const exercise_container = document.createElement("div");
+  exercise_container.className = "exercise-container";
 
-    // Requirement: New exercise will automatically create 3 sets
-    const exercise_container = document.createElement("div");
-    exercise_container.className = "exercise-container";
+  const setNumber = 1;
 
-    const setNumber = 1;
-
-    exercise_container.innerHTML = `
-        <span>Name Your Exercise</span>
+  exercise_container.innerHTML = `
+        <input type="text" class="exercise-name" placeholder="Name Your Exercise">
         <table class="set-table">
             <thead>
                 <tr>
@@ -56,78 +57,76 @@ function add_exercise() {
                 <!-- Rows will be generated dynamically -->
             </tbody>
         </table>
-        <button class="button add-set-btn">+ Add Set</button>
+        <button type="button" class="button add-set-btn">+ Add Set</button>
     `;
 
-    const set_body = exercise_container.querySelector(".set-body");
+  const set_body = exercise_container.querySelector(".set-body");
 
-    function add_set_row() {
-        
-        const setRow = document.createElement("tr");
-        setRow.className = "set-row";
+  function add_set_row() {
+    const setRow = document.createElement("tr");
+    setRow.className = "set-row";
 
-        setRow.innerHTML = `
+    setRow.innerHTML = `
             <td class="set-number"></td> 
             <td class="set-description">-</td>
             <td><input type="number" class="set-value" placeholder="16"></td>
             <td><input type="number" class="set-rep" placeholder="16"></td>
-            <td><button class="set-status">✓</button></td>
+            <td><button type="button" class="set-status">✓</button></td>
         `;
 
-        set_body.append(setRow);
-        
-        update_set_index(); // auto index each row
-        freeze_set(); // freeze completed set - technically saving it
-        
-    }
+    set_body.append(setRow);
 
-    function freeze_set() {
+    const all_set_rows = set_body.querySelectorAll("tr");
 
-        const all_set_rows = set_body.querySelectorAll("tr");
-        
-        all_set_rows.forEach((row) => {
-            const freeze_button = row.querySelector(".set-status");
+    update_set_index(all_set_rows); // auto index each row
+    freeze_set(all_set_rows); // freeze completed set - technically saving it
+  }
 
-            // Remove any existing event listeners to prevent duplication
-            freeze_button.replaceWith(freeze_button.cloneNode(true)); // Reset button to remove old listeners
-            const new_save_button = row.querySelector(".set-status");
+  function toggleFreeze(event) {
+    event.currentTarget.closest("tr").classList.toggle("freeze");
+  }
+
+  function freeze_set(all_set_rows) {
     
-            new_save_button.addEventListener('click', function() {
-                row.classList.toggle('freeze');
-            });
-        });
 
+    all_set_rows.forEach((row) => {
+      const freeze_button = row.querySelector(".set-status");
 
+      // Remove any previously assigned event listener before adding new one
+      // This is an addional step to make sure that the event for each individual element is handled properly
+      freeze_button.removeEventListener("click", toggleFreeze);
+      freeze_button.addEventListener("click", toggleFreeze);
+    });
+  }
 
-    }
-    
-    // Reupdate all the index everytime this function is called
-    function update_set_index() {
-        
-        const all_set_rows = set_body.querySelectorAll("tr");
+  // Reupdate all the index everytime this function is called
+  function update_set_index(all_set_rows) {
 
-        all_set_rows.forEach((row, index) => {
-            // + 1 here because index starts at zero. But I want the first row to be 1
-            // Not to confused that we need + 1 to increment for each row, index is already
-            // recording the position of the current element
-            row.querySelector(".set-number").textContent = index + 1;
-        });
+    all_set_rows.forEach((row, index) => {
+      // + 1 here because index starts at zero. But I want the first row to be 1
+      // Not to confused that we need + 1 to increment for each row, index is already
+      // recording the position of the current element
+      row.querySelector(".set-number").textContent = index + 1;
+    });
 
-        // don't need to append here because I've updated the text content directly
-    }
+    // don't need to append here because I've updated the text content directly
+  }
 
-    // Add 3 initial sets
-    for (let i = 0; i < 3; i++) {
-        add_set_row();
-    }
+  // Auto copy/paste the last input when creating the new set 
+  function copy_latest_input() {
 
-    // Auto index and add new set when + Add set button is clicked
-    exercise_container.querySelector(".add-set-btn").addEventListener('click', function() {
-        add_set_row();
-    })
+  }
 
-    return exercise_container;
+  // Add 1 initial set when adding new exercises
+  add_set_row();
+
+  // Auto index and add new set when + Add set button is clicked
+  exercise_container
+    .querySelector(".add-set-btn")
+    .addEventListener("click", function () {
+      // Also note to prefill the character based on the last input within this
+      add_set_row();
+    });
+
+  return exercise_container;
 }
-
-
-
