@@ -20,15 +20,15 @@ function start_work_out() {
     `;
 
   const add_exercise_btn = new_workout.querySelector(".add-exercise-btn");
-  const exercise_list = new_workout.querySelector(".exercise-list");
+  const exercise_list = new_workout.querySelector(".exercise-list"); // I need to input into this so my buttons can be at the bottom
 
-  // --- EVENTS --- // 
+  // --- EVENTS --- //
 
   // 1. Add Exercise Event
   add_exercise_btn.addEventListener("click", function (event) {
     event.preventDefault(); // ✅ Prevent form from submitting
-    const empty_exercise = add_exercise();
-    exercise_list.append(empty_exercise);
+    const new_exercise = add_exercise();
+    exercise_list.append(new_exercise); // add new exercises to the exercise-list
   });
 
   document.querySelector(".container").append(new_workout);
@@ -41,8 +41,6 @@ function add_exercise() {
   // Requirement: New exercise will automatically create 3 sets
   const exercise_container = document.createElement("div");
   exercise_container.className = "exercise-container";
-
-  const setNumber = 1;
 
   exercise_container.innerHTML = `
         <input type="text" class="exercise-name" placeholder="Name Your Exercise">
@@ -81,93 +79,71 @@ function add_exercise() {
     set_body.append(setRow);
 
     const all_set_rows = set_body.querySelectorAll("tr");
-
-    update_set_index(all_set_rows); // auto index each row
-    freeze_set(all_set_rows); // freeze completed set - technically saving it
-    copy_latest_input(all_set_rows); // mimic the latest input as the placeholder
-    remove_row(all_set_rows);
+    update_set_index(set_body);
+    copy_latest_input(set_body); // mimic the latest input as the placeholder
+    setup_set_row(setRow, set_body);
 
   }
 
-  function toggleFreeze(event) {
-    event.currentTarget.closest("tr").classList.toggle("freeze");
-  }
+  // -- CORE ROW FUNCTIONALITIES -- //
+  // freeze event, delete event, reindexing, mimic last value= //
+  function setup_set_row(row, set_body) {
+    const freeze_button = row.querySelector(".set-status");
+    const delete_button = row.querySelector(".delete-btn");
 
-  function freeze_set(all_set_rows) {
-    
+    // Freeze toggle\
+    freeze_button.removeEventListener("click", toggleFreeze);
+    freeze_button.addEventListener("click", toggleFreeze);
 
-    all_set_rows.forEach((row) => {
-      const freeze_button = row.querySelector(".set-status");
-
-      // Remove any previously assigned event listener before adding new one
-      // This is an addional step to make sure that the event for each individual element is handled properly
-      freeze_button.removeEventListener("click", toggleFreeze);
-      freeze_button.addEventListener("click", toggleFreeze);
+    // Delete row
+    delete_button.addEventListener("click", function (event) {
+      event.preventDefault(); // ✅ Prevent form from submitting1
+      row.remove();
+      update_set_index(set_body); // re-index all the rows after remove
     });
   }
 
   // Reupdate all the index everytime this function is called
-  function update_set_index(all_set_rows) {
+  function update_set_index(set_body) {
+    const rows = set_body.querySelectorAll("tr");
 
-    // Need to have the addition function to compare the existing location with the index
-
-    all_set_rows.forEach((row, index) => {
-      // + 1 here because index starts at zero. But I want the first row to be 1
-      // Not to confused that we need + 1 to increment for each row, index is already
-      // recording the position of the current element
-      row.querySelector(".set-number").textContent = index + 1;
+    rows.forEach((row, index) => {
+        row.querySelector(".set-number").textContent = index + 1;
+        // +1 because index starts at zero. So to represent the correct order, each index needs to add 1
     });
-
-    // don't need to append here because I've updated the text content directly
   }
 
-  // Auto copy/paste the last input when creating the new set 
-  function copy_latest_input(all_set_rows) {
-
+  // Auto copy/paste the last input when creating the new set
+  function copy_latest_input(set_body) {
+    
+    const rows = set_body.querySelectorAll("tr");
+    
     // if first row, then pull from best record
     let bestValue = 0;
     let bestRep = 0;
- 
-    all_set_rows.forEach((row,index) => {
 
-        if (index === 0) return; // skip the first row
+    rows.forEach((row, index) => {
+      if (index === 0) return; // skip the first row
 
-        const prevValue = all_set_rows[index-1].querySelector(".set-value").value; // get previous value
-        const prevRep = all_set_rows[index-1].querySelector(".set-rep").value; // get previous rep
+      const prevValue = rows[index - 1].querySelector(".set-value").value; // get previous value
+      const prevRep = rows[index - 1].querySelector(".set-rep").value; // get previous rep
 
-        // Default to current best
-        row.querySelector(".set-value").placeholder = bestValue;
-        row.querySelector(".set-rep").placeholder = bestRep;
-        
-        // Get the best record input (if prevValue exists and is greater than bestRep, then update)
-        if (prevValue && + +prevValue > bestValue) bestValue = +prevValue;
-        if (prevRep && + +prevRep > bestRep) bestRep = +prevRep;
+      // Default to current best
+      row.querySelector(".set-value").placeholder = bestValue;
+      row.querySelector(".set-rep").placeholder = bestRep;
 
-        // Update the placeholders again with the latest record (if available)
-        row.querySelector(".set-value").placeholder = bestValue;
-        row.querySelector(".set-rep").placeholder = bestRep;
+      // Get the best record input (if prevValue exists and is greater than bestRep, then update)
+      if (prevValue && +(+prevValue) > bestValue) bestValue = +prevValue;
+      if (prevRep && +(+prevRep) > bestRep) bestRep = +prevRep;
 
-    }); 
-
+      // Update the placeholders again with the latest record (if available)
+      row.querySelector(".set-value").placeholder = bestValue;
+      row.querySelector(".set-rep").placeholder = bestRep;
+    });
   }
 
-  function remove_row(all_set_rows) {
-    
-    all_set_rows.forEach((row,index) => {
-        const delete_button = row.querySelector(".delete-btn")
-
-        delete_button.addEventListener("click", function(event) {
-            event.preventDefault(); // ✅ Prevent form from submitting1
-            row.remove();
-
-            // After removing row, re-select all rows for re-index
-            const remaining_rows = set_body.querySelectorAll("tr");
-            update_set_index(remaining_rows);
-        });
-    });
-
-
-    
+  function toggleFreeze(event) {
+    event.currentTarget.closest("tr").classList.toggle("freeze");
   }
 
   // Add 1 initial set when adding new exercises
@@ -180,7 +156,6 @@ function add_exercise() {
       // Also note to prefill the character based on the last input within this
       add_set_row();
     });
-
 
   return exercise_container;
 }
