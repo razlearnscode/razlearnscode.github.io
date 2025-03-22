@@ -3,7 +3,11 @@ from django.db import models
 
 # Create your models here.
 class User(AbstractUser):
-    pass
+    
+    def serialize(self):
+        return {
+            "username": self.username,
+        }
 
 
 class Exercise(models.Model):

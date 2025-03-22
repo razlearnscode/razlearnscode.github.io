@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 import json
 
-, Post, Like, Follow
+from models import User, Post, Like, Follow
 
 @csrf_exempt
 def index(request):

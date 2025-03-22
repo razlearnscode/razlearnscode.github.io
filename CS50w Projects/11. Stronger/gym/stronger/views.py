@@ -4,6 +4,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.http import JsonResponse
+import json
+
 
 from .models import User, Workout, Exercise, Set
 
@@ -63,3 +66,24 @@ def register(request):
         return render(request, "stronger/register.html")
         
 
+def save_workout(request):
+    
+    # Objective: take in the username and workout details
+    # Then use all that details to save to dB
+
+    # How this will work
+    # Every workout is different
+    # The sets and exercise are also different
+    # Take In: username 
+
+    if request.method == 'POST':
+        pass;
+
+    pass;
+
+
+
+def get_user(request):
+    if request.method == 'GET':
+        logged_in_user = request.user
+        return JsonResponse(logged_in_user.serialize())

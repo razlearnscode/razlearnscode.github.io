@@ -1,29 +1,29 @@
-document.addEventListener("DOMContentLoaded", function () {
-  start_work_out();
+let logged_in_user = null; // get the user info globally
+
+document.addEventListener("DOMContentLoaded", async () => {
+    // Having await helps that I don't have to wait for user to load, I can still proceed with the below function call
+    logged_in_user = await get_user(); // Fetch one and reuse for all functions
+    start_work_out();
 });
+
+
+function get_user() {
+    return fetch("/user").then((response) => response.json())
+}
 
 function start_work_out() {
   // Start a blank workout
   const new_workout = document.createElement("div");
   new_workout.className = "workout-container";
 
-  new_workout.innerHTML = `
-        <form class="workout-form">
-            <input type="submit" class="small-button finish-button" value="Finish">
-            <input type="text" class="workout-name" placeholder="New Workout">
-            <textarea placeholder="Notes" id="workout-notes" class="workout-notes" name="workout-notes" rows="4"></textarea>
-            <div class="exercise-list"></div>
-            <button class="full-button add-exercise-btn">+ Add Exercises</button>
-            <button class="full-button cancel-btn">Cancel Workout</button>
-        </form>   
+  new_workout.innerHTML = WORKOUT_FORM_HTML;
+  document.querySelector(".container").append(new_workout);
 
-    `;
-
+  const workout_form = new_workout.querySelector(".workout-form");
   const add_exercise_btn = new_workout.querySelector(".add-exercise-btn");
   const exercise_list = new_workout.querySelector(".exercise-list"); // I need to input into this so my buttons can be at the bottom
 
   // --- CLICK EVENTS --- //
-
   // 1. Add Exercise Event
   add_exercise_btn.addEventListener("click", function (event) {
     event.preventDefault(); // ✅ Prevent form from submitting
@@ -31,7 +31,17 @@ function start_work_out() {
     exercise_list.append(new_exercise); // add new exercises to the exercise-list
   });
 
-  document.querySelector(".container").append(new_workout);
+  // Form Submission
+  workout_form.addEventListener("submit", function(event) {
+    event.preventDefault(); // ✅ Prevent form from submitting
+    
+    user = logged_in_user;
+    console.log(user);
+
+    // Get the user information
+
+  });
+
 }
 
 // Add new exericse when the "+ Add Exercise" button is clicked
@@ -43,24 +53,7 @@ function add_exercise() {
   const exercise_container = document.createElement("div");
   exercise_container.className = "exercise-container";
 
-  exercise_container.innerHTML = `
-        <input type="text" class="exercise-name" placeholder="Name Your Exercise">
-        <table class="set-table">
-            <thead>
-                <tr>
-                    <th>Set</th>
-                    <th>Description</th>
-                    <th>Weight (kg)</th>
-                    <th>Rep(s)</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody class="set-body">
-                <!-- Rows will be generated dynamically -->
-            </tbody>
-        </table>
-        <button type="button" class="full-button add-set-btn">+ Add Set</button>
-    `;
+  exercise_container.innerHTML = EXERCISE_HEADER_HTML;
 
   const set_body = exercise_container.querySelector(".set-body");
 
@@ -73,25 +66,25 @@ function add_exercise() {
     .addEventListener("click", function () {
       // Also note to prefill the character based on the last input within this
       create_set_row(set_body);
-
     });
 
   return exercise_container;
 }
+
+function save_workout() {
+    console.log("I was clicked!");
+
+    // get the logged in user info
+
+}
+
 
 // -- Global Functions -- //
 function create_set_row(set_body) {
   const row = document.createElement("tr");
   row.className = "set-row";
 
-  row.innerHTML = `
-    <td class="set-number"></td> 
-    <td class="set-description">-</td>
-    <td><input type="number" class="set-value" placeholder="0"></td>
-    <td><input type="number" class="set-rep" placeholder="0"></td> 
-    <td><button type="button" class="set-status">✓</button></td>
-    <td><button type="button" class="small-button delete-btn">x</button></td>
-    `;
+  row.innerHTML = SET_ROW_HTML;
 
   set_body.append(row);
 
@@ -160,3 +153,45 @@ function copy_latest_input(set_body) {
 function toggleFreeze(event) {
   event.currentTarget.closest("tr").classList.toggle("freeze");
 }
+
+// -- HTML Structure -- //
+
+const WORKOUT_FORM_HTML = `
+        <form class="workout-form">
+            <input type="submit" class="small-button finish-button" value="Finish">
+            <input type="text" class="workout-name" placeholder="New Workout">
+            <textarea placeholder="Notes" id="workout-notes" class="workout-notes" name="workout-notes" rows="4"></textarea>
+            <div class="exercise-list"></div>
+            <button class="full-button add-exercise-btn">+ Add Exercises</button>
+            <button class="full-button cancel-btn">Cancel Workout</button>
+        </form>   
+
+    `;
+
+const EXERCISE_HEADER_HTML = `
+        <input type="text" class="exercise-name" placeholder="Name Your Exercise">
+        <table class="set-table">
+            <thead>
+                <tr>
+                    <th>Set</th>
+                    <th>Description</th>
+                    <th>Weight (kg)</th>
+                    <th>Rep(s)</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody class="set-body">
+                <!-- Rows will be generated dynamically -->
+            </tbody>
+        </table>
+        <button type="button" class="full-button add-set-btn">+ Add Set</button>
+    `;
+
+const SET_ROW_HTML = `
+    <td class="set-number"></td> 
+    <td class="set-description">-</td>
+    <td><input type="number" class="set-value" placeholder="0"></td>
+    <td><input type="number" class="set-rep" placeholder="0"></td> 
+    <td><button type="button" class="set-status">✓</button></td>
+    <td><button type="button" class="small-button delete-btn">x</button></td>
+    `;
