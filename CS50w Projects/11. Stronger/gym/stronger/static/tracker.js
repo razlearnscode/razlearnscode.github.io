@@ -29,14 +29,13 @@ function start_work_out() {
     event.preventDefault(); // ✅ Prevent form from submitting
     const new_exercise = add_exercise();
     exercise_list.append(new_exercise); // add new exercises to the exercise-list
+    // since I already appended all the details in the exercise_list, I can already reference it in other functions
   });
 
   // Form Submission
   workout_form.addEventListener("submit", function(event) {
     event.preventDefault(); // ✅ Prevent form from submitting
-    
-    user = logged_in_user;
-    console.log(user);
+    save_workout(new_workout);
 
     // Get the user information
 
@@ -71,10 +70,33 @@ function add_exercise() {
   return exercise_container;
 }
 
-function save_workout() {
+function save_workout(new_workout) {
     console.log("I was clicked!");
 
-    // get the logged in user info
+    // Workout Data // 
+    const workoutName = new_workout.querySelector(".workout-name").value.trim(); 
+    const workoutNotes = new_workout.querySelector(".workout-notes").value.trim();
+
+    const exercises = [];
+
+    const allExercises = new_workout.querySelectorAll(".exercise-container");
+
+    allExercises.forEach((single_exercise) => {
+        const exerciseName = single_exercise.querySelector(".exercise-name");
+        
+    });
+
+
+
+
+    console.log(value);
+    
+    
+    // Make POST request to submit saved information
+    // fetch("/save_workout", {
+    //     method: "POST",
+
+    // })
 
 }
 
@@ -94,14 +116,17 @@ function create_set_row(set_body) {
   copy_latest_input(set_body); // Functionality: Mimic latest input
 }
 
-// freeze event, delete event, reindexing, mimic last value= //
+// freeze event, delete event, reindexing, mimic last value //
 function setup_set_row(row, set_body) {
   const freeze_button = row.querySelector(".set-status");
   const delete_button = row.querySelector(".delete-btn");
 
   // Freeze toggle\
   freeze_button.removeEventListener("click", toggleFreeze);
-  freeze_button.addEventListener("click", toggleFreeze);
+  freeze_button.addEventListener("click", function(event) {
+    toggleFreeze(event);
+    autofill_set_desc(row);
+  });
 
   // Delete row
   delete_button.addEventListener("click", function (event) {
@@ -149,6 +174,15 @@ function copy_latest_input(set_body) {
   });
 }
 
+function autofill_set_desc(row) {
+    const set_desc = row.querySelector(".set-description");
+    const set_value = row.querySelector(".set-value").value;
+    const set_rep = row.querySelector(".set-rep").value;
+
+    set_desc.value = `${set_value} x ${set_rep} rep(s) `;
+    console.log(`${set_value} x ${set_rep} rep(s) `);
+}
+
 // 3. Toggle on/off to freeze set when save status
 function toggleFreeze(event) {
   event.currentTarget.closest("tr").classList.toggle("freeze");
@@ -189,9 +223,9 @@ const EXERCISE_HEADER_HTML = `
 
 const SET_ROW_HTML = `
     <td class="set-number"></td> 
-    <td class="set-description">-</td>
-    <td><input type="number" class="set-value" placeholder="0"></td>
-    <td><input type="number" class="set-rep" placeholder="0"></td> 
+    <td><input type="text" class="set-description" placeholder="-"></td>
+    <td><input type="number" class="numInput set-value" placeholder="0"></td>
+    <td><input type="number" class="numInput set-rep" placeholder="0"></td> 
     <td><button type="button" class="set-status">✓</button></td>
     <td><button type="button" class="small-button delete-btn">x</button></td>
     `;
