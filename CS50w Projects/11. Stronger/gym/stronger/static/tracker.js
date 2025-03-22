@@ -9,12 +9,12 @@ function start_work_out() {
 
   new_workout.innerHTML = `
         <form class="workout-form">
-            <input type="submit" class="finish-button" value="Finish">
+            <input type="submit" class="small-button finish-button" value="Finish">
             <input type="text" class="workout-name" placeholder="New Workout">
             <textarea placeholder="Notes" id="workout-notes" class="workout-notes" name="workout-notes" rows="4"></textarea>
             <div class="exercise-list"></div>
-            <button class="button add-exercise-btn">+ Add Exercises</button>
-            <button class="button cancel-btn">Cancel Workout</button>
+            <button class="full-button add-exercise-btn">+ Add Exercises</button>
+            <button class="full-button cancel-btn">Cancel Workout</button>
         </form>   
 
     `;
@@ -22,6 +22,9 @@ function start_work_out() {
   const add_exercise_btn = new_workout.querySelector(".add-exercise-btn");
   const exercise_list = new_workout.querySelector(".exercise-list");
 
+  // --- EVENTS --- // 
+
+  // 1. Add Exercise Event
   add_exercise_btn.addEventListener("click", function (event) {
     event.preventDefault(); // ✅ Prevent form from submitting
     const empty_exercise = add_exercise();
@@ -57,7 +60,7 @@ function add_exercise() {
                 <!-- Rows will be generated dynamically -->
             </tbody>
         </table>
-        <button type="button" class="button add-set-btn">+ Add Set</button>
+        <button type="button" class="full-button add-set-btn">+ Add Set</button>
     `;
 
   const set_body = exercise_container.querySelector(".set-body");
@@ -72,6 +75,7 @@ function add_exercise() {
             <td><input type="number" class="set-value" placeholder="0"></td>
             <td><input type="number" class="set-rep" placeholder="0"></td> 
             <td><button type="button" class="set-status">✓</button></td>
+            <td><button type="button" class="small-button delete-btn">x</button></td>
         `;
 
     set_body.append(setRow);
@@ -81,6 +85,7 @@ function add_exercise() {
     update_set_index(all_set_rows); // auto index each row
     freeze_set(all_set_rows); // freeze completed set - technically saving it
     copy_latest_input(all_set_rows); // mimic the latest input as the placeholder
+    remove_row(all_set_rows);
 
   }
 
@@ -103,6 +108,8 @@ function add_exercise() {
 
   // Reupdate all the index everytime this function is called
   function update_set_index(all_set_rows) {
+
+    // Need to have the addition function to compare the existing location with the index
 
     all_set_rows.forEach((row, index) => {
       // + 1 here because index starts at zero. But I want the first row to be 1
@@ -144,6 +151,25 @@ function add_exercise() {
 
   }
 
+  function remove_row(all_set_rows) {
+    
+    all_set_rows.forEach((row,index) => {
+        const delete_button = row.querySelector(".delete-btn")
+
+        delete_button.addEventListener("click", function(event) {
+            event.preventDefault(); // ✅ Prevent form from submitting1
+            row.remove();
+
+            // After removing row, re-select all rows for re-index
+            const remaining_rows = set_body.querySelectorAll("tr");
+            update_set_index(remaining_rows);
+        });
+    });
+
+
+    
+  }
+
   // Add 1 initial set when adding new exercises
   add_set_row();
 
@@ -154,6 +180,7 @@ function add_exercise() {
       // Also note to prefill the character based on the last input within this
       add_set_row();
     });
+
 
   return exercise_container;
 }

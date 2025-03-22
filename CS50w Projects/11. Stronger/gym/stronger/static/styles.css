@@ -21,22 +21,6 @@
     margin-bottom: 20px;
 }
 
-.finish-button {
-    margin-left: auto;
-    font-size: 1.2rem;
-    font-weight: bold;
-    background: #2dcd70;
-    color: white;
-    border: transparent;
-    border-radius: 10px;
-    padding: 10px 15px;
-    text-align: center;
-    white-space: nowrap; /* Ensures ✔️ doesn't expand */
-    cursor: pointer; /* Improves UX */
-    transition: background 0.3s ease, color 0.3s ease;
-
-}
-
 .workout-name {
     font-size: 2rem;
     font-weight: bold;
@@ -75,7 +59,7 @@
 }
 
 /* Base Button Style - Applies to All Buttons */
-.button {
+.full-button {
     font-size: 1.2rem;
     font-weight: bold;
     padding: 10px 15px;
@@ -108,7 +92,7 @@
 }
 
 /* Hover Effects for Buttons */
-.button:hover {
+.full-button:hover {
     opacity: 0.8;
     transform: scale(1.02);
 }
@@ -191,6 +175,38 @@
     width: 50px; /* Fix the width */
     white-space: nowrap; /* Ensures ✔️ doesn't expand */
     height: 35px;
+}
+
+.small-button {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    border: transparent;
+    border-radius: 10px;
+    text-align: center;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.small-button:hover {
+    opacity: 0.8;
+    transform: scale(1.02);
+}
+
+
+.finish-button {
+    margin-left: auto;
+    background: #2dcd70;
+    padding: 10px 15px;
+    white-space: nowrap; /* Ensures ✔️ doesn't expand */
+    cursor: pointer; /* Improves UX */
+
+}
+
+.delete-btn {
+    background-color: #ff5963;
+    text-align: center;
+    height: 35px;
+    width: 35px;
 }
 
 
