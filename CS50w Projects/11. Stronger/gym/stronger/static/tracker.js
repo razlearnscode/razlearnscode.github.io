@@ -38,7 +38,6 @@ function start_work_out() {
     save_workout(new_workout);
 
     // Get the user information
-
   });
 
 }
@@ -71,33 +70,74 @@ function add_exercise() {
 }
 
 function save_workout(new_workout) {
-    console.log("I was clicked!");
 
     // Workout Data // 
     const workoutName = new_workout.querySelector(".workout-name").value.trim(); 
     const workoutNotes = new_workout.querySelector(".workout-notes").value.trim();
 
     const exercises = [];
+    
 
     const allExercises = new_workout.querySelectorAll(".exercise-container");
 
     allExercises.forEach((single_exercise) => {
-        const exerciseName = single_exercise.querySelector(".exercise-name");
+        const exerciseName = single_exercise.querySelector(".exercise-name").value;
+        const allSets = single_exercise.querySelectorAll(".set-row");
+
+        const sets = [];
+
+        allSets.forEach((row) => {
+          if (row.classList.contains("freeze")) { // Only send sets that were frozen (or saved)
+            
+            const desc = row.querySelector(".set-description").value.trim();
+            const value = row.querySelector(".set-value").value || 0;
+            const reps = parseInt(row.querySelector(".set-rep").value) || 0;
+
+            sets.push({
+              desc: desc,
+              value: parseFloat(value),
+              reps: parseInt(reps)
+            });
+          }
+        });
+
+        const notes = "";
+        const category = "OTHERS"; // default to this now. I'll update this later
+
+        exercises.push({
+          name: exerciseName,
+          notes: notes,
+          category: category,
+          sets: sets
+        });
         
     });
 
 
-
-
-    console.log(value);
+    const workoutData = {
+      workout: workoutName,
+      notes: workoutNotes,
+      exercises,
+    };
     
     
     // Make POST request to submit saved information
-    // fetch("/save_workout", {
-    //     method: "POST",
+    fetch("/save_workout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(workoutData),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Workout saved:", data);
+      alert("Workout saved!");
+    })
+    .catch((error) => {
+      console.error("Error saving workout:", error);
+      alert("There was an error saving your workout.");
+    });
 
-    // })
-
+    console.log("I was processed!");
 }
 
 
@@ -138,7 +178,7 @@ function setup_set_row(row, set_body) {
 
 // 1. Reupdate all the index everytime this function is called
 function update_set_index(set_body) {
-  const rows = set_body.querySelectorAll("tr");
+  const rows = set_body.querySelectorAll(".set-row");
 
   rows.forEach((row, index) => {
     row.querySelector(".set-number").textContent = index + 1;
@@ -148,7 +188,7 @@ function update_set_index(set_body) {
 
 // 2. Auto copy/paste the last input when creating the new set
 function copy_latest_input(set_body) {
-  const rows = set_body.querySelectorAll("tr");
+  const rows = set_body.querySelectorAll(".set-row");
 
   // if first row, then pull from best record
   let bestValue = 0;
@@ -180,7 +220,6 @@ function autofill_set_desc(row) {
     const set_rep = row.querySelector(".set-rep").value;
 
     set_desc.value = `${set_value} x ${set_rep} rep(s) `;
-    console.log(`${set_value} x ${set_rep} rep(s) `);
 }
 
 // 3. Toggle on/off to freeze set when save status

@@ -46,21 +46,16 @@ class Exercise(models.Model):
 
 class Set(models.Model): # the Set belongs to a specific Exercises (not directly to Workout)
 
-    STATUS = [
-        ('NOT STARTED', 'Not Started'),
-        ('COMPLETED', 'Completed'),
-        ('INCOMPLETED', 'Incompleted'),
-    ]
-
     name = models.CharField(max_length=255)
+    desc = models.CharField(max_length=255, blank=True, null=True)
     weight = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True) # in kg
     duration = models.PositiveIntegerField(blank=True, null=True)  # in seconds
-    status = models.CharField(max_length=64, choices=STATUS, default='NOT STARTED', blank=True, null=True) # blank = true because some set may not be assigned at all
     reps = models.PositiveIntegerField(blank=True, null=True)
-    session = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name='sets') # 1 exercises can have multiple sets. But the same set can only belong to 1 exercises
+    completed_at = models.DateTimeField(blank=True, null=True)
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name='sets') # 1 exercises can have multiple sets. But the same set can only belong to 1 exercises
 
     def __str__(self):
-        return f"Set: {self.name} status: ({self.status})"
+        return f"Set: {self.name} completed on {self.completed_at}"
 
 
 # Since I'm creating this app for myself, let's make the workout template not exchangeable
@@ -82,17 +77,11 @@ class WorkoutTemplate(models.Model):
 
 
 class Workout(models.Model):
-
-    WO_STATE_OPTIONS = [
-        ('NOT STARTED', 'Not Started' ),
-        ('COMPLETED', 'Completed'),
-    ]
     
     name = models.CharField(max_length=255)
     desc = models.CharField(max_length=500)
     start_date = models.DateTimeField(auto_now_add=True) # auto log the time when new workout is created
     completed_at = models.DateTimeField(blank=True, null=True)
-    status = models.CharField(max_length=64, choices=WO_STATE_OPTIONS, default='NOT STARTED')
     
     # default=1 means that if no user is specified when creating a new record, Django to
     # automatically set it to the user with id=1 (which is the superuser admin)
@@ -104,7 +93,7 @@ class Workout(models.Model):
 
     
     def __str__(self):
-        return f"{self.user} did {self.name} on {self.date}"
+        return f"{self.user} did {self.name} on {self.completed_at}"
     
 
 
