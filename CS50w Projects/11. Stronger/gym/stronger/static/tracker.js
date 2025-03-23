@@ -131,6 +131,10 @@ function save_workout(new_workout) {
     .then((data) => {
       console.log("Workout saved:", data);
       alert("Workout saved!");
+
+      // Clear old form and regenerate a new one
+      document.querySelector(".workout-container").remove();
+      start_work_out(); // call this function to create a new form again
     })
     .catch((error) => {
       console.error("Error saving workout:", error);

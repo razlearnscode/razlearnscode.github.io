@@ -85,18 +85,17 @@ def save_workout(request):
                 user=user, 
                 name=workout, 
                 desc=notes, 
-                completed_at = timezone.now()
             )
 
             for ex in exercises:
-                ex_name = ex.get("name")
+                ex_name = ex.get("name", "Unnamed")
                 ex_notes = ex.get("notes", "")
                 ex_category = ex.get("category", "OTHERS")
                 sets = ex.get("sets", [])
 
                 exercise = Exercise.objects.create(
                     name=ex_name,
-                    note=notes,
+                    exercise_note=notes,
                     category=ex_category
                 )
 
@@ -107,11 +106,10 @@ def save_workout(request):
                 # Using enumerate, I can get both the index and the current value
                 for index, set in enumerate(sets, start=1):
                     Set.objects.create(
-                        name=f"Set {index}",
+                        # name=f"Set {index}", -- reference for the future
                         desc=set.get("desc"),
                         weight=set.get("value"),
                         reps=set.get("reps"),
-                        completed_at = timezone.now(),
                         exercise=exercise
                     )
 
