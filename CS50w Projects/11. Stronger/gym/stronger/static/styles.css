@@ -100,7 +100,6 @@
 
 /* Table Styling */
 .set-table {
-    width: 100%;
     max-width: 600px; /* Limits how wide the table can go */
     table-layout: auto; /* Forces columns to follow set width */
     border-collapse: separate; /* Ensures consistent alignment */
@@ -115,6 +114,16 @@
     font-weight: bold;
     color: #333;
     white-space: nowrap;  /* Prevents line breaks */
+}
+
+/* Table Header */
+.set-table select {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    white-space: nowrap;  /* Prevents line breaks */
+    align-items: center;
+    border: transparent;
 }
 
 /* Table Rows */
@@ -133,8 +142,16 @@
     color: black;
     border-radius: 20px;
     padding: 5px 10px;
-    width: 50px;
     height: 35px;
+    width: 50px;
+}
+
+.set-table tbody .long-cell {
+    width: 150px;
+}
+
+.set-table tbody .short-cell {
+    width: 50px;
 }
 
 /* Previous Values - Light Gray */
@@ -144,9 +161,7 @@
     padding: 5px 10px;
     border-radius: 20px;
     border: transparent;
-    width: auto;
-    min-width: 200px; /* Allows it to shrink */
-    max-width: 250px; /* Prevents excessive stretching */
+    width: 150px;
     overflow: hidden;
     text-overflow: ellipsis; /* Adds "..." if text is too long */
     white-space: nowrap; /* Prevents multi-line wrapping */
@@ -155,7 +170,6 @@
 
 /* Set Value */
 .set-table .numInput {
-    width: 100px;
     background: #e0e0e0;
     padding: 5px 10px;
     border: 0px;
@@ -164,7 +178,9 @@
     font-weight: bold;
     text-align: center;
     height: 35px;
+    width: 150px;
 }
+
 
 /* Status Column */
 .set-table tbody .set-status {
@@ -174,9 +190,9 @@
     border-radius: 20px;
     text-align: center;
     color: black;
-    width: 50px; /* Fix the width */
     white-space: nowrap; /* Ensures ✔️ doesn't expand */
     height: 35px;
+    width: 50px;
 }
 
 .small-button {
@@ -187,6 +203,7 @@
     border-radius: 10px;
     text-align: center;
     transition: background 0.3s ease, color 0.3s ease;
+    width: 50px;
 }
 
 .small-button:hover {

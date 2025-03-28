@@ -252,7 +252,12 @@ const EXERCISE_HEADER_HTML = `
                 <tr>
                     <th>Set</th>
                     <th>Description</th>
-                    <th>Weight (kg)</th>
+                    <th>
+                      <select name="exercise-value" id="exercise-value">
+                        <option value="weight">Weight (kg)</option>
+                        <option value="duration">Duration (min)</option>
+                      </select>
+                    </th>
                     <th>Rep(s)</th>
                     <th>Status</th>
                 </tr>
@@ -266,9 +271,9 @@ const EXERCISE_HEADER_HTML = `
 
 const SET_ROW_HTML = `
     <td class="set-number"></td> 
-    <td><input type="text" class="set-description" placeholder="-"></td>
-    <td><input type="number" class="numInput set-value" placeholder="0"></td>
-    <td><input type="number" class="numInput set-rep" placeholder="0"></td> 
-    <td><button type="button" class="set-status">✓</button></td>
-    <td><button type="button" class="small-button delete-btn">x</button></td>
+    <td class="long-cell"><input type="text" class="set-description" placeholder="-"></td>
+    <td class="long-cell"><input type="number" class="numInput set-value" placeholder="0"></td>
+    <td class="long-cell"><input type="number" class="numInput set-rep" placeholder="0"></td> 
+    <td class="short-cell"><button type="button" class="set-status">✓</button></td>
+    <td class="short-cell"><button type="button" class="small-button delete-btn">x</button></td>
     `;
