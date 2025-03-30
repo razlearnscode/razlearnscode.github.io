@@ -2,10 +2,11 @@
 {% load static %}
 
 {% block body %}
-<div class="container"></div>
-
 
 {% if user.is_authenticated %}
+<div class="container template-view"></div>
+<div class="container workout-view" style="display: none;"></div>
+
 {% else %}
 <p>Sign up to become a member</p>
 {% endif %}

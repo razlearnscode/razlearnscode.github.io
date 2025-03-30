@@ -1,11 +1,18 @@
-/* Table Container */
-.container {
+/* Template Container */
+.template-view {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    align-items: center;
+}
+
+/* Workout Container */
+.workout-view {
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding: 20px;
     align-items: center;
-    
 }
 
 /* Workout Container */

@@ -3,8 +3,19 @@ let logged_in_user = null; // get the user info globally
 document.addEventListener("DOMContentLoaded", async () => {
     // Having await helps that I don't have to wait for user to load, I can still proceed with the below function call
     logged_in_user = await get_user(); // Fetch one and reuse for all functions
+    load_template_view(); // start by showing users the list of templates
     start_work_out();
 });
+
+function load_template_view() {
+  const template_view = document.createElement("div");
+  template_view.className = "template-container";
+
+  template_view.innerHTML = TEMPLATE_VIEW_HTML;
+
+  document.querySelector(".template-view").append(template_view);
+};
+
 
 
 function get_user() {
@@ -17,7 +28,7 @@ function start_work_out() {
   new_workout.className = "workout-container";
 
   new_workout.innerHTML = WORKOUT_FORM_HTML;
-  document.querySelector(".container").append(new_workout);
+  document.querySelector(".workout-view").append(new_workout);
 
   const workout_form = new_workout.querySelector(".workout-form");
   const add_exercise_btn = new_workout.querySelector(".add-exercise-btn");
@@ -278,3 +289,41 @@ const SET_ROW_HTML = `
     <td class="short-cell"><button type="button" class="set-status">✓</button></td>
     <td class="short-cell"><button type="button" class="small-button delete-btn">x</button></td>
     `;
+
+
+const TEMPLATE_VIEW_HTML = `
+  <div>
+  <h1>Start Workout</h1>
+  <div class="empty-workout-container">
+    <h3>Quick Start</h3>
+    <button class="full-button">Start an Empty Workout</button>
+  </div>
+  <div class="my-template-container">
+    <h2>Templates</h2>
+    <h3>My Templates</h3>
+  </div>
+  <div class="template-cards-container">
+    <div class="template-card">
+      <h4>1. Upper 1<h4>
+      <p>Display the list of all exercises in the template</p>
+      <p>Last session: 2 days ago</p>
+    </div>
+        <div class="template-card">
+      <h4>1. Upper 1<h4>
+      <p>Display the list of all exercises in the template</p>
+      <p>Last session: 2 days ago</p>
+    </div>
+        <div class="template-card">
+      <h4>1. Upper 1<h4>
+      <p>Display the list of all exercises in the template</p>
+      <p>Last session: 2 days ago</p>
+    </div>
+        <div class="template-card">
+      <h4>1. Upper 1<h4>
+      <p>Display the list of all exercises in the template</p>
+      <p>Last session: 2 days ago</p>
+    </div>
+  </div>
+
+
+`;
