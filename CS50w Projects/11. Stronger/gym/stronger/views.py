@@ -89,6 +89,7 @@ def save_workout(request):
 
             for ex in exercises:
                 ex_name = ex.get("name", "Unnamed")
+                ex_type = ex.get('type', "")
                 ex_notes = ex.get("notes", "")
                 ex_category = ex.get("category", "OTHERS")
                 sets = ex.get("sets", [])
@@ -105,15 +106,22 @@ def save_workout(request):
                 # start=1 so that the index starts at 1 instead of 0 ("Set 1", "Set 2")
                 # Using enumerate, I can get both the index and the current value
                 for index, set in enumerate(sets, start=1):
-                    Set.objects.create(
-                        # name=f"Set {index}", -- reference for the future
-                        desc=set.get("desc"),
-                        weight=set.get("value"),
-                        reps=set.get("reps"),
-                        exercise=exercise
-                    )
+                    
+                    set_fields = {
+                        "desc": set.get("desc"),
+                        "reps": set.get("reps"),
+                        "exercise": exercise,
+                    }
 
-            return JsonResponse({"message": "Workout saved successfully!"}, status=201)
+                    if ex_type == "weight":
+                        set_fields["weight"] = set.get("value")
+                    elif ex_type == "duration":
+                        set_fields["duration"] = set.get("value")
+                        
+                    Set.objects.create(**set_fields) # this is equivalent to the code below, but you can pass value dynamically
+
+            return JsonResponse({
+                "message": "Workout saved successfully!"}, status=201)
     
     except User.DoesNotExist:
         return JsonResponse({"error": "User not found"}, status=404)

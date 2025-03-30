@@ -82,6 +82,7 @@ function save_workout(new_workout) {
 
     allExercises.forEach((single_exercise) => {
         const exerciseName = single_exercise.querySelector(".exercise-name").value;
+        const exerciseType = single_exercise.querySelector("#exercise-value").value || "None";
         const allSets = single_exercise.querySelectorAll(".set-row");
 
         const sets = [];
@@ -90,8 +91,8 @@ function save_workout(new_workout) {
           if (row.classList.contains("freeze")) { // Only send sets that were frozen (or saved)
             
             const desc = row.querySelector(".set-description").value.trim();
-            const value = row.querySelector(".set-value").value || 0;
             const reps = parseInt(row.querySelector(".set-rep").value) || 0;
+            const value = row.querySelector(".set-value").value || 0;
 
             sets.push({
               desc: desc,
@@ -106,6 +107,7 @@ function save_workout(new_workout) {
 
         exercises.push({
           name: exerciseName,
+          type: exerciseType,
           notes: notes,
           category: category,
           sets: sets
@@ -141,7 +143,6 @@ function save_workout(new_workout) {
       alert("There was an error saving your workout.");
     });
 
-    console.log("I was processed!");
 }
 
 
