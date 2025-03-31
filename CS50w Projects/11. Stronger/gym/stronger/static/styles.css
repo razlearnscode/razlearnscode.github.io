@@ -1,9 +1,26 @@
+.main-view-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
 /* Template Container */
 .template-view {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     padding: 20px;
     align-items: center;
+}
+
+.template-container,
+.workout-container {
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* Pushes button to bottom */
 }
 
 .page-title {
@@ -24,6 +41,7 @@ h2 {
 h3 {
     font-size: 1.25rem;
     font-weight: 600;
+    margin: 0px;
 }
 
 .empty-workout-container {
@@ -32,13 +50,14 @@ h3 {
 
 .template-cards-container {
     margin: 20px 0px;
-    display: grid; /* So that I can split the cards into 2 columns */
+    display: grid;
+    /* So that I can split the cards into 2 columns */
     grid-template-columns: repeat(2, 1fr);
     gap: 0px 20px;
 }
 
 .template-card {
-    width: 250px;
+    width: 290px;
     height: 200px;
     margin: 10px 0px;
     border-radius: 10px;
@@ -51,16 +70,24 @@ h3 {
     gap: 10px;
 }
 
+.template-card-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center; /* to vertically align the component */
+}
+
 .template-card p {
     font-size: 1.1rem;
     margin: 0;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;       /* 👈 Limit to 3 lines */
-    line-clamp: 3; /* ✅ Standard version for future support */
+    -webkit-line-clamp: 3;
+    /* 👈 Limit to 3 lines */
+    line-clamp: 3;
+    /* ✅ Standard version for future support */
     overflow: hidden;
 }
-
 
 .my-template-header {
     display: flex;
@@ -68,6 +95,50 @@ h3 {
     justify-content: space-between;
     align-items: center;
     margin: 20px 0px;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    background: none;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.25rem;
+    font-size: bold;
+    cursor: pointer;
+    text-align: center;
+    color: #34a7ff;
+    background-color: #ebf6ff;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 30px;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    z-index: 100;
+    padding: 10px;
+    flex-direction: column;
+}
+
+.dropdown-menu button {
+    display: block;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 8px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.dropdown.open .dropdown-menu {
+    display: flex;
 }
 
 /* Workout Container */
@@ -79,12 +150,6 @@ h3 {
     align-items: center;
 }
 
-/* Workout Container */
-.workout-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Pushes button to bottom */
-}
 
 .workout-form {
     display: flex;
@@ -125,7 +190,8 @@ h3 {
     border: none;
 }
 
-.exercise-container .exercise-name::placeholder {  /* Also makes the placeholder blue */
+.exercise-container .exercise-name::placeholder {
+    /* Also makes the placeholder blue */
     color: #34a7ff;
 }
 
@@ -139,8 +205,10 @@ h3 {
     border: none;
     width: 100%;
     max-width: 600px;
-    margin-top: 15px; /* Pushes button down */
-    cursor: pointer; /* Improves UX */
+    margin-top: 15px;
+    /* Pushes button down */
+    cursor: pointer;
+    /* Improves UX */
     transition: background 0.3s ease, color 0.3s ease;
 }
 
@@ -151,7 +219,7 @@ h3 {
 
 .full-button.blue.inverted {
     color: #ebf6ff;
-    background-color: #34a7ff ;
+    background-color: #34a7ff;
 }
 
 .full-button.grey {
@@ -174,10 +242,14 @@ h3 {
 
 /* Table Styling */
 .set-table {
-    max-width: 600px; /* Limits how wide the table can go */
-    table-layout: auto; /* Forces columns to follow set width */
-    border-collapse: separate; /* Ensures consistent alignment */
-    text-align: center; /* Ensures uniform alignment */
+    max-width: 600px;
+    /* Limits how wide the table can go */
+    table-layout: auto;
+    /* Forces columns to follow set width */
+    border-collapse: separate;
+    /* Ensures consistent alignment */
+    text-align: center;
+    /* Ensures uniform alignment */
     border-spacing: 10px 20px;
     padding-left: 0px;
 }
@@ -187,7 +259,8 @@ h3 {
     font-size: 1.2rem;
     font-weight: bold;
     color: #333;
-    white-space: nowrap;  /* Prevents line breaks */
+    white-space: nowrap;
+    /* Prevents line breaks */
 }
 
 /* Table Header */
@@ -195,7 +268,8 @@ h3 {
     font-size: 1.2rem;
     font-weight: bold;
     color: #333;
-    white-space: nowrap;  /* Prevents line breaks */
+    white-space: nowrap;
+    /* Prevents line breaks */
     align-items: center;
     border: transparent;
 }
@@ -204,8 +278,10 @@ h3 {
 /* Interestingly, tr doesn't have border or magin */
 .set-table tbody .set-row {
     background: white;
-    min-height: 50px; /* Set a minimum row height */
-    height: auto; /* Allow row to grow if needed */
+    min-height: 50px;
+    /* Set a minimum row height */
+    height: auto;
+    /* Allow row to grow if needed */
 }
 
 /* Set Number Styling */
@@ -237,8 +313,10 @@ h3 {
     border: transparent;
     width: 150px;
     overflow: hidden;
-    text-overflow: ellipsis; /* Adds "..." if text is too long */
-    white-space: nowrap; /* Prevents multi-line wrapping */
+    text-overflow: ellipsis;
+    /* Adds "..." if text is too long */
+    white-space: nowrap;
+    /* Prevents multi-line wrapping */
     text-align: center;
 }
 
@@ -264,7 +342,8 @@ h3 {
     border-radius: 20px;
     text-align: center;
     color: black;
-    white-space: nowrap; /* Ensures ✔️ doesn't expand */
+    white-space: nowrap;
+    /* Ensures ✔️ doesn't expand */
     height: 35px;
     width: 50px;
 }
@@ -290,8 +369,10 @@ h3 {
     margin-left: auto;
     background: #2dcd70;
     padding: 10px 15px;
-    white-space: nowrap; /* Ensures ✔️ doesn't expand */
-    cursor: pointer; /* Improves UX */
+    width: auto;
+
+    cursor: pointer;
+    /* Improves UX */
 
 }
 
@@ -332,7 +413,8 @@ h3 {
 .set-table tbody .set-row.freeze {
     padding-top: 15px;
     padding-bottom: 15px;
-    box-shadow: inset 0 0 0 1000px #eaf9f0; /* Creates a full background effect */
+    box-shadow: inset 0 0 0 1000px #eaf9f0;
+    /* Creates a full background effect */
 }
 
 .set-table tbody .set-row.freeze td {
@@ -354,8 +436,12 @@ h3 {
     background: #2dcd70;
     font-size: 1.4rem;
     font-weight: bold;
-    height: 35px; /* Keep button size fixed */
-    line-height: 35px; /* Center text */
-    display: inline-block; /* Prevent stretching */
-    vertical-align: middle; /* Align inside the cell */
+    height: 35px;
+    /* Keep button size fixed */
+    line-height: 35px;
+    /* Center text */
+    display: inline-block;
+    /* Prevent stretching */
+    vertical-align: middle;
+    /* Align inside the cell */
 }

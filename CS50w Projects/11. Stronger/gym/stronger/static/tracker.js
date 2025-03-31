@@ -1,25 +1,32 @@
 let logged_in_user = null; // get the user info globally
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // Having await helps that I don't have to wait for user to load, I can still proceed with the below function call
-    logged_in_user = await get_user(); // Fetch one and reuse for all functions
-    load_template_view(); // start by showing users the list of templates
-    start_work_out();
+  // Having await helps that I don't have to wait for user to load, I can still proceed with the below function call
+  logged_in_user = await get_user(); // Fetch one and reuse for all functions
+  load_template_view(); // start by showing users the list of templates
+  start_work_out();
 });
 
 function load_template_view() {
-  const template_view = document.createElement("div");
-  template_view.className = "template-container";
+  const template_view = document.querySelector(".template-view");
+  const workout_view = document.querySelector(".workout-view");
+  const template_container = document.createElement("div");
+  template_container.className = "template-container";
 
-  template_view.innerHTML = TEMPLATE_VIEW_HTML;
+  template_container.innerHTML = TEMPLATE_VIEW_HTML;
 
-  document.querySelector(".template-view").append(template_view);
-};
+  template_view.append(template_container);
 
+  const new_workout_btn = document.querySelector(".new-workout-button");
 
+  new_workout_btn.addEventListener("click", function(event) {
+    template_view.style.display = "none"; // Hide template view
+    workout_view.style.display = "block"; // Display workout view
+  });
+}
 
 function get_user() {
-    return fetch("/user").then((response) => response.json())
+  return fetch("/user").then((response) => response.json());
 }
 
 function start_work_out() {
@@ -44,13 +51,12 @@ function start_work_out() {
   });
 
   // Form Submission
-  workout_form.addEventListener("submit", function(event) {
+  workout_form.addEventListener("submit", function (event) {
     event.preventDefault(); // ✅ Prevent form from submitting
     save_workout(new_workout);
 
     // Get the user information
   });
-
 }
 
 // Add new exericse when the "+ Add Exercise" button is clicked
@@ -81,65 +87,62 @@ function add_exercise() {
 }
 
 function save_workout(new_workout) {
+  // Workout Data //
+  const workoutName = new_workout.querySelector(".workout-name").value.trim();
+  const workoutNotes = new_workout.querySelector(".workout-notes").value.trim();
 
-    // Workout Data // 
-    const workoutName = new_workout.querySelector(".workout-name").value.trim(); 
-    const workoutNotes = new_workout.querySelector(".workout-notes").value.trim();
+  const exercises = [];
 
-    const exercises = [];
-    
+  const allExercises = new_workout.querySelectorAll(".exercise-container");
 
-    const allExercises = new_workout.querySelectorAll(".exercise-container");
+  allExercises.forEach((single_exercise) => {
+    const exerciseName = single_exercise.querySelector(".exercise-name").value;
+    const exerciseType =
+      single_exercise.querySelector("#exercise-value").value || "None";
+    const allSets = single_exercise.querySelectorAll(".set-row");
 
-    allExercises.forEach((single_exercise) => {
-        const exerciseName = single_exercise.querySelector(".exercise-name").value;
-        const exerciseType = single_exercise.querySelector("#exercise-value").value || "None";
-        const allSets = single_exercise.querySelectorAll(".set-row");
+    const sets = [];
 
-        const sets = [];
+    allSets.forEach((row) => {
+      if (row.classList.contains("freeze")) {
+        // Only send sets that were frozen (or saved)
 
-        allSets.forEach((row) => {
-          if (row.classList.contains("freeze")) { // Only send sets that were frozen (or saved)
-            
-            const desc = row.querySelector(".set-description").value.trim();
-            const reps = parseInt(row.querySelector(".set-rep").value) || 0;
-            const value = row.querySelector(".set-value").value || 0;
+        const desc = row.querySelector(".set-description").value.trim();
+        const reps = parseInt(row.querySelector(".set-rep").value) || 0;
+        const value = row.querySelector(".set-value").value || 0;
 
-            sets.push({
-              desc: desc,
-              value: parseFloat(value),
-              reps: parseInt(reps)
-            });
-          }
+        sets.push({
+          desc: desc,
+          value: parseFloat(value),
+          reps: parseInt(reps),
         });
-
-        const notes = "";
-        const category = "OTHERS"; // default to this now. I'll update this later
-
-        exercises.push({
-          name: exerciseName,
-          type: exerciseType,
-          notes: notes,
-          category: category,
-          sets: sets
-        });
-        
+      }
     });
 
+    const notes = "";
+    const category = "OTHERS"; // default to this now. I'll update this later
 
-    const workoutData = {
-      workout: workoutName,
-      notes: workoutNotes,
-      exercises,
-    };
-    
-    
-    // Make POST request to submit saved information
-    fetch("/save_workout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(workoutData),
-    })
+    exercises.push({
+      name: exerciseName,
+      type: exerciseType,
+      notes: notes,
+      category: category,
+      sets: sets,
+    });
+  });
+
+  const workoutData = {
+    workout: workoutName,
+    notes: workoutNotes,
+    exercises,
+  };
+
+  // Make POST request to submit saved information
+  fetch("/save_workout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(workoutData),
+  })
     .then((response) => response.json())
     .then((data) => {
       console.log("Workout saved:", data);
@@ -153,9 +156,7 @@ function save_workout(new_workout) {
       console.error("Error saving workout:", error);
       alert("There was an error saving your workout.");
     });
-
 }
-
 
 // -- Global Functions -- //
 function create_set_row(set_body) {
@@ -179,7 +180,7 @@ function setup_set_row(row, set_body) {
 
   // Freeze toggle\
   freeze_button.removeEventListener("click", toggleFreeze);
-  freeze_button.addEventListener("click", function(event) {
+  freeze_button.addEventListener("click", function (event) {
     toggleFreeze(event);
     autofill_set_desc(row);
   });
@@ -231,11 +232,11 @@ function copy_latest_input(set_body) {
 }
 
 function autofill_set_desc(row) {
-    const set_desc = row.querySelector(".set-description");
-    const set_value = row.querySelector(".set-value").value;
-    const set_rep = row.querySelector(".set-rep").value;
+  const set_desc = row.querySelector(".set-description");
+  const set_value = row.querySelector(".set-value").value;
+  const set_rep = row.querySelector(".set-rep").value;
 
-    set_desc.value = `${set_value} x ${set_rep} rep(s) `;
+  set_desc.value = `${set_value} x ${set_rep} rep(s) `;
 }
 
 // 3. Toggle on/off to freeze set when save status
@@ -290,14 +291,13 @@ const SET_ROW_HTML = `
     <td class="short-cell"><button type="button" class="small-button delete-btn">x</button></td>
     `;
 
-
 const TEMPLATE_VIEW_HTML = `
   <div class="page-title">
     <h1>Start Workout</h1>
   </div>
   <div class="empty-workout-container">
     <h3>Quick Start</h3>
-    <button class="full-button blue inverted">Start an Empty Workout</button>
+    <button class="full-button blue inverted new-workout-button">Start an Empty Workout</button>
   </div>
   <div class="my-template-container">
     <div class="my-template-header">
@@ -309,26 +309,68 @@ const TEMPLATE_VIEW_HTML = `
   <div class="template-cards-container">
     
     <div class="template-card">
-      <h3>1. Upper 1</h3>
+      <div class="template-card-header">
+        <h3>1. Upper 1</h3>
+        <div class="dropdown">
+          <button class="dropdown-toggle">…</button>
+          <div class="dropdown-menu">
+            <button onclick="startWorkout({{ template.id }})">Start Workout</button>
+            <button onclick="editTemplate({{ template.id }})">Edit</button>
+            <button onclick="deleteTemplate({{ template.id }})">Delete</button>
+          </div>
+        </div>
+      </div>
       <p>Display the list of all exercises in the template</p>
       <p>Last session: 2 days ago</p>
     </div>
-        <div class="template-card">
-      <h3>1. Upper 1</h3>
-      <p>Display the list of all exercises in the template</p>
-      <p>Last session: 2 days ago</p>
-    </div>
-        <div class="template-card">
-      <h3>1. Upper 1</h3>
-      <p>Display the list of all exercises in the template adding more text to see if it is eclipse</p>
-      <p>Last session: 2 days ago</p>
-    </div>
-        <div class="template-card">
-      <h3>1. Upper 1</h3>
-      <p>Display the list of all exercises in the template</p>
-      <p>Last session: 2 days ago</p>
-    </div>
-  </div>
 
+
+    <div class="template-card">
+      <div class="template-card-header">
+        <h3>1. Upper 1</h3>
+        <div class="dropdown">
+          <button class="dropdown-toggle">…</button>
+          <div class="dropdown-menu">
+            <button onclick="startWorkout({{ template.id }})">Start Workout</button>
+            <button onclick="editTemplate({{ template.id }})">Edit</button>
+            <button onclick="deleteTemplate({{ template.id }})">Delete</button>
+          </div>
+        </div>
+      </div>
+      <p>Display the list of all exercises in the template</p>
+      <p>Last session: 2 days ago</p>
+    </div>
+
+        <div class="template-card">
+      <div class="template-card-header">
+        <h3>1. Upper 1</h3>
+        <div class="dropdown">
+          <button class="dropdown-toggle">…</button>
+          <div class="dropdown-menu">
+            <button onclick="startWorkout({{ template.id }})">Start Workout</button>
+            <button onclick="editTemplate({{ template.id }})">Edit</button>
+            <button onclick="deleteTemplate({{ template.id }})">Delete</button>
+          </div>
+        </div>
+      </div>
+      <p>Display the list of all exercises in the template</p>
+      <p>Last session: 2 days ago</p>
+    </div>
+
+        <div class="template-card">
+      <div class="template-card-header">
+        <h3>1. Upper 1</h3>
+        <div class="dropdown">
+          <button class="dropdown-toggle">…</button>
+          <div class="dropdown-menu">
+            <button onclick="startWorkout({{ template.id }})">Start Workout</button>
+            <button onclick="editTemplate({{ template.id }})">Edit</button>
+            <button onclick="deleteTemplate({{ template.id }})">Delete</button>
+          </div>
+        </div>
+      </div>
+      <p>Display the list of all exercises in the template</p>
+      <p>Last session: 2 days ago</p>
+    </div>
 
 `;
