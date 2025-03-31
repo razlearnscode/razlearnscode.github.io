@@ -251,8 +251,8 @@ const WORKOUT_FORM_HTML = `
             <input type="text" class="workout-name" placeholder="New Workout">
             <textarea placeholder="Notes" id="workout-notes" class="workout-notes" name="workout-notes" rows="4"></textarea>
             <div class="exercise-list"></div>
-            <button class="full-button add-exercise-btn">+ Add Exercises</button>
-            <button class="full-button cancel-btn">Cancel Workout</button>
+            <button class="full-button blue add-exercise-btn">+ Add Exercises</button>
+            <button class="full-button red cancel-btn">Cancel Workout</button>
         </form>   
 
     `;
@@ -278,7 +278,7 @@ const EXERCISE_HEADER_HTML = `
                 <!-- Rows will be generated dynamically -->
             </tbody>
         </table>
-        <button type="button" class="full-button add-set-btn">+ Add Set</button>
+        <button type="button" class="full-button grey add-set-btn">+ Add Set</button>
     `;
 
 const SET_ROW_HTML = `
@@ -297,7 +297,7 @@ const TEMPLATE_VIEW_HTML = `
   </div>
   <div class="empty-workout-container">
     <h3>Quick Start</h3>
-    <button class="full-button">Start an Empty Workout</button>
+    <button class="full-button blue inverted">Start an Empty Workout</button>
   </div>
   <div class="my-template-container">
     <div class="my-template-header">

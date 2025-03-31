@@ -144,23 +144,26 @@ h3 {
     transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Add Exercise Button */
-.add-exercise-btn {
+.full-button.blue {
     color: #34a7ff;
     background-color: #ebf6ff;
 }
 
-/* Add Set Button */
-.add-set-btn {
+.full-button.blue.inverted {
+    color: #ebf6ff;
+    background-color: #34a7ff ;
+}
+
+.full-button.grey {
     color: #333;
     background-color: #e0e0e0;
 }
 
-/* Cancel Button */
-.cancel-btn {
+.full-button.red {
     color: #ff5963;
     background-color: #ffeef0;
 }
+
 
 /* Hover Effects for Buttons */
 .full-button:hover {
