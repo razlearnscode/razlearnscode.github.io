@@ -3,11 +3,24 @@ let logged_in_user = null; // get the user info globally
 document.addEventListener("DOMContentLoaded", async () => {
   // Having await helps that I don't have to wait for user to load, I can still proceed with the below function call
   logged_in_user = await get_user(); // Fetch one and reuse for all functions
-  load_template_view(); // start by showing users the list of templates
-  start_work_out();
+
+  // show template view by default
+  show_template_view();
+
+  select_template_view(); // start by showing users the list of templates
 });
 
-function load_template_view() {
+function show_template_view() {
+  document.querySelector(".template-view").style.display = 'block';
+  document.querySelector(".workout-view").style.display = 'none';
+}
+
+function show_workout_view() {
+  document.querySelector(".workout-view").style.display = 'block';
+  document.querySelector(".template-view").style.display = 'none';
+}
+
+function select_template_view() {
   const template_view = document.querySelector(".template-view");
   const workout_view = document.querySelector(".workout-view");
   const template_container = document.createElement("div");
@@ -17,11 +30,12 @@ function load_template_view() {
 
   template_view.append(template_container);
 
-  const new_workout_btn = document.querySelector(".new-workout-button");
+  const new_workout_btn = template_container.querySelector(".new-workout-button");
 
   new_workout_btn.addEventListener("click", function(event) {
     template_view.style.display = "none"; // Hide template view
     workout_view.style.display = "block"; // Display workout view
+    start_work_out();
   });
 }
 
@@ -30,6 +44,9 @@ function get_user() {
 }
 
 function start_work_out() {
+
+  const workout_view = document.querySelector(".workout-view");
+
   // Start a blank workout
   const new_workout = document.createElement("div");
   new_workout.className = "workout-container";
@@ -40,6 +57,7 @@ function start_work_out() {
   const workout_form = new_workout.querySelector(".workout-form");
   const add_exercise_btn = new_workout.querySelector(".add-exercise-btn");
   const exercise_list = new_workout.querySelector(".exercise-list"); // I need to input into this so my buttons can be at the bottom
+  const cancel_btn = new_workout.querySelector(".cancel-btn");
 
   // --- CLICK EVENTS --- //
   // 1. Add Exercise Event
@@ -54,9 +72,15 @@ function start_work_out() {
   workout_form.addEventListener("submit", function (event) {
     event.preventDefault(); // ✅ Prevent form from submitting
     save_workout(new_workout);
-
-    // Get the user information
   });
+
+  cancel_btn.addEventListener("click", function(event) {
+    event.preventDefault(); 
+    show_template_view();
+    new_workout.remove(); // clear workout after just submitted
+  });
+
+
 }
 
 // Add new exericse when the "+ Add Exercise" button is clicked
