@@ -292,34 +292,39 @@ const SET_ROW_HTML = `
 
 
 const TEMPLATE_VIEW_HTML = `
-  <div>
-  <h1>Start Workout</h1>
+  <div class="page-title">
+    <h1>Start Workout</h1>
+  </div>
   <div class="empty-workout-container">
     <h3>Quick Start</h3>
     <button class="full-button">Start an Empty Workout</button>
   </div>
   <div class="my-template-container">
-    <h2>Templates</h2>
+    <div class="my-template-header">
+      <h2>Templates</h2>
+      <button class="widget-button">+ Template</button>
+    </div>
     <h3>My Templates</h3>
   </div>
   <div class="template-cards-container">
+    
     <div class="template-card">
-      <h4>1. Upper 1<h4>
+      <h3>1. Upper 1</h3>
       <p>Display the list of all exercises in the template</p>
       <p>Last session: 2 days ago</p>
     </div>
         <div class="template-card">
-      <h4>1. Upper 1<h4>
+      <h3>1. Upper 1</h3>
       <p>Display the list of all exercises in the template</p>
       <p>Last session: 2 days ago</p>
     </div>
         <div class="template-card">
-      <h4>1. Upper 1<h4>
-      <p>Display the list of all exercises in the template</p>
+      <h3>1. Upper 1</h3>
+      <p>Display the list of all exercises in the template adding more text to see if it is eclipse</p>
       <p>Last session: 2 days ago</p>
     </div>
         <div class="template-card">
-      <h4>1. Upper 1<h4>
+      <h3>1. Upper 1</h3>
       <p>Display the list of all exercises in the template</p>
       <p>Last session: 2 days ago</p>
     </div>
