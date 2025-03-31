@@ -174,7 +174,7 @@ function save_workout(new_workout) {
 
       // Clear old form and regenerate a new one
       document.querySelector(".workout-container").remove();
-      start_work_out(); // call this function to create a new form again
+      show_template_view(); // reopen index after saved the workout, unless I have a separate "Completed" page
     })
     .catch((error) => {
       console.error("Error saving workout:", error);
