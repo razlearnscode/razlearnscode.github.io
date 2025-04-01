@@ -10,19 +10,34 @@ document.addEventListener("DOMContentLoaded", async () => {
   select_template_view(); // start by showing users the list of templates
 });
 
+function get_user() {
+  return fetch("/user").then((response) => response.json());
+}
+
 function show_template_view() {
   document.querySelector(".template-view").style.display = 'block';
   document.querySelector(".workout-view").style.display = 'none';
+  document.querySelector(".create-template-view").style.display = 'none';
 }
 
 function show_workout_view() {
   document.querySelector(".workout-view").style.display = 'block';
   document.querySelector(".template-view").style.display = 'none';
+  document.querySelector(".create-template-view").style.display = 'none';
 }
+
+function show_create_template_view() {
+  document.querySelector(".workout-view").style.display = 'none';
+  document.querySelector(".template-view").style.display = 'none';
+  document.querySelector(".create-template-view").style.display = 'block';
+}
+
 
 function select_template_view() {
   const template_view = document.querySelector(".template-view");
   const workout_view = document.querySelector(".workout-view");
+  const create_template_view = document.querySelector(".create-template-view");
+
   const template_container = document.createElement("div");
   template_container.className = "template-container";
 
@@ -31,16 +46,32 @@ function select_template_view() {
   template_view.append(template_container);
 
   const new_workout_btn = template_container.querySelector(".new-workout-button");
+  const create_template_btn = template_container.querySelector(".create-template");
 
   new_workout_btn.addEventListener("click", function(event) {
-    template_view.style.display = "none"; // Hide template view
-    workout_view.style.display = "block"; // Display workout view
+    show_workout_view();
     start_work_out();
   });
+
+  create_template_btn.addEventListener("click", function(event) {
+    console.log("I was clicked on Template");
+    show_create_template_view();
+    create_template();
+  });
+
+
 }
 
-function get_user() {
-  return fetch("/user").then((response) => response.json());
+function create_template() {
+  
+  const new_template_view = document.querySelector(".create-template-view");
+
+  const new_template = document.createElement("div");
+  new_template.className = "new-template-container";
+
+  new_template.innerHTML = NEW_WRKOUT_TEMPLATE_HTML;
+  new_template_view.append(new_template);
+
 }
 
 function start_work_out() {
@@ -52,7 +83,7 @@ function start_work_out() {
   new_workout.className = "workout-container";
 
   new_workout.innerHTML = WORKOUT_FORM_HTML;
-  document.querySelector(".workout-view").append(new_workout);
+  workout_view.append(new_workout);
 
   const workout_form = new_workout.querySelector(".workout-form");
   const add_exercise_btn = new_workout.querySelector(".add-exercise-btn");
@@ -326,7 +357,7 @@ const TEMPLATE_VIEW_HTML = `
   <div class="my-template-container">
     <div class="my-template-header">
       <h2>Templates</h2>
-      <button class="widget-button">+ Template</button>
+      <button class="widget-button create-template">+ Template</button>
     </div>
     <h3>My Templates</h3>
   </div>
@@ -398,3 +429,18 @@ const TEMPLATE_VIEW_HTML = `
     </div>
 
 `;
+
+
+const NEW_WRKOUT_TEMPLATE_HTML = `
+        <form class="new-template-form">
+          <div class="form-header">
+            <button class="small-button return-button">X</button>
+            <input type="submit" class="small-button finish-button" value="Finish">
+          </div>
+            <input type="text" class="template-name" placeholder="New Template">
+            <textarea placeholder="Notes" id="template-notes" class="template-notes" name="template-notes" rows="4"></textarea>
+            <div class="exercise-list"></div>
+            <button class="full-button blue add-exercise-btn">+ Add Exercises</button>
+        </form>   
+
+    `;
