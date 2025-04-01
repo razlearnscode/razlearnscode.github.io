@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 
-from .models import User, Workout, Exercise, Set
+from .models import User, Workout, Exercise, Set, WorkoutTemplate, ExerciseTemplate, SetTemplate
 
 # Create your views here.
 def index(request):

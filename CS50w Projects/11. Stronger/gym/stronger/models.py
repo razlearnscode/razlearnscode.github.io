@@ -58,24 +58,6 @@ class Set(models.Model): # the Set belongs to a specific Exercises (not directly
         return f"Set: {self.desc} completed on {format_completed_date}"
 
 
-# Since I'm creating this app for myself, let's make the workout template not exchangeable
-# Therefore, it will be a one (User) to many (workout) relationship
-
-class WorkoutTemplate(models.Model):
-
-    # Note: Template is not the same as workout
-    # Workout is the session the user performs on the date
-    # Template is a preset structure that users can reuse
-    # This way, whenever I change the workout, I have the option to change/or NOT the template
-    
-    name = models.CharField(max_length=255)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='templates')
-    exercises = models.ManyToManyField(Exercise, related_name="templates")
-
-    def __str__(self):
-        return f"Template: {self.name}"
-
-
 class Workout(models.Model):
     
     name = models.CharField(max_length=255)
@@ -96,6 +78,49 @@ class Workout(models.Model):
     
 
 
+# Since I'm creating this app for myself, let's make the workout template not exchangeable
+# Therefore, it will be a one (User) to many (workout) relationship
+
+class WorkoutTemplate(models.Model):
+
+    # Note: Template is not the same as workout
+    # Workout is the session the user performs on the date
+    # Template is a preset structure that users can reuse
+    # This way, whenever I change the workout, I have the option to change/or NOT the template
+    
+    name = models.CharField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='templates')
+
+    def __str__(self):
+        return f"Template: {self.name}"
+    
+
+class ExerciseTemplate(models.Model):
+
+    # Rather than link this to the existing Exercise model
+    # I need to create this template modal so that I can freely edit/move the template
+    # without actually interfering/updating the actual exercises
+
+    workout_template = models.ForeignKey(WorkoutTemplate, on_delete=models.CASCADE, related_name='exercises_template')
+    
+    # Link the template with the actual exercise, so I can reference its information
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name='template_exercises')
+
+    def __str__(self):
+        return f"{self.exercise.name} in Template {self.workout_template.name}"
     
 
 
+class SetTemplate(models.Model):
+    
+    # Template for individual sets within an exercise in a workout template.
+
+    exercise_template = models.ForeignKey(ExerciseTemplate, on_delete=models.CASCADE, related_name='set_templates')
+    desc = models.CharField(max_length=255, blank=True, null=True)
+    weight = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    duration = models.PositiveIntegerField(blank=True, null=True)
+    reps = models.PositiveIntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return f"SetTemplate for {self.exercise_template.exercise.name} (Reps: {self.reps}, Weight: {self.weight}, Duration: {self.duration})"
+    
