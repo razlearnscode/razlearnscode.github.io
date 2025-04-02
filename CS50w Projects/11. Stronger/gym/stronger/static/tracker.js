@@ -69,7 +69,7 @@ function create_template() {
   const new_template = document.createElement("div");
   new_template.className = "new-template-container";
 
-  new_template.innerHTML = NEW_WRKOUT_TEMPLATE_HTML;
+  new_template.innerHTML = NEW_TEMPLATE_WORKOUT_HTML;
   new_template_view.append(new_template);
 
   const template_form = new_template.querySelector(".new-template-form");
@@ -79,7 +79,7 @@ function create_template() {
   // --- CLICK EVENTS --- //
   add_exercise_btn.addEventListener("click", function(event) {
     event.preventDefault();
-    const new_exercise = add_exercise();
+    const new_exercise = add_exercise(NEW_TEMPLATE_EXERCISE_HTML, NEW_TEMPLATE_SET_ROW_HTML);    
     exercise_list.append(new_exercise);
   });
 
@@ -93,7 +93,16 @@ function create_template() {
 
 
 function save_template(new_template) {
+  
+  const templateName = new_template.querySelector(".template-name").value.trim();
+  const templateNotes = new_template.querySelector(".template-notes").value.trim();
 
+  const exercises = [];
+  const allExercises = new_template.querySelectorAll(".exercise-container");
+
+  allExercises.forEach((single_exercise) => {
+
+  });
 
 };
 
@@ -118,7 +127,7 @@ function start_work_out() {
   // 1. Add Exercise Event
   add_exercise_btn.addEventListener("click", function (event) {
     event.preventDefault(); // ✅ Prevent form from submitting
-    const new_exercise = add_exercise();
+    const new_exercise = add_exercise(EXERCISE_HEADER_HTML, SET_ROW_HTML);
     exercise_list.append(new_exercise); // add new exercises to the exercise-list
     // since I already appended all the details in the exercise_list, I can already reference it in other functions
   });
@@ -139,27 +148,25 @@ function start_work_out() {
 }
 
 // Add new exericse when the "+ Add Exercise" button is clicked
-function add_exercise() {
-  // Assume for the MVP, users won't be able to select existing exercises
-  // Thus, we will generate new exercises from scratch
+function add_exercise(exerciseHTML, setHTML) {
 
   // Requirement: New exercise will automatically create 3 sets
   const exercise_container = document.createElement("div");
   exercise_container.className = "exercise-container";
 
-  exercise_container.innerHTML = EXERCISE_HEADER_HTML;
+  exercise_container.innerHTML = exerciseHTML;
 
   const set_body = exercise_container.querySelector(".set-body");
 
   // Default: Add 1 set for each new exercise
-  create_set_row(set_body);
+  create_set_row(set_body, setHTML);
 
   // Auto index and add new set when + Add set button is clicked
   exercise_container
     .querySelector(".add-set-btn")
     .addEventListener("click", function () {
       // Also note to prefill the character based on the last input within this
-      create_set_row(set_body);
+      create_set_row(set_body, setHTML);
     });
 
   return exercise_container;
@@ -238,11 +245,12 @@ function save_workout(new_workout) {
 }
 
 // -- Global Functions -- //
-function create_set_row(set_body) {
+function create_set_row(set_body, setHTML) {
+  
   const row = document.createElement("tr");
   row.className = "set-row";
 
-  row.innerHTML = SET_ROW_HTML;
+  row.innerHTML = setHTML;
 
   set_body.append(row);
 
@@ -258,11 +266,14 @@ function setup_set_row(row, set_body) {
   const delete_button = row.querySelector(".delete-btn");
 
   // Freeze toggle\
-  freeze_button.removeEventListener("click", toggleFreeze);
+  if (freeze_button) {
+    freeze_button.removeEventListener("click", toggleFreeze);
   freeze_button.addEventListener("click", function (event) {
     toggleFreeze(event);
     autofill_set_desc(row);
   });
+  };
+  
 
   // Delete row
   delete_button.addEventListener("click", function (event) {
@@ -455,7 +466,7 @@ const TEMPLATE_VIEW_HTML = `
 `;
 
 
-const NEW_WRKOUT_TEMPLATE_HTML = `
+const NEW_TEMPLATE_WORKOUT_HTML = `
         <form class="new-template-form">
           <div class="form-header">
             <button class="small-button return-button">X</button>
@@ -467,4 +478,35 @@ const NEW_WRKOUT_TEMPLATE_HTML = `
             <button type="button" class="full-button blue add-exercise-btn">+ Add Exercises</button>
         </form>   
 
+    `;
+
+
+const NEW_TEMPLATE_EXERCISE_HTML = `
+    <input type="text" class="exercise-name" placeholder="Name Your Exercise">
+    <table class="set-table">
+        <thead>
+            <tr>
+                <th>Set</th>
+                <th>Description</th>
+                <th>
+                  <select name="exercise-value" id="exercise-value">
+                    <option value="weight">Weight (kg)</option>
+                    <option value="duration">Duration (min)</option>
+                  </select>
+                </th>
+                <th>Rep(s)</th>
+            </tr>
+        </thead>
+        <tbody class="set-body">
+        </tbody>
+    </table>
+    <button type="button" class="full-button grey add-set-btn">+ Add Set</button>
+`;
+
+const NEW_TEMPLATE_SET_ROW_HTML = `
+    <td class="set-number"></td> 
+    <td class="long-cell"><input type="text" class="set-description" placeholder="-"></td>
+    <td class="long-cell"><input type="number" class="numInput set-value" placeholder="0"></td>
+    <td class="long-cell"><input type="number" class="numInput set-rep" placeholder="0"></td> 
+    <td class="short-cell"><button type="button" class="small-button delete-btn">x</button></td>
     `;
