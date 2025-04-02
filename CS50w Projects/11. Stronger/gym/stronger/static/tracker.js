@@ -72,7 +72,31 @@ function create_template() {
   new_template.innerHTML = NEW_WRKOUT_TEMPLATE_HTML;
   new_template_view.append(new_template);
 
+  const template_form = new_template.querySelector(".new-template-form");
+  const add_exercise_btn = new_template.querySelector(".add-exercise-btn");
+  const exercise_list = new_template.querySelector(".exercise-list");
+
+  // --- CLICK EVENTS --- //
+  add_exercise_btn.addEventListener("click", function(event) {
+    event.preventDefault();
+    const new_exercise = add_exercise();
+    exercise_list.append(new_exercise);
+  });
+
+  // --- FORM SUBMISSION --- //
+  template_form.addEventListener("submit", function(event) {
+    event.preventDefault();
+    save_template(new_template);
+  });
+
 }
+
+
+function save_template(new_template) {
+
+
+};
+
 
 function start_work_out() {
 
@@ -440,7 +464,7 @@ const NEW_WRKOUT_TEMPLATE_HTML = `
             <input type="text" class="template-name" placeholder="New Template">
             <textarea placeholder="Notes" id="template-notes" class="template-notes" name="template-notes" rows="4"></textarea>
             <div class="exercise-list"></div>
-            <button class="full-button blue add-exercise-btn">+ Add Exercises</button>
+            <button type="button" class="full-button blue add-exercise-btn">+ Add Exercises</button>
         </form>   
 
     `;

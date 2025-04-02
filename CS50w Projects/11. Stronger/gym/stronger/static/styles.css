@@ -15,7 +15,8 @@
 }
 
 .template-container,
-.workout-container {
+.workout-container,
+.new-template-container {
     width: 600px;
     display: flex;
     flex-direction: column;
@@ -190,6 +191,7 @@ h3 {
 .exercise-container {
     max-width: 100%;
     width: 50%;
+    padding-top: 20px;
 }
 
 
