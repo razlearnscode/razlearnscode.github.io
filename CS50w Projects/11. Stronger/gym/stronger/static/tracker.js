@@ -62,6 +62,8 @@ function select_template_view() {
 
 }
 
+// It's possible to create a create_form function that I can use for both template and workout
+// But it can be quite a hassle to refactor, so I'll probably won't do it here
 function create_template() {
   
   const new_template_view = document.querySelector(".create-template-view");
@@ -97,12 +99,47 @@ function save_template(new_template) {
   const templateName = new_template.querySelector(".template-name").value.trim();
   const templateNotes = new_template.querySelector(".template-notes").value.trim();
 
-  const exercises = [];
+  const exercisesTemplate = [];
   const allExercises = new_template.querySelectorAll(".exercise-container");
 
   allExercises.forEach((single_exercise) => {
+    const exerciseName = single_exercise.querySelector(".exercise-name").value;
+    const exerciseType =
+      single_exercise.querySelector("#exercise-value").value || "None";
+    const allSets = single_exercise.querySelectorAll(".set-row");
+
+    const sets = [];
+
+    allSets.forEach((row) => {
+      const desc = row.querySelector(".set-description").value.trim();
+      const reps = parseInt(row.querySelector(".set-rep").value) || 0;
+      const value = row.querySelector(".set-value").value || 0;
+
+      sets.push({
+        desc: desc,
+        value: parseFloat(value),
+        reps: parseInt(reps),
+      });
+    });
+
+    const notes = "";
+    const category = "OTHERS"; // default to this now. I'll update this later
+
+    exercisesTemplate.push({
+      name: exerciseName,
+      type: exerciseType,
+      notes: notes,
+      category: category,
+      sets: sets,
+    });
 
   });
+
+  const templateData = {
+    template: templateName,
+    notes: templateNotes,
+    exercisesTemplate,
+  };
 
 };
 

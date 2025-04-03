@@ -81,7 +81,7 @@ def save_workout(request):
             
             exercises = data.get("exercises", []) # try to get the exercise from data. If empty, then return an empty list [] instead
 
-            workout = Workout.objects.create(
+            newWorkout = Workout.objects.create(
                 user=user, 
                 name=workout, 
                 desc=notes, 
@@ -96,11 +96,11 @@ def save_workout(request):
 
                 exercise = Exercise.objects.create(
                     name=ex_name,
-                    exercise_note=notes,
+                    exercise_note=ex_notes,
                     category=ex_category
                 )
 
-                workout.exercises.add(exercise) # link the newly created exercise to the workout exercises attribute of the Workout object
+                newWorkout.exercises.add(exercise) # link the newly created exercise to the workout exercises attribute of the Workout object
 
                 # Iterate through the sets list that I created above
                 # start=1 so that the index starts at 1 instead of 0 ("Set 1", "Set 2")
@@ -129,7 +129,59 @@ def save_workout(request):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
+@csrf_exempt
+def save_template(request):
+    
+    try:
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            user = request.user
+            template_name = data.get("template")
+            notes = data.get("notes", "")
+            exercises = data.get("exercisesTemplate", [])
+            
+            newTemplate = WorkoutTemplate.objects.create(
+                user=user,
+                name=template_name,
+                desc=notes,
+            )
 
+            for ex_data in exercises:
+                ex_name = ex_data.get("name")
+                ex_type = ex_data.get("type")
+                ex_notes = ex_data.get("notes")
+                ex_category = ex_data.get("category")
+                sets = ex_data.get("sets", [])
+
+                newExercise = Exercise.objects.create(
+                    name=ex_name,
+                    exercise_note=ex_notes,
+                    category=ex_category
+                )
+
+                newExerciseTemplate = ExerciseTemplate.objects.create(
+                    workout_template=newTemplate,
+                    exercise = newExercise
+                )
+
+                for s in sets:
+                    SetTemplate.objects.create(
+                        exercise_template=newExercise,
+                        desc=s.get("desc", ""),
+                        reps=s.get("reps") or 0,
+                        weight=s.get("value") if ex_type == "weight" else None,
+                        # Just in case:
+                        # -- Use float to safely parse text to float (because you don't know if it's int or float), so float is safer
+                        # -- Then, use int to parse float to int
+                        duration=int(float(s.get("value"))) if ex_type == "duration" else None, 
+                    )
+
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found"}, status=404)
+    
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+    
 
 def get_user(request):
     if request.method == 'GET':

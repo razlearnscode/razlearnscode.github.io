@@ -37,11 +37,6 @@ class Exercise(models.Model):
         return f"Exercise: {self.name}"
 
 
-    # Other information I can get from the Set model
-    #   date of the workout
-    #   number of sets
-    #   previous record
-    #   personal record
 
 
 class Set(models.Model): # the Set belongs to a specific Exercises (not directly to Workout)
@@ -68,7 +63,7 @@ class Workout(models.Model):
     # automatically set it to the user with id=1 (which is the superuser admin)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='workouts')
 
-        # 1 workout can have multiple exercise
+    # 1 workout can have multiple exercise
     # 1 exercise can be in multiple workout
     exercises = models.ManyToManyField(Exercise, related_name="workouts")
     
@@ -90,6 +85,7 @@ class WorkoutTemplate(models.Model):
     
     name = models.CharField(max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='templates')
+    desc = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self):
         return f"Template: {self.name}"
