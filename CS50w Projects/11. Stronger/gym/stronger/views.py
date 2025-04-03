@@ -166,7 +166,7 @@ def save_template(request):
 
                 for s in sets:
                     SetTemplate.objects.create(
-                        exercise_template=newExercise,
+                        exercise_template=newExerciseTemplate,
                         desc=s.get("desc", ""),
                         reps=s.get("reps") or 0,
                         weight=s.get("value") if ex_type == "weight" else None,
@@ -175,6 +175,7 @@ def save_template(request):
                         # -- Then, use int to parse float to int
                         duration=int(float(s.get("value"))) if ex_type == "duration" else None, 
                     )
+            return JsonResponse({"message": "Workout saved successfully!"}, status=201)
 
     except User.DoesNotExist:
         return JsonResponse({"error": "User not found"}, status=404)

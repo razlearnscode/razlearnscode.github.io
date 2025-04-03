@@ -54,7 +54,6 @@ function select_template_view() {
   });
 
   create_template_btn.addEventListener("click", function(event) {
-    console.log("I was clicked on Template");
     show_create_template_view();
     create_template();
   });
@@ -87,6 +86,7 @@ function create_template() {
 
   // --- FORM SUBMISSION --- //
   template_form.addEventListener("submit", function(event) {
+    console.log("I want to save my template");
     event.preventDefault();
     save_template(new_template);
   });
@@ -140,6 +140,26 @@ function save_template(new_template) {
     notes: templateNotes,
     exercisesTemplate,
   };
+
+  // Make POST request to submit saved information
+  fetch("/save_template", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(templateData),
+  })
+  .then((response) => response.json())
+  .then((data) => {
+    console.log("New Template saved:", data);
+    alert("Template saved!");
+
+    // Clear existing form and redirect back to index
+    document.querySelector(".new-template-container").remove();
+    show_template_view();
+  })
+  .catch((error) => {
+    console.error("Error saving template:", error);
+    alert("There was an error saving your template.");
+  });
 
 };
 
