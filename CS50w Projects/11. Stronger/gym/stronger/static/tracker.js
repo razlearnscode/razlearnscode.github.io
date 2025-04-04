@@ -3,6 +3,8 @@ let logged_in_user = null; // get the user info globally
 document.addEventListener("DOMContentLoaded", async () => {
   // Having await helps that I don't have to wait for user to load, I can still proceed with the below function call
   logged_in_user = await get_user(); // Fetch one and reuse for all functions
+  console.log(logged_in_user);
+  get_saved_templates(logged_in_user)
 
   // show template view by default
   show_template_view();
@@ -11,7 +13,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 function get_user() {
-  return fetch("/user").then((response) => response.json());
+  return fetch("/user")
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+  });
+}
+
+function get_saved_templates(user) {
+
 }
 
 function show_template_view() {
@@ -60,6 +70,7 @@ function select_template_view() {
 
 
 }
+
 
 // It's possible to create a create_form function that I can use for both template and workout
 // But it can be quite a hassle to refactor, so I'll probably won't do it here

@@ -175,7 +175,7 @@ def save_template(request):
                         # -- Then, use int to parse float to int
                         duration=int(float(s.get("value"))) if ex_type == "duration" else None, 
                     )
-            return JsonResponse({"message": "Workout saved successfully!"}, status=201)
+            return JsonResponse({"message": "Template saved successfully!"}, status=201)
 
     except User.DoesNotExist:
         return JsonResponse({"error": "User not found"}, status=404)
@@ -188,3 +188,15 @@ def get_user(request):
     if request.method == 'GET':
         logged_in_user = request.user
         return JsonResponse(logged_in_user.serialize())
+    
+
+def get_templates(request, username):
+    
+    if request.method == 'GET':
+
+        user = User.objects.get(username=username)
+
+        return JsonResponse({
+            "message": "Received username successfully",
+            "username": user.username,
+        }, status=201)
