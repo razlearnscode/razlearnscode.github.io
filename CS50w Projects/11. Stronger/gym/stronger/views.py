@@ -190,13 +190,11 @@ def get_user(request):
         return JsonResponse(logged_in_user.serialize())
     
 
-def get_templates(request, username):
+def get_templates(request, user_id):
     
     if request.method == 'GET':
 
-        user = User.objects.get(username=username)
+        user = User.objects.get(pk=user_id)
+        saved_templates = WorkoutTemplate.objects.filter(user=user).all()
 
-        return JsonResponse({
-            "message": "Received username successfully",
-            "username": user.username,
-        }, status=201)
+        return JsonResponse([template.serialize() for template in saved_templates], safe=False)

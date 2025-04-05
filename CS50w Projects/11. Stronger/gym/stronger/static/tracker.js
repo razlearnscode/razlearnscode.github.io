@@ -3,25 +3,40 @@ let logged_in_user = null; // get the user info globally
 document.addEventListener("DOMContentLoaded", async () => {
   // Having await helps that I don't have to wait for user to load, I can still proceed with the below function call
   logged_in_user = await get_user(); // Fetch one and reuse for all functions
-  console.log(logged_in_user);
-  get_saved_templates(logged_in_user)
 
   // show template view by default
   show_template_view();
 
   select_template_view(); // start by showing users the list of templates
+
 });
 
 function get_user() {
   return fetch("/user")
-  .then((response) => response.json())
-  .then((data) => {
-    console.log(data);
-  });
+    .then((response) => response.json()); 
 }
 
-function get_saved_templates(user) {
+function get_saved_templates(template_container) {
+  
+  template_cards_container = template_container.querySelector(".template-cards-container");
+  
+  fetch(`/templates/${logged_in_user.id}`)
+  .then((response) => response.json())
+  .then((saved_templates) => {
+    
+    saved_templates.forEach((singleTemplate) => {
+      
+      const template_card = document.createElement("div");
+      template_card.className = "template-card";
 
+      template_card.innerHTML = TEMPLATE_CARD_HTML;
+
+      template_cards_container.append(template_card);
+      console.log(singleTemplate);
+    });
+
+  });
+  
 }
 
 function show_template_view() {
@@ -54,6 +69,8 @@ function select_template_view() {
   template_container.innerHTML = TEMPLATE_VIEW_HTML;
 
   template_view.append(template_container);
+
+  get_saved_templates(template_container);
 
   const new_workout_btn = template_container.querySelector(".new-workout-button");
   const create_template_btn = template_container.querySelector(".create-template");
@@ -101,6 +118,8 @@ function create_template() {
     event.preventDefault();
     save_template(new_template);
   });
+
+
 
 }
 
@@ -464,73 +483,25 @@ const TEMPLATE_VIEW_HTML = `
     </div>
     <h3>My Templates</h3>
   </div>
-  <div class="template-cards-container">
-    
-    <div class="template-card">
-      <div class="template-card-header">
-        <h3>1. Upper 1</h3>
-        <div class="dropdown">
-          <button class="dropdown-toggle">…</button>
-          <div class="dropdown-menu">
-            <button onclick="startWorkout({{ template.id }})">Start Workout</button>
-            <button onclick="editTemplate({{ template.id }})">Edit</button>
-            <button onclick="deleteTemplate({{ template.id }})">Delete</button>
-          </div>
+  <div class="template-cards-container"></div>
+
+`;
+
+const TEMPLATE_CARD_HTML = `
+
+    <div class="template-card-header">
+      <h3 class="saved-temlate-name">1. Upper 1</h3>
+      <div class="dropdown">
+        <button class="dropdown-toggle">…</button>
+        <div class="dropdown-menu">
+          <button onclick="startWorkout({{ template.id }})">Start Workout</button>
+          <button onclick="editTemplate({{ template.id }})">Edit</button>
+          <button onclick="deleteTemplate({{ template.id }})">Delete</button>
         </div>
       </div>
-      <p>Display the list of all exercises in the template</p>
-      <p>Last session: 2 days ago</p>
     </div>
-
-
-    <div class="template-card">
-      <div class="template-card-header">
-        <h3>1. Upper 1</h3>
-        <div class="dropdown">
-          <button class="dropdown-toggle">…</button>
-          <div class="dropdown-menu">
-            <button onclick="startWorkout({{ template.id }})">Start Workout</button>
-            <button onclick="editTemplate({{ template.id }})">Edit</button>
-            <button onclick="deleteTemplate({{ template.id }})">Delete</button>
-          </div>
-        </div>
-      </div>
-      <p>Display the list of all exercises in the template</p>
-      <p>Last session: 2 days ago</p>
-    </div>
-
-        <div class="template-card">
-      <div class="template-card-header">
-        <h3>1. Upper 1</h3>
-        <div class="dropdown">
-          <button class="dropdown-toggle">…</button>
-          <div class="dropdown-menu">
-            <button onclick="startWorkout({{ template.id }})">Start Workout</button>
-            <button onclick="editTemplate({{ template.id }})">Edit</button>
-            <button onclick="deleteTemplate({{ template.id }})">Delete</button>
-          </div>
-        </div>
-      </div>
-      <p>Display the list of all exercises in the template</p>
-      <p>Last session: 2 days ago</p>
-    </div>
-
-        <div class="template-card">
-      <div class="template-card-header">
-        <h3>1. Upper 1</h3>
-        <div class="dropdown">
-          <button class="dropdown-toggle">…</button>
-          <div class="dropdown-menu">
-            <button onclick="startWorkout({{ template.id }})">Start Workout</button>
-            <button onclick="editTemplate({{ template.id }})">Edit</button>
-            <button onclick="deleteTemplate({{ template.id }})">Delete</button>
-          </div>
-        </div>
-      </div>
-      <p>Display the list of all exercises in the template</p>
-      <p>Last session: 2 days ago</p>
-    </div>
-
+    <p class="saved-temlate-desc">Display the list of all exercises in the template</p>
+    <p class="saved-temlate-days-counter">Last session: 2 days ago</p>
 `;
 
 
