@@ -470,15 +470,18 @@ h3 {
 
 .modal {
     position: fixed;
-    top: 0; /* means to extend the size from the very top to end */
-    left: 0; /* means to extend the size from the very left to right */
+    top: 0;
+    /* means to extend the size from the very top to end */
+    left: 0;
+    /* means to extend the size from the very left to right */
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
-    justify-content: center; /* position the modal to the center */
+    justify-content: center;
+    /* position the modal to the center */
     /* without align-center, the modal would stretch. This controls the alignment of items on the cross axis */
-    align-items: center; 
+    align-items: center;
     z-index: 1000;
 }
 
@@ -495,4 +498,43 @@ h3 {
     float: right;
     font-size: 1.5rem;
     cursor: pointer;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    background-color: #ebf6ff;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 30px;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    z-index: 100;
+    padding: 10px;
+    flex-direction: column;
+}
+
+.dropdown-menu button {
+    display: block;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 8px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.dropdown.open .dropdown-menu {
+    display: flex;
 }

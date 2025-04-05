@@ -90,6 +90,21 @@ function select_template_view() {
     create_template();
   });
 
+  document.addEventListener("click", function(event) {
+    const isToggle = event.target.classList.contains("dropdown-toggle"); // select all DOM that has dropdown toggle
+
+    // Close all existing dropdown first
+    document.querySelectorAll(".dropdown").forEach(drop => { // drop is just a name I refer to the toggle that I would drop
+      drop.classList.remove("open"); // identify all those dropdown toggle, and remove the toggle from its class
+    });
+
+    if (isToggle) {
+      event.stopPropagation(); // Don't let parent elements also react to this event. Think of this like stopeventlistner
+      const dropdown = event.target.closest(".dropdown") // find the nearest dropdown instance
+      dropdown.classList.toggle("open");
+    }
+
+  });
 
 }
 
