@@ -18,7 +18,7 @@ function get_user() {
 
 function get_saved_templates(template_container) {
   
-  template_cards_container = template_container.querySelector(".template-cards-container");
+  const template_cards_container = template_container.querySelector(".template-cards-container");
   
   fetch(`/templates/${logged_in_user.id}`)
   .then((response) => response.json())
@@ -26,13 +26,18 @@ function get_saved_templates(template_container) {
     
     saved_templates.forEach((singleTemplate) => {
       
+      const fill_in_html = TEMPLATE_CARD_HTML
+        .replace(/__ID__/g, singleTemplate.id)
+        .replace(/__NAME__/g, singleTemplate.name)
+        .replace(/__DESC__/g, singleTemplate.desc || "")
+        .replace(/__DAYS__/g, singleTemplate.days_since_updated === 0 ? 'Today' : `${singleTemplate.days_since_updated} days ago`);
+
+
       const template_card = document.createElement("div");
       template_card.className = "template-card";
 
-      template_card.innerHTML = TEMPLATE_CARD_HTML;
-
+      template_card.innerHTML = fill_in_html;
       template_cards_container.append(template_card);
-      console.log(singleTemplate);
     });
 
   });
@@ -488,20 +493,19 @@ const TEMPLATE_VIEW_HTML = `
 `;
 
 const TEMPLATE_CARD_HTML = `
-
-    <div class="template-card-header">
-      <h3 class="saved-temlate-name">1. Upper 1</h3>
-      <div class="dropdown">
-        <button class="dropdown-toggle">…</button>
-        <div class="dropdown-menu">
-          <button onclick="startWorkout({{ template.id }})">Start Workout</button>
-          <button onclick="editTemplate({{ template.id }})">Edit</button>
-          <button onclick="deleteTemplate({{ template.id }})">Delete</button>
-        </div>
+  <div class="template-card-header">
+    <h3 class="saved-temlate-name">__NAME__</h3>
+    <div class="dropdown">
+      <button class="dropdown-toggle">…</button>
+      <div class="dropdown-menu">
+        <button onclick="startWorkout(__ID__)">Start Workout</button>
+        <button onclick="editTemplate(__ID__)">Edit</button>
+        <button onclick="deleteTemplate(__ID__)">Delete</button>
       </div>
     </div>
-    <p class="saved-temlate-desc">Display the list of all exercises in the template</p>
-    <p class="saved-temlate-days-counter">Last session: 2 days ago</p>
+  </div>
+  <p class="saved-temlate-desc">__DESC__</p>
+  <p class="saved-temlate-days-counter">Last updated: __DAYS__</p>
 `;
 
 
