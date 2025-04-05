@@ -107,7 +107,9 @@ class WorkoutTemplate(models.Model):
             "created_at": self.created_at.isoformat(),
             "last_updated": self.last_updated.isoformat(),
             "days_since_updated": days_ago,
-    }
+            "exercises": [exercise.serialize() for exercise in self.exercises_template.all()]
+        }
+
     
 
 class ExerciseTemplate(models.Model):
@@ -124,6 +126,13 @@ class ExerciseTemplate(models.Model):
     def __str__(self):
         return f"{self.exercise.name} in Template {self.workout_template.name}"
     
+    def serialize(self):
+        return {
+            "exercise_id": self.exercise.id,
+            "exercise_name": self.exercise.name,
+            "sets": [set_template.serialize() for set_template in self.set_templates.all()]
+    }
+    
 
 
 class SetTemplate(models.Model):
@@ -139,3 +148,10 @@ class SetTemplate(models.Model):
     def __str__(self):
         return f"SetTemplate for {self.exercise_template.exercise.name} (Reps: {self.reps}, Weight: {self.weight}, Duration: {self.duration})"
     
+    def serialize(self):
+        return {
+            "desc": self.desc,
+            "reps": self.reps,
+            "weight": float(self.weight) if self.weight is not None else None,
+            "duration": self.duration,
+    }
