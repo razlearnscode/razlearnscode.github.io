@@ -7,6 +7,15 @@ class Deck(models.Model):
 
     def __str__(self):
         return self.name or self.deck_id
+    
+    def serialize(self):
+        return {
+            "deck": self.name,
+            "deck_id": self.deck_id,
+            "cards": [card.serialize() for card in self.cards.all()]
+    }
+    
+
 
 
 class Card(models.Model):
@@ -38,6 +47,18 @@ class Card(models.Model):
     def __str__(self):
         return f"{self.name} (Deck {self.deck.deck_id} #{self.card_id})"
     
+    def serialize(self):
+        return {
+            "id": self.id,
+            "card_id": self.card_id,
+            "name": self.name,
+            "type": self.type,
+            "stage": self.stage,
+            "image_url": self.image_url,
+            "local_image_path": self.local_image_path,
+            "wishlist": hasattr(self, 'wishlist_entry')
+    }
+    
     
 
 class Wishlist(models.Model):
@@ -49,3 +70,10 @@ class Wishlist(models.Model):
 
     def __str__(self):
         return f"{self.card.name} in wishlist"
+    
+    def serialize(self):
+        return {
+            "deck": self.card.deck.serialize(),
+            "card": self.card.serialize(),
+            "added_at": self.added_at,
+    }

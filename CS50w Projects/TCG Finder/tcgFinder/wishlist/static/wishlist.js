@@ -1,7 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
     const cardContainer = document.getElementById("card-container");
+
+
+
+
     const decks = window.cardData;
-    console.log(decks); // ✅ now it's a usable JS object
 
     decks.forEach(deck => {
         const deckSection = document.createElement("section");
@@ -34,6 +37,16 @@ document.addEventListener("DOMContentLoaded", () => {
         cardContainer.appendChild(deckSection);
     });
 });
+
+function show_wishlist() {
+    
+    fetch('/wishlist')
+    .then((response) => response.json())
+    .then((deck) => {
+
+        
+    });
+}
 
 function formatChoice(choice) {
     // Converts "POKÉMON" → "Pokémon"

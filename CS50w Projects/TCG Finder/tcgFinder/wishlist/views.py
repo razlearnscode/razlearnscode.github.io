@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.serializers.json import DjangoJSONEncoder
 import json
-from wishlist.models import Deck
+from wishlist.models import Deck, Wishlist, Card
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -30,3 +31,13 @@ def index(request):
     return render(request, "wishlist/index.html", {
         "decks_json": json.dumps(data, cls=DjangoJSONEncoder)
     })
+
+def show_wishlist(request):
+
+    decks = Deck.objects.prefetch_related('cards').all()
+    data = [deck.serialize() for deck in decks]
+    return JsonResponse(data, safe=False)
+
+
+def add_to_wishlist(request, card_id):
+     pass

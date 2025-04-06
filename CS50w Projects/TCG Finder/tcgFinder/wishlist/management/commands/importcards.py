@@ -16,7 +16,7 @@ class Command(BaseCommand):
             '--file',
             type=str,
             help='Path to the JSON file (e.g. cards_data.json)',
-            default='A2.json'
+            default='a2b.json'
         )
 
     def handle(self, *args, **options):
@@ -34,7 +34,7 @@ class Command(BaseCommand):
             return
 
         imported = 0
-        skipped = 0
+        updated = 0
         copied_images = 0
 
         for entry in data:
@@ -46,10 +46,10 @@ class Command(BaseCommand):
             card_id = entry["card_id"]
 
             # Normalize and map type
-            raw_type = entry["type"].strip().lower()
+            raw_type = entry.get("type", "").strip().lower()
             if 'trainer' in raw_type:
                 type_value = 'TRAINER'
-            elif 'pokemon' in raw_type:
+            elif 'pokemon' in raw_type or 'pokémon' in raw_type or 'pok\u00e9mon' in raw_type:
                 type_value = 'POKÉMON'
             else:
                 type_value = None
@@ -67,7 +67,6 @@ class Command(BaseCommand):
             else:
                 stage_value = None
 
-
             image_url = entry["image_url"]
 
             # Handle local image copying
@@ -76,33 +75,28 @@ class Command(BaseCommand):
             media_relative_path = f"card_images/{image_filename}"
             media_full_path = Path(settings.MEDIA_ROOT) / media_relative_path
 
-            # Source path: where your scraped images are currently located
             source_path = Path("card_images") / image_filename
             if source_path.exists() and not media_full_path.exists():
                 media_full_path.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy(source_path, media_full_path)
                 copied_images += 1
 
-            # Create card
-            card, created = Card.objects.get_or_create(
-                deck=deck,
-                card_id=card_id,
-                defaults={
-                    "name": name,
-                    "type": type_value,
-                    "stage": stage_value,
-                    "image_url": image_url,
-                    "local_image_path": media_relative_path
-                }
-            )
+            # Create or update card
+            card, created = Card.objects.get_or_create(deck=deck, card_id=card_id)
+            card.name = name
+            card.type = type_value
+            card.stage = stage_value
+            card.image_url = image_url
+            card.local_image_path = media_relative_path
+            card.save()
 
             if created:
                 imported += 1
                 self.stdout.write(self.style.SUCCESS(f"✅ Created: {card.name}"))
             else:
-                skipped += 1
-                self.stdout.write(self.style.WARNING(f"⏭️ Skipped (exists): {card.name}"))
+                updated += 1
+                self.stdout.write(self.style.WARNING(f"🔁 Updated: {card.name}"))
 
         self.stdout.write(self.style.SUCCESS(
-            f"\n🎉 Import finished! Cards imported: {imported}, skipped: {skipped}, images copied: {copied_images}"
+            f"\n🎉 Import finished! Created: {imported}, Updated: {updated}, Images copied: {copied_images}"
         ))
