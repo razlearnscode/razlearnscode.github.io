@@ -82,7 +82,7 @@ function select_template_view() {
 
   new_workout_btn.addEventListener("click", function(event) {
     show_workout_view();
-    start_work_out();
+    start_empty_work_out();
   });
 
   create_template_btn.addEventListener("click", function(event) {
@@ -90,6 +90,11 @@ function select_template_view() {
     create_template();
   });
 
+  show_template_toggle();
+
+}
+
+function show_template_toggle() {
   document.addEventListener("click", function(event) {
     const isToggle = event.target.classList.contains("dropdown-toggle"); // select all DOM that has dropdown toggle
 
@@ -103,10 +108,14 @@ function select_template_view() {
       const dropdown = event.target.closest(".dropdown") // find the nearest dropdown instance
       dropdown.classList.toggle("open");
     }
-
   });
-
 }
+
+function start_workout_from_template(templateId) {
+  console.log("Start workout for template:", templateId);
+  show_workout_view();
+}
+
 
 
 // It's possible to create a create_form function that I can use for both template and workout
@@ -214,7 +223,7 @@ function save_template(new_template) {
 };
 
 
-function start_work_out() {
+function start_empty_work_out() {
 
   const workout_view = document.querySelector(".workout-view");
 
@@ -513,7 +522,7 @@ const TEMPLATE_CARD_HTML = `
     <div class="dropdown">
       <button class="dropdown-toggle">…</button>
       <div class="dropdown-menu">
-        <button onclick="startWorkout(__ID__)">Start Workout</button>
+        <button onclick="start_workout_from_template(__ID__)">Start Workout</button>
         <button onclick="editTemplate(__ID__)">Edit</button>
         <button onclick="deleteTemplate(__ID__)">Delete</button>
       </div>
