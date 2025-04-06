@@ -69,7 +69,7 @@ class Wishlist(models.Model):
     added_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.card.name} in wishlist"
+        return f"{self.card.deck.deck_id} #{self.card.card_id} {self.card.name}"
     
     def serialize(self):
         return {
