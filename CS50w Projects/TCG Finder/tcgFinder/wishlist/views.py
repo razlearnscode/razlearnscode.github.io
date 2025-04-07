@@ -4,6 +4,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 import json
 from wishlist.models import Deck, Wishlist, Card
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
 
 # Create your views here.
@@ -41,3 +42,19 @@ def show_wishlist(request):
 
 def add_to_wishlist(request, card_id):
      pass
+
+def remove_from_wishlist(request, card_id):
+
+    card = get_object_or_404(Card, pk=card_id)
+
+    if request.method == 'DELETE':
+        try:
+            wishlist_entry = Wishlist.objects.get(card=card)
+            wishlist_entry.delete()
+            return JsonResponse({"message": "Removed from wishlist successfully"}, status=200)
+        except Wishlist.DoesNotExist:
+            return JsonResponse({"message": "Card was not in the wishlist"}, status=404)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+        
