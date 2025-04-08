@@ -198,3 +198,12 @@ def get_templates(request, user_id):
         saved_templates = WorkoutTemplate.objects.filter(user=user).all()
 
         return JsonResponse([template.serialize() for template in saved_templates], safe=False)
+
+
+def populate_workout_from_template(request, template_id):
+
+    if request.method == 'GET':
+        
+        template = WorkoutTemplate.objects.get(pk=template_id)
+
+        return JsonResponse(template.serialize(), safe=False)

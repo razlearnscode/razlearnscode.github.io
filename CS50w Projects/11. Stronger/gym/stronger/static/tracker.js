@@ -82,7 +82,7 @@ function select_template_view() {
 
   new_workout_btn.addEventListener("click", function(event) {
     show_workout_view();
-    start_empty_work_out();
+    start_work_out(EMPTY_WORKOUT_FORM_HTML, EMPTY_EXERCISE_HEADER_HTML, EMPTY_SET_ROW_HTML);
   });
 
   create_template_btn.addEventListener("click", function(event) {
@@ -112,11 +112,46 @@ function show_template_toggle() {
 }
 
 function start_workout_from_template(templateId) {
+
   console.log("Start workout for template:", templateId);
   show_workout_view();
+  console.log("I was processed");
+  
+
+  fetch(`/start_workout/${templateId}`)
+  .then((response) => response.json())
+  .then((data) => {
+
+    console.log(data);
+    
+
+    const workoutName = data.name;
+    const workoutNotes = data.desc;
+    const all_exercises = data.exercises;
+
+    // Start workout with prefilled HTML
+    start_work_out(PREFILLED_WORKOUT_FORM_HTML, PREFILLED_EXERCISE_HEADER_HTML, PREFILLED_SET_ROW_HTML);
+
+    const workout_container = document.querySelector(".workout-container");
+
+    // Fill in workout name and notes
+    workout_container.querySelector(".workout-name").placeholder = workoutName;
+    workout_container.querySelector(".workout-notes").placeholder = workoutNotes;
+
+    const exercise_list = workout_container.querySelector(".exercise-list");
+
+    all_exercises.forEach((exerciseData) => {
+      const exerciseName = exerciseData.exercise_name;
+      const sets = exerciseData.sets;
+
+      // Reuse add_exercise to get a proper DOM structure
+      const exercise_element = add_exercise(PREFILLED_EXERCISE_HEADER_HTML, PREFILLED_SET_ROW_HTML, exerciseData);
+
+      exercise_list.append(exercise_element);
+    });
+  });
+
 }
-
-
 
 // It's possible to create a create_form function that I can use for both template and workout
 // But it can be quite a hassle to refactor, so I'll probably won't do it here
@@ -223,7 +258,7 @@ function save_template(new_template) {
 };
 
 
-function start_empty_work_out() {
+function start_work_out(workoutHTML, exerciseHTML, setHTML) {
 
   const workout_view = document.querySelector(".workout-view");
 
@@ -231,7 +266,7 @@ function start_empty_work_out() {
   const new_workout = document.createElement("div");
   new_workout.className = "workout-container";
 
-  new_workout.innerHTML = WORKOUT_FORM_HTML;
+  new_workout.innerHTML = workoutHTML;
   workout_view.append(new_workout);
 
   const workout_form = new_workout.querySelector(".workout-form");
@@ -243,7 +278,7 @@ function start_empty_work_out() {
   // 1. Add Exercise Event
   add_exercise_btn.addEventListener("click", function (event) {
     event.preventDefault(); // ✅ Prevent form from submitting
-    const new_exercise = add_exercise(EXERCISE_HEADER_HTML, SET_ROW_HTML);
+    const new_exercise = add_exercise(exerciseHTML, setHTML);
     exercise_list.append(new_exercise); // add new exercises to the exercise-list
     // since I already appended all the details in the exercise_list, I can already reference it in other functions
   });
@@ -261,31 +296,6 @@ function start_empty_work_out() {
   });
 
 
-}
-
-// Add new exericse when the "+ Add Exercise" button is clicked
-function add_exercise(exerciseHTML, setHTML) {
-
-  // Requirement: New exercise will automatically create 3 sets
-  const exercise_container = document.createElement("div");
-  exercise_container.className = "exercise-container";
-
-  exercise_container.innerHTML = exerciseHTML;
-
-  const set_body = exercise_container.querySelector(".set-body");
-
-  // Default: Add 1 set for each new exercise
-  create_set_row(set_body, setHTML);
-
-  // Auto index and add new set when + Add set button is clicked
-  exercise_container
-    .querySelector(".add-set-btn")
-    .addEventListener("click", function () {
-      // Also note to prefill the character based on the last input within this
-      create_set_row(set_body, setHTML);
-    });
-
-  return exercise_container;
 }
 
 function save_workout(new_workout) {
@@ -360,15 +370,57 @@ function save_workout(new_workout) {
     });
 }
 
+// Add new exericse when the "+ Add Exercise" button is clicked
+function add_exercise(exerciseHTML, setHTML, exerciseData = null) {
+
+  // Requirement: New exercise will automatically create 3 sets
+  const exercise_container = document.createElement("div");
+  exercise_container.className = "exercise-container";
+
+  exercise_container.innerHTML = exerciseHTML;
+
+  const set_body = exercise_container.querySelector(".set-body");
+
+  // Set exercise name if available
+  if (exerciseData && exerciseData.exercise_name) {
+    exercise_container.querySelector(".exercise-name").value = exerciseData.exercise_name;
+  }
+
+  // If exerciseData has sets (and make sure that it's an array), add them
+  if (exerciseData && Array.isArray(exerciseData.sets) && exerciseData.sets.length > 0) {
+    exerciseData.sets.forEach((set) => {
+      create_set_row(set_body, setHTML, set);
+    });
+  } else {
+    // If this is an empty workout (no sets passed), create a single blank set row
+    create_set_row(set_body, setHTML);
+  }
+
+  // Auto index and add new set when + Add set button is clicked
+  exercise_container
+    .querySelector(".add-set-btn")
+    .addEventListener("click", function () {
+      // Also note to prefill the character based on the last input within this
+      create_set_row(set_body, setHTML);
+    });
+
+  return exercise_container;
+}
+
 // -- Global Functions -- //
-function create_set_row(set_body, setHTML) {
+function create_set_row(set_body, setHTML, setData = null) {
   
   const row = document.createElement("tr");
   row.className = "set-row";
-
   row.innerHTML = setHTML;
 
   set_body.append(row);
+
+  if (setData) {
+    row.querySelector(".set-description").placeholder = setData.desc || "-";
+    row.querySelector(".set-value").placeholder = setData.value || 0;
+    row.querySelector(".set-rep").placeholder = setData.reps || 0;
+  }
 
   // Add key functionalities to each row
   setup_set_row(row, set_body); // Functionality: Freeze + Delete
@@ -384,10 +436,10 @@ function setup_set_row(row, set_body) {
   // Freeze toggle\
   if (freeze_button) {
     freeze_button.removeEventListener("click", toggleFreeze);
-  freeze_button.addEventListener("click", function (event) {
-    toggleFreeze(event);
-    autofill_set_desc(row);
-  });
+    freeze_button.addEventListener("click", function (event) {
+      toggleFreeze(event);
+      autofill_set_desc(row);
+    });
   };
   
 
@@ -413,27 +465,30 @@ function update_set_index(set_body) {
 function copy_latest_input(set_body) {
   const rows = set_body.querySelectorAll(".set-row");
 
-  // if first row, then pull from best record
   let bestValue = 0;
   let bestRep = 0;
 
   rows.forEach((row, index) => {
-    if (index === 0) return; // skip the first row
+    if (index === 0) return;
 
-    const prevValue = rows[index - 1].querySelector(".set-value").value; // get previous value
-    const prevRep = rows[index - 1].querySelector(".set-rep").value; // get previous rep
+    const prevValue = rows[index - 1].querySelector(".set-value").value;
+    const prevRep = rows[index - 1].querySelector(".set-rep").value;
 
-    // Default to current best
-    row.querySelector(".set-value").placeholder = bestValue;
-    row.querySelector(".set-rep").placeholder = bestRep;
+    // Update best values if new record found
+    if (prevValue && +prevValue > bestValue) bestValue = +prevValue;
+    if (prevRep && +prevRep > bestRep) bestRep = +prevRep;
 
-    // Get the best record input (if prevValue exists and is greater than bestRep, then update)
-    if (prevValue && +(+prevValue) > bestValue) bestValue = +prevValue;
-    if (prevRep && +(+prevRep) > bestRep) bestRep = +prevRep;
+    const valueInput = row.querySelector(".set-value");
+    const repInput = row.querySelector(".set-rep");
 
-    // Update the placeholders again with the latest record (if available)
-    row.querySelector(".set-value").placeholder = bestValue;
-    row.querySelector(".set-rep").placeholder = bestRep;
+    // Only assign if not already populated by placeholder
+    if (!valueInput.placeholder || valueInput.placeholder === "0") {
+      valueInput.placeholder = bestValue;
+    }
+
+    if (!repInput.placeholder || repInput.placeholder === "0") {
+      repInput.placeholder = bestRep;
+    }
   });
 }
 
@@ -450,9 +505,10 @@ function toggleFreeze(event) {
   event.currentTarget.closest("tr").classList.toggle("freeze");
 }
 
+
 // -- HTML Structure -- //
 
-const WORKOUT_FORM_HTML = `
+const EMPTY_WORKOUT_FORM_HTML = `
         <form class="workout-form">
             <input type="submit" class="small-button finish-button" value="Finish">
             <input type="text" class="workout-name" placeholder="New Workout">
@@ -461,10 +517,9 @@ const WORKOUT_FORM_HTML = `
             <button class="full-button blue add-exercise-btn">+ Add Exercises</button>
             <button class="full-button red cancel-btn">Cancel Workout</button>
         </form>   
-
     `;
 
-const EXERCISE_HEADER_HTML = `
+const EMPTY_EXERCISE_HEADER_HTML = `
         <input type="text" class="exercise-name" placeholder="Name Your Exercise">
         <table class="set-table">
             <thead>
@@ -488,7 +543,54 @@ const EXERCISE_HEADER_HTML = `
         <button type="button" class="full-button grey add-set-btn">+ Add Set</button>
     `;
 
-const SET_ROW_HTML = `
+const EMPTY_SET_ROW_HTML = `
+    <td class="set-number"></td> 
+    <td class="long-cell"><input type="text" class="set-description" placeholder="-"></td>
+    <td class="long-cell"><input type="number" class="numInput set-value" placeholder="0"></td>
+    <td class="long-cell"><input type="number" class="numInput set-rep" placeholder="0"></td> 
+    <td class="short-cell"><button type="button" class="set-status">✓</button></td>
+    <td class="short-cell"><button type="button" class="small-button delete-btn">x</button></td>
+    `;
+
+
+const PREFILLED_WORKOUT_FORM_HTML = `
+    <form class="workout-form">
+        <input type="submit" class="small-button finish-button" value="Finish">
+        <input type="text" class="workout-name" placeholder="">
+        <textarea placeholder="Notes" id="workout-notes" class="workout-notes" name="workout-notes" rows="4"></textarea>
+        <div class="exercise-list"></div>
+        <button class="full-button blue add-exercise-btn">+ Add Exercises</button>
+        <button class="full-button red cancel-btn">Cancel Workout</button>
+    </form>   
+`;
+
+
+const PREFILLED_EXERCISE_HEADER_HTML = `
+    <input type="text" class="exercise-name" placeholder="Name Your Exercise">
+    <table class="set-table">
+        <thead>
+            <tr>
+                <th>Set</th>
+                <th>Description</th>
+                <th>
+                  <select name="exercise-value" id="exercise-value">
+                    <option value="weight">Weight (kg)</option>
+                    <option value="duration">Duration (min)</option>
+                  </select>
+                </th>
+                <th>Rep(s)</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody class="set-body">
+            <!-- Rows will be generated dynamically -->
+        </tbody>
+    </table>
+    <button type="button" class="full-button grey add-set-btn">+ Add Set</button>
+`;
+
+
+const PREFILLED_SET_ROW_HTML = `
     <td class="set-number"></td> 
     <td class="long-cell"><input type="text" class="set-description" placeholder="-"></td>
     <td class="long-cell"><input type="number" class="numInput set-value" placeholder="0"></td>

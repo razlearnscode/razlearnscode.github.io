@@ -93,7 +93,7 @@ class WorkoutTemplate(models.Model):
     last_updated = models.DateTimeField(auto_now=True)  # add when both the object is created or saved
 
     def __str__(self):
-        return f"Template: {self.name}"
+        return f"Template: {self.name} #{self.id}"
     
     def serialize(self):
         now = timezone.now()

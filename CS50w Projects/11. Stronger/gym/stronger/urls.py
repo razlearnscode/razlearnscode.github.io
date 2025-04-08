@@ -13,4 +13,5 @@ urlpatterns = [
     path("templates/<int:user_id>", views.get_templates, name="get_templates"), # get all templates from the user
     path("save_workout", views.save_workout, name="save_workout"), # save workout
     path("save_template", views.save_template, name="save_template"), # save workout
+    path("start_workout/<int:template_id>", views.populate_workout_from_template, name="populate_workout_from_template"),
 ]

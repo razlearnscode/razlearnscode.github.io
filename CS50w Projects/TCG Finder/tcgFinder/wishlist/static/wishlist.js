@@ -38,19 +38,20 @@ function show_wishlist() {
                 <p>Stage: ${formatChoice(card.stage)}</p>
             </div>
             <div class="card-overlay"></div>
-            <button class="remove-btn" onclick="removeFromWishlist(${card.id})">Remove</button>
+            <button class="remove-btn" onclick="remove_from_wishlist(${
+              card.id
+            })">Remove</button>
                     `;
 
           grid.appendChild(cardEl);
-
-          attachImagePopupHandlers();
-
         });
 
         // Only show deck if it has wishlist cards
         if (grid.children.length > 0) {
           section.appendChild(grid);
           container.appendChild(section);
+
+        attachImagePopupHandlers(); // rebind fresh
         }
       });
     });
@@ -101,33 +102,37 @@ function getCSRFToken() {
   return cookieValue || "";
 }
 
-
 // Click-to-enlarge image popup
 function setupImagePopup() {
-    const popup = document.getElementById("image-popup");
-    const popupImage = document.getElementById("popup-image");
+  const popup = document.getElementById("image-popup");
+  const popupImage = document.getElementById("popup-image");
 
-    // Close popup when clicking the background
-    popup.addEventListener("click", () => {
-        popup.classList.add("hidden");
-        popupImage.src = "";
-    });
+  // Close popup when clicking the background
+  popup.addEventListener("click", () => {
+    popup.classList.add("hidden");
+    popupImage.src = "";
+  });
 }
 
 // Attach to each image
 function attachImagePopupHandlers() {
-    document.querySelectorAll(".card-overlay").forEach(overlay => {
-        overlay.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const cardEl = overlay.closest(".card");
-            const img = cardEl.querySelector("img");
-            const popup = document.getElementById("image-popup");
-            const popupImage = document.getElementById("popup-image");
+  document.querySelectorAll(".card-overlay").forEach((overlay) => {
+    overlay.addEventListener("click", (e) => {
+      e.stopPropagation();
 
-            popupImage.src = img.src;
-            popup.classList.remove("hidden");
-        });
+      const cardEl = overlay.closest(".card");
+      const img = cardEl.querySelector("img");
+
+      if (!img || !img.src) {
+        console.warn("No image found in card:", cardEl);
+        return;
+      }
+
+      const popup = document.getElementById("image-popup");
+      const popupImage = document.getElementById("popup-image");
+
+      popupImage.src = img.src;
+      popup.classList.remove("hidden");
     });
+  });
 }
-
-
