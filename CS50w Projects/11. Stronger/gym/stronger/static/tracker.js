@@ -82,7 +82,7 @@ function select_template_view() {
 
   new_workout_btn.addEventListener("click", function(event) {
     show_workout_view();
-    start_work_out(EMPTY_WORKOUT_FORM_HTML, EMPTY_EXERCISE_HEADER_HTML, EMPTY_SET_ROW_HTML);
+    start_work_out();
   });
 
   create_template_btn.addEventListener("click", function(event) {
@@ -115,38 +115,28 @@ function start_workout_from_template(templateId) {
 
   console.log("Start workout for template:", templateId);
   show_workout_view();
-  console.log("I was processed");
-  
 
   fetch(`/start_workout/${templateId}`)
   .then((response) => response.json())
   .then((data) => {
-
-    console.log(data);
-    
 
     const workoutName = data.name;
     const workoutNotes = data.desc;
     const all_exercises = data.exercises;
 
     // Start workout with prefilled HTML
-    start_work_out(PREFILLED_WORKOUT_FORM_HTML, PREFILLED_EXERCISE_HEADER_HTML, PREFILLED_SET_ROW_HTML);
+    start_work_out();
 
     const workout_container = document.querySelector(".workout-container");
+    const exercise_list = workout_container.querySelector(".exercise-list");
 
     // Fill in workout name and notes
     workout_container.querySelector(".workout-name").placeholder = workoutName;
     workout_container.querySelector(".workout-notes").placeholder = workoutNotes;
 
-    const exercise_list = workout_container.querySelector(".exercise-list");
-
     all_exercises.forEach((exerciseData) => {
-      const exerciseName = exerciseData.exercise_name;
-      const sets = exerciseData.sets;
 
-      // Reuse add_exercise to get a proper DOM structure
       const exercise_element = add_exercise(PREFILLED_EXERCISE_HEADER_HTML, PREFILLED_SET_ROW_HTML, exerciseData);
-
       exercise_list.append(exercise_element);
     });
   });
@@ -258,7 +248,7 @@ function save_template(new_template) {
 };
 
 
-function start_work_out(workoutHTML, exerciseHTML, setHTML) {
+function start_work_out() {
 
   const workout_view = document.querySelector(".workout-view");
 
@@ -266,7 +256,7 @@ function start_work_out(workoutHTML, exerciseHTML, setHTML) {
   const new_workout = document.createElement("div");
   new_workout.className = "workout-container";
 
-  new_workout.innerHTML = workoutHTML;
+  new_workout.innerHTML = WORKOUT_FORM_HTML;
   workout_view.append(new_workout);
 
   const workout_form = new_workout.querySelector(".workout-form");
@@ -278,7 +268,7 @@ function start_work_out(workoutHTML, exerciseHTML, setHTML) {
   // 1. Add Exercise Event
   add_exercise_btn.addEventListener("click", function (event) {
     event.preventDefault(); // ✅ Prevent form from submitting
-    const new_exercise = add_exercise(exerciseHTML, setHTML);
+    const new_exercise = add_exercise(EXERCISE_HEADER_HTML, SET_ROW_HTML);
     exercise_list.append(new_exercise); // add new exercises to the exercise-list
     // since I already appended all the details in the exercise_list, I can already reference it in other functions
   });
@@ -371,6 +361,8 @@ function save_workout(new_workout) {
 }
 
 // Add new exericse when the "+ Add Exercise" button is clicked
+// I still need to pass the innerHTML to the add_exercise function
+// because I have 2 separate templates, one for workout, and the other for template
 function add_exercise(exerciseHTML, setHTML, exerciseData = null) {
 
   // Requirement: New exercise will automatically create 3 sets
@@ -385,6 +377,8 @@ function add_exercise(exerciseHTML, setHTML, exerciseData = null) {
   if (exerciseData && exerciseData.exercise_name) {
     exercise_container.querySelector(".exercise-name").value = exerciseData.exercise_name;
   }
+
+  const typeSelection = exercise_container.querySelector("#exercise-value").value = "duration";
 
   // If exerciseData has sets (and make sure that it's an array), add them
   if (exerciseData && Array.isArray(exerciseData.sets) && exerciseData.sets.length > 0) {
@@ -508,7 +502,7 @@ function toggleFreeze(event) {
 
 // -- HTML Structure -- //
 
-const EMPTY_WORKOUT_FORM_HTML = `
+const WORKOUT_FORM_HTML = `
         <form class="workout-form">
             <input type="submit" class="small-button finish-button" value="Finish">
             <input type="text" class="workout-name" placeholder="New Workout">
@@ -519,7 +513,7 @@ const EMPTY_WORKOUT_FORM_HTML = `
         </form>   
     `;
 
-const EMPTY_EXERCISE_HEADER_HTML = `
+const EXERCISE_HEADER_HTML = `
         <input type="text" class="exercise-name" placeholder="Name Your Exercise">
         <table class="set-table">
             <thead>
@@ -543,7 +537,7 @@ const EMPTY_EXERCISE_HEADER_HTML = `
         <button type="button" class="full-button grey add-set-btn">+ Add Set</button>
     `;
 
-const EMPTY_SET_ROW_HTML = `
+const SET_ROW_HTML = `
     <td class="set-number"></td> 
     <td class="long-cell"><input type="text" class="set-description" placeholder="-"></td>
     <td class="long-cell"><input type="number" class="numInput set-value" placeholder="0"></td>
