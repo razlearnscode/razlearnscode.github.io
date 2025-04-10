@@ -378,13 +378,18 @@ function add_exercise(exerciseHTML, setHTML, exerciseData = null) {
     exercise_container.querySelector(".exercise-name").value = exerciseData.exercise_name;
   }
 
+
+  const exercise_type = exerciseData.exercise_type;
+
   // Prefill the unit selection based on the exercise type
-  const typeSelection = exercise_container.querySelector("#exercise-value").value = exerciseData.exercise_type;
+  const typeSelection = exercise_container.querySelector("#exercise-value").value = exercise_type;
+
+  // Pre-fill the weight/duration value based on the type of exercises
 
   // If exerciseData has sets (and make sure that it's an array), add them
   if (exerciseData && Array.isArray(exerciseData.sets) && exerciseData.sets.length > 0) {
     exerciseData.sets.forEach((set) => {
-      create_set_row(set_body, setHTML, set);
+      create_set_row(set_body, setHTML, set, exercise_type);
     });
   } else {
     // If this is an empty workout (no sets passed), create a single blank set row
@@ -403,7 +408,7 @@ function add_exercise(exerciseHTML, setHTML, exerciseData = null) {
 }
 
 // -- Global Functions -- //
-function create_set_row(set_body, setHTML, setData = null) {
+function create_set_row(set_body, setHTML, setData = null, exerciseType = null) {
   
   const row = document.createElement("tr");
   row.className = "set-row";
@@ -415,6 +420,13 @@ function create_set_row(set_body, setHTML, setData = null) {
     row.querySelector(".set-description").placeholder = setData.desc || "-";
     row.querySelector(".set-value").placeholder = setData.value || 0;
     row.querySelector(".set-rep").placeholder = setData.reps || 0;
+
+    // Input the value from duration/weight depending on the exercise type
+    if (exerciseType === 'weight') {
+      row.querySelector(".set-value").placeholder = setData.weight || 0;
+    } else if (exerciseType === 'duration') {
+      row.querySelector(".set-rep").placeholder = setData.duration || 0;
+    }
   }
 
   // Add key functionalities to each row
