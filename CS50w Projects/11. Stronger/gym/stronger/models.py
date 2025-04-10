@@ -31,9 +31,15 @@ class Exercise(models.Model):
         ('OTHERS', 'Others'),
     ]
 
+    TYPES = [
+        ('DURATION', 'duration'),
+        ('WEIGHT', 'weight'),
+    ]
+
     name = models.CharField(max_length=255)
     exercise_note = models.CharField(max_length=500, blank=True, null=True)
     category = models.CharField(max_length=64, choices=CATEGORIES, default='OTHERS', blank=True, null=True)
+    type = models.CharField(max_length=64, choices=TYPES, default='weight', blank=True, null=True)
 
 
     def __str__(self):
@@ -130,6 +136,7 @@ class ExerciseTemplate(models.Model):
         return {
             "exercise_id": self.exercise.id,
             "exercise_name": self.exercise.name,
+            "exercise_type": self.exercise.type.lower() if self.exercise.type else None, # convert to lowercase because my option value is all lowercase
             "sets": [set_template.serialize() for set_template in self.set_templates.all()]
     }
     

@@ -97,7 +97,8 @@ def save_workout(request):
                 exercise = Exercise.objects.create(
                     name=ex_name,
                     exercise_note=ex_notes,
-                    category=ex_category
+                    category=ex_category,
+                    type=ex_type
                 )
 
                 newWorkout.exercises.add(exercise) # link the newly created exercise to the workout exercises attribute of the Workout object
@@ -156,7 +157,8 @@ def save_template(request):
                 newExercise = Exercise.objects.create(
                     name=ex_name,
                     exercise_note=ex_notes,
-                    category=ex_category
+                    category=ex_category,
+                    type=ex_type
                 )
 
                 newExerciseTemplate = ExerciseTemplate.objects.create(

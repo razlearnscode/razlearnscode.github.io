@@ -378,7 +378,8 @@ function add_exercise(exerciseHTML, setHTML, exerciseData = null) {
     exercise_container.querySelector(".exercise-name").value = exerciseData.exercise_name;
   }
 
-  const typeSelection = exercise_container.querySelector("#exercise-value").value = "duration";
+  // Prefill the unit selection based on the exercise type
+  const typeSelection = exercise_container.querySelector("#exercise-value").value = exerciseData.exercise_type;
 
   // If exerciseData has sets (and make sure that it's an array), add them
   if (exerciseData && Array.isArray(exerciseData.sets) && exerciseData.sets.length > 0) {
