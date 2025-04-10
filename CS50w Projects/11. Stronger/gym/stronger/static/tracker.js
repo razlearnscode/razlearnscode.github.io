@@ -139,9 +139,12 @@ function start_workout_from_template(templateId) {
       const exercise_element = add_exercise(PREFILLED_EXERCISE_HEADER_HTML, PREFILLED_SET_ROW_HTML, exerciseData);
       exercise_list.append(exercise_element);
     });
+
   });
 
 }
+
+
 
 // It's possible to create a create_form function that I can use for both template and workout
 // But it can be quite a hassle to refactor, so I'll probably won't do it here
@@ -260,8 +263,8 @@ function start_work_out() {
   workout_view.append(new_workout);
 
   const workout_form = new_workout.querySelector(".workout-form");
-  const add_exercise_btn = new_workout.querySelector(".add-exercise-btn");
   const exercise_list = new_workout.querySelector(".exercise-list"); // I need to input into this so my buttons can be at the bottom
+  const add_exercise_btn = new_workout.querySelector(".add-exercise-btn");
   const cancel_btn = new_workout.querySelector(".cancel-btn");
 
   // --- CLICK EVENTS --- //
@@ -284,8 +287,6 @@ function start_work_out() {
     show_template_view();
     new_workout.remove(); // clear workout after just submitted
   });
-
-
 }
 
 function save_workout(new_workout) {
@@ -374,27 +375,26 @@ function add_exercise(exerciseHTML, setHTML, exerciseData = null) {
   const set_body = exercise_container.querySelector(".set-body");
 
   // Set exercise name if available
-  if (exerciseData && exerciseData.exercise_name) {
-    exercise_container.querySelector(".exercise-name").value = exerciseData.exercise_name;
-  }
+  if (exerciseData) {
+    if (exerciseData.exercise_name) {exercise_container.querySelector(".exercise-name").value = exerciseData.exercise_name;}
 
-
-  const exercise_type = exerciseData.exercise_type;
-
-  // Prefill the unit selection based on the exercise type
-  const typeSelection = exercise_container.querySelector("#exercise-value").value = exercise_type;
-
-  // Pre-fill the weight/duration value based on the type of exercises
-
-  // If exerciseData has sets (and make sure that it's an array), add them
-  if (exerciseData && Array.isArray(exerciseData.sets) && exerciseData.sets.length > 0) {
-    exerciseData.sets.forEach((set) => {
-      create_set_row(set_body, setHTML, set, exercise_type);
-    });
+  
+    // Prefill the unit selection based on the exercise type
+    const exercise_type = exerciseData.exercise_type;
+    exercise_container.querySelector("#exercise-value").value = exercise_type;
+  
+    // If exerciseData has sets (and make sure that it's an array), add them
+    if (exerciseData && Array.isArray(exerciseData.sets) && exerciseData.sets.length > 0) {
+      exerciseData.sets.forEach((set) => {
+        create_set_row(set_body, setHTML, set, exercise_type);
+      });
+    };
+  
   } else {
     // If this is an empty workout (no sets passed), create a single blank set row
     create_set_row(set_body, setHTML);
-  }
+  };
+ 
 
   // Auto index and add new set when + Add set button is clicked
   exercise_container
