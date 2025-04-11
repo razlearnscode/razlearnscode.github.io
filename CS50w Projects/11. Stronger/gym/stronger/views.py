@@ -1,4 +1,5 @@
 import json
+from django.db.models.functions import TruncDate
 from django.utils import timezone
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
@@ -7,7 +8,6 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import json
 
 
 from .models import User, Workout, Exercise, Set, WorkoutTemplate, ExerciseTemplate, SetTemplate
@@ -209,3 +209,51 @@ def populate_workout_from_template(request, template_id):
         template = WorkoutTemplate.objects.get(pk=template_id)
 
         return JsonResponse(template.serialize(), safe=False)
+    
+
+
+def view_records(request):
+    return render(request, "stronger/records.html")
+
+
+def get_exercise_records(request, exercise_id):
+    
+    if request.method == 'GET':
+
+        exercise = Exercise.objects.get(pk=exercise_id)
+
+        # Get all unique completed_at dates for this exercise
+        dates = (
+            Set.objects
+            .filter(exercise=exercise)
+            .annotate(date_only=TruncDate('completed_at'))  # Create the temporary variable date_only to store only the date of the DateTimeField variable
+            .values('date_only')
+            .distinct()
+        )
+
+        # For each date, get the set with the max weight
+        best_sets = []
+        for entry in dates: # Find the corresponding set for each date
+            date = entry['date_only']
+            heaviest_set = (
+                Set.objects
+                .filter(exercise=exercise, completed_at__date=date) # ..[__date] is the special attribute in the DateTimeField get only the date of a timestamp in the Django db
+                .order_by('-weight')  # highest weight first
+                .first()  # take the top one
+            )
+            if heaviest_set:
+                best_sets.append(heaviest_set)
+
+        # Sort by completed date ascending (optional)
+        best_sets.sort(key=lambda s: s.completed_at)
+
+        # Group sets by date
+    
+        return JsonResponse([set.serialize() for set in best_sets], safe=False)
+
+
+    # return JsonResponse({
+    #     "all_posts": [post.serialize(request.user) for post in page_obj], # formating all posts as component of paginator page objects
+    #     "num_pages": paginator.num_pages
+    #     }
+    #     , safe=False)

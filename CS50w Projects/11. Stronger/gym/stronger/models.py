@@ -43,7 +43,7 @@ class Exercise(models.Model):
 
 
     def __str__(self):
-        return f"Exercise: {self.name}"
+        return f"Exercise: {self.name} - #{self.id}"
 
 
 
@@ -54,19 +54,34 @@ class Set(models.Model): # the Set belongs to a specific Exercises (not directly
     weight = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True) # in kg
     duration = models.PositiveIntegerField(blank=True, null=True)  # in seconds
     reps = models.PositiveIntegerField(blank=True, null=True)
-    completed_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(default=timezone.now) # timezone.now so I have the option to edit this date later
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name='sets') # 1 exercises can have multiple sets. But the same set can only belong to 1 exercises
 
     def __str__(self):
         format_completed_date = self.completed_at.strftime("%d/%m/%Y") if self.completed_at else "Unknown Date"
-        return f"Set: {self.desc} completed on {format_completed_date}"
+        return f"Set: {self.desc} - {self.exercise} - {format_completed_date}"
+    
+    def serialize(self):
+
+        format_completed_date = self.completed_at.strftime("%d/%m/%Y") if self.completed_at else "Unknown Date"
+
+        return {
+            "exercise": self.exercise.name,
+            "desc": self.desc,
+            "weight": self.weight,
+            "duration": self.duration,
+            "reps": self.reps,
+            "completed_date": format_completed_date,
+        }
+    
+
 
 
 class Workout(models.Model):
     
     name = models.CharField(max_length=255)
     desc = models.CharField(max_length=500)
-    completed_at = models.DateTimeField(auto_now_add=True) # auto log the time when new workout is created
+    completed_at = models.DateTimeField(default=timezone.now) # auto log the time when new workout is created
     
     # default=1 means that if no user is specified when creating a new record, Django to
     # automatically set it to the user with id=1 (which is the superuser admin)
