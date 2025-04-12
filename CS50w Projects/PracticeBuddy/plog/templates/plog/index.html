@@ -5,10 +5,17 @@
 
 {% if user.is_authenticated %}
 
-    <main class="app-content">
-        <h2>Go practice with Plog</h2>
-        <p>Start your guitar learning journey today</p>
-    </main>
+<!-- All app components will be inside the app-content -->
+<div class="app-content">
+    <div class="home-view-container">
+        <div class="home-header">
+            <h1>Good day, {{ request.user.username }}! </h1>
+            <p>Start Plogging today!</p>
+        </div>
+    </div>
+
+    <div class="log-view-container" style="display: none;"></div>
+</div>
 
 
 {% else %}

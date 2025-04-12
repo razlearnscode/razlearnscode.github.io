@@ -4,7 +4,14 @@
     --green-light: #56b061;
     --light-bg: #f8faed;
     --dark-bg: #232323;
-    --gray: #f0f3e7;
+    --gray: #c4c5ba;
+}
+
+/* avoid overflow on mobile */
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 
@@ -52,13 +59,11 @@ p {
 
 /* Centered container */
 .app-container {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 1.25rem); /* Avoid Apple safe-area-inset */
     width: 100%;
     max-width: 600px;
     /* great for iPhone 14 Pro Max and readable on desktop */
     margin: 0 auto;
-    border: 2px dashed red;
-    border-radius: 2rem;
-    padding: 1.25rem 0;
     background: var(--light-bg);
     /* Side padding on small screens */
 }
@@ -70,27 +75,28 @@ p {
     }
 }
 
-/* Optional header styling */
-.app-header {
-    padding: 1rem 0;
-    border-bottom: 1px solid #ddd;
-    text-align: center;
-    background-color: #fff;
-}
-
 /* Main content */
 .app-content {
-    padding: 1.25rem;
     background: var(--light-bg);
     margin: 0 auto;
 }
 
+.home-view-container {
+    padding: 1.25rem;
+}
+
+/* Optional header styling */
+.home-header {
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+}
 
 .navbar {
     display: flex;
     flex-direction: row;
     justify-content: left;
     gap: 10px;
+    padding: 0 1.25rem;
 }
 
 
@@ -122,18 +128,151 @@ p {
     font-size: 1rem;
 }
 
+/* ------------------------------------------------------------------------- */
+
+/* -*- FORM styles -*- */
+
+.log-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+}
+
+.log-form-header {
+    padding: 0 1.25rem ;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    align-items: flex-start;
+}
+
+/* Make sure the font-size for the placeholder and the value is the same, otherwise it will look cut off */
+.log-name { 
+    line-height: 1.2;
+    font-size: 2.2rem;
+    border: transparent;
+    background: transparent;
+}
+
+.log-name::placeholder {
+    font-weight: 700;
+    color: var(--dark-bg);
+    font-size: 2.2rem;
+}
+
+.log-notes {
+    background: transparent;
+    border: transparent;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.log-notes::placeholder {
+    background: transparent;
+    border: transparent;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--gray);
+}
+
+.log-form-content {
+    background: var(--dark-bg);
+    border-radius: 2rem 2rem 0 0;
+    height: 900px;
+    padding: 2rem 1.25rem 1rem;
+}
+
+.session-table {
+    width: 100%;
+    color: var(--gray);
+    box-sizing: border-box;
+    table-layout: fixed; /* Ensures <thead> and <tbody> align */
+    border-collapse: collapse;
+    border-bottom: 1px solid #ccc;
+}
+
+.session-table thead th {
+    border-bottom: 1px solid #ccc;
+}
+
+.session-table thead th,
+.session-table tbody td {
+  padding: 0.5rem 0.25rem;
+  text-align: center;
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+
+/* Column widths (matching your 6-column layout) */
+.session-table th:nth-child(1),
+.session-table td:nth-child(1) { width: 16.67%; }  /* Score */
+
+.session-table th:nth-child(2),
+.session-table td:nth-child(2) { width: 25%; }     /* Duration */
+
+.session-table th:nth-child(3),
+.session-table td:nth-child(3) { width: 16.67%; }  /* BPM */
+
+.session-table th:nth-child(4),
+.session-table td:nth-child(4) { width: 16.67%; }  /* Speed(%) */
+
+.session-table th:nth-child(5),
+.session-table td:nth-child(5) { width: 12.5%; }   /* ✓ Save */
+
+.session-table th:nth-child(6),
+.session-table td:nth-child(6) { width: 12.5%; }   /* Del */
+
+
+/* Ensure inputs fit nicely */
+.session-table input {
+    width: 100%;
+    padding: 0.25rem;
+    font-size: 0.8rem;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+  }
+  
+  /* Keep buttons compact */
+  .session-status,
+  .delete-btn {
+    font-size: 0.9rem;
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    appearance: none;     /* Prevent iOS default styling */
+    color: var(--dark-bg);
+  }
+
+
+
+/* ------------------------------------------------------------------------- */
+
+/* -*- BUTTON styles -*- */
 
 .button {
     background-color: var(--green-primary);
     color: white;
     border: none;
     padding: 0.75rem 1.25rem;
+    margin: 0.5rem 0;
     border-radius: 999px;
     font-weight: bold;
     font-size: 0.95rem;
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
+
+.button.full {
+    width: 100%;
+}
+
+
 
 .button:hover {
     background-color: #3e8e41;

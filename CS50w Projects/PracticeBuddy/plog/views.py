@@ -3,6 +3,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import User, Log, Exercise, Session
 
@@ -60,3 +62,9 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "stronger/register.html")
+    
+
+def get_user(request):
+    if request.method == 'GET':
+        logged_in_user = request.user
+        return JsonResponse(logged_in_user.serialize())
