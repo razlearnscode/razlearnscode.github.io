@@ -1,0 +1,140 @@
+/* Colors */
+:root {
+    --green-primary: #50a65c;
+    --green-light: #56b061;
+    --light-bg: #f8faed;
+    --dark-bg: #232323;
+    --gray: #f0f3e7;
+}
+
+
+/* Reset & base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /*  border-box makes width and height include padding and borders */
+}
+
+
+/* -*- Basic Styles -*- */
+body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: var(--dark-bg);
+    color: #222;
+    line-height: 1.6;
+}
+
+
+/* Typography */
+h1,
+h2,
+h3 {
+    font-weight: 800;
+    color: #222;
+}
+
+h1 {
+    font-size: 2.2rem;
+    line-height: 1.2;
+}
+
+h2 {
+    font-size: 1.5rem;
+}
+
+p {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+
+
+/* Centered container */
+.app-container {
+    width: 100%;
+    max-width: 600px;
+    /* great for iPhone 14 Pro Max and readable on desktop */
+    margin: 0 auto;
+    border: 2px dashed red;
+    border-radius: 2rem;
+    padding: 1.25rem 0;
+    background: var(--light-bg);
+    /* Side padding on small screens */
+}
+
+/* Add side padding only on wider screens */
+@media (min-width: 601px) {
+    .app-container {
+        padding: 0 1rem;
+    }
+}
+
+/* Optional header styling */
+.app-header {
+    padding: 1rem 0;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    background-color: #fff;
+}
+
+/* Main content */
+.app-content {
+    padding: 1.25rem;
+    background: var(--light-bg);
+    margin: 0 auto;
+}
+
+
+.navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    gap: 10px;
+}
+
+
+/* To rename these components later! */
+
+.speech-bubble {
+    background-color: var(--white);
+    border-radius: 1rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    max-width: 180px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Task card */
+.task-card {
+    background-color: var(--white);
+    border-radius: 1.25rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.task-title {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+
+.button {
+    background-color: var(--green-primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 999px;
+    font-weight: bold;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.button:hover {
+    background-color: #3e8e41;
+}

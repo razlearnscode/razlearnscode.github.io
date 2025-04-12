@@ -1,0 +1,22 @@
+{% extends "plog/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+{% if user.is_authenticated %}
+
+    <main class="app-content">
+        <h2>Go practice with Plog</h2>
+        <p>Start your guitar learning journey today</p>
+    </main>
+
+
+{% else %}
+<p>Sign up to become a member</p>
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'plog.js' %}"></script>
+{% endblock %}

@@ -48,14 +48,14 @@ function show_chart() {
             y: {
               beginAtZero: true,
               title: {
-                display: true,
-                text: "Weight (kg)",
+                display: false,
+                // text: "Weight (kg)",
               },
             },
             x: {
               title: {
-                display: true,
-                text: "Date",
+                display: false,
+                // text: "Date",
               },
             },
           },
@@ -72,7 +72,7 @@ function show_chart() {
               anchor: "end",
               backgroundColor: "#444",
               color: "#fff",
-              borderRadius: 4,
+              borderRadius: 10,
               font: {
                 weight: "bold",
                 size: 12,
@@ -94,7 +94,7 @@ function show_chart() {
                   tooltipEl.style.background = "#fff";
                   tooltipEl.style.border = "1px solid #ccc";
                   tooltipEl.style.padding = "8px";
-                  tooltipEl.style.borderRadius = "4px";
+                  tooltipEl.style.borderRadius = "10px";
                   tooltipEl.style.pointerEvents = "none";
                   tooltipEl.style.boxShadow = "0px 0px 5px rgba(0,0,0,0.3)";
                   tooltipEl.style.fontSize = "14px";
