@@ -1,14 +1,25 @@
 /* Colors */
 :root {
     --green-primary: #50a65c;
-    --green-light: #56b061;
-    --light-bg: #f8faed;
-    --dark-bg: #232323;
+    --green-secondary: #6cbc73;
+    --green-tertiary: #a5d4a7;
+
+    --light-primary: #f8faed;
+    --light-secondary: #f1f5df;
+    --light-tertiary: #e4eac6;
+
+    --dark-primary: #232323;
+    --dark-secondary: #3B3B3B;
+    --dark-tertiary: #4C4C4C;
+    --dark-border: #2F2F2F;
+
     --gray: #c4c5ba;
+    --red: #E17878;
 }
 
 /* avoid overflow on mobile */
-html, body {
+html,
+body {
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
@@ -27,7 +38,7 @@ html, body {
 /* -*- Basic Styles -*- */
 body {
     font-family: 'DM Sans', sans-serif;
-    background-color: var(--dark-bg);
+    background-color: var(--dark-primary);
     color: #222;
     line-height: 1.6;
 }
@@ -59,12 +70,13 @@ p {
 
 /* Centered container */
 .app-container {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 1.25rem); /* Avoid Apple safe-area-inset */
+    padding-top: calc(env(safe-area-inset-top, 0px) + 1.25rem);
+    /* Avoid Apple safe-area-inset */
     width: 100%;
     max-width: 600px;
     /* great for iPhone 14 Pro Max and readable on desktop */
     margin: 0 auto;
-    background: var(--light-bg);
+    background: var(--light-primary);
     /* Side padding on small screens */
 }
 
@@ -77,7 +89,7 @@ p {
 
 /* Main content */
 .app-content {
-    background: var(--light-bg);
+    background: var(--light-primary);
     margin: 0 auto;
 }
 
@@ -103,7 +115,7 @@ p {
 /* To rename these components later! */
 
 .speech-bubble {
-    background-color: var(--white);
+    background-color: var(--var(--light-primary));
     border-radius: 1rem;
     padding: 0.75rem 1rem;
     font-size: 0.9rem;
@@ -113,7 +125,7 @@ p {
 
 /* Task card */
 .task-card {
-    background-color: var(--white);
+    background-color: var(--var(--light-primary));
     border-radius: 1.25rem;
     padding: 1rem 1.25rem;
     margin-bottom: 1rem;
@@ -140,7 +152,7 @@ p {
 }
 
 .log-form-header {
-    padding: 0 1.25rem ;
+    padding: 0 1.25rem;
     display: flex;
     flex-direction: column;
     gap: 0.1rem;
@@ -148,7 +160,7 @@ p {
 }
 
 /* Make sure the font-size for the placeholder and the value is the same, otherwise it will look cut off */
-.log-name { 
+.log-name {
     line-height: 1.2;
     font-size: 2.2rem;
     border: transparent;
@@ -157,7 +169,7 @@ p {
 
 .log-name::placeholder {
     font-weight: 700;
-    color: var(--dark-bg);
+    color: var(--dark-primary);
     font-size: 2.2rem;
 }
 
@@ -178,19 +190,43 @@ p {
 }
 
 .log-form-content {
-    background: var(--dark-bg);
+    background: var(--dark-primary);
     border-radius: 2rem 2rem 0 0;
     height: 900px;
-    padding: 2rem 1.25rem 1rem;
+    padding: 1.25rem 1.25rem 1rem;
 }
+
+.exercise-container {
+    padding: 0.5rem 0 1.25rem;
+}
+
+.exercise-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    width: 100%;
+    background: transparent;
+    border: transparent;
+    color: var(--light-primary);
+    line-height: 1rem;
+}
+
+.exercise-name::placeholder {
+    font-size: 1.25rem;
+    font-weight: 600;
+    background: transparent;
+    color: var(--light-primary);
+}
+
 
 .session-table {
     width: 100%;
     color: var(--gray);
     box-sizing: border-box;
-    table-layout: fixed; /* Ensures <thead> and <tbody> align */
+    table-layout: fixed;
+    /* Ensures <thead> and <tbody> align */
     border-collapse: collapse;
     border-bottom: 1px solid #ccc;
+    margin-bottom: 0.75rem;
 }
 
 .session-table thead th {
@@ -199,31 +235,57 @@ p {
 
 .session-table thead th,
 .session-table tbody td {
-  padding: 0.5rem 0.25rem;
-  text-align: center;
-  font-size: 0.9rem;
-  vertical-align: middle;
+    padding: 0.5rem 0.25rem;
+    text-align: center;
+    font-size: 0.9rem;
+    vertical-align: middle;
+
 }
 
 
 /* Column widths (matching your 6-column layout) */
 .session-table th:nth-child(1),
-.session-table td:nth-child(1) { width: 16.67%; }  /* Score */
+.session-table td:nth-child(1) {
+    width: 16.67%;
+
+}
+
+/* Score */
 
 .session-table th:nth-child(2),
-.session-table td:nth-child(2) { width: 25%; }     /* Duration */
+.session-table td:nth-child(2) {
+    width: 25%;
+}
+
+/* Duration */
 
 .session-table th:nth-child(3),
-.session-table td:nth-child(3) { width: 16.67%; }  /* BPM */
+.session-table td:nth-child(3) {
+    width: 16.67%;
+}
+
+/* BPM */
 
 .session-table th:nth-child(4),
-.session-table td:nth-child(4) { width: 16.67%; }  /* Speed(%) */
+.session-table td:nth-child(4) {
+    width: 16.67%;
+}
+
+/* Speed(%) */
 
 .session-table th:nth-child(5),
-.session-table td:nth-child(5) { width: 12.5%; }   /* ✓ Save */
+.session-table td:nth-child(5) {
+    width: 12.5%;
+}
+
+/* ✓ Save */
 
 .session-table th:nth-child(6),
-.session-table td:nth-child(6) { width: 12.5%; }   /* Del */
+.session-table td:nth-child(6) {
+    width: 12.5%;
+}
+
+/* Del */
 
 
 /* Ensure inputs fit nicely */
@@ -235,19 +297,10 @@ p {
     border: 1px solid #ddd;
     border-radius: 4px;
     text-align: center;
-  }
-  
-  /* Keep buttons compact */
-  .session-status,
-  .delete-btn {
-    font-size: 0.9rem;
-    border-radius: 0.5rem;
-    padding: 0.25rem 0.5rem;
-    width: 100%;
-    box-sizing: border-box;
-    appearance: none;     /* Prevent iOS default styling */
-    color: var(--dark-bg);
-  }
+    background-color: var(--light-primary);
+}
+
+
 
 
 
@@ -256,24 +309,90 @@ p {
 /* -*- BUTTON styles -*- */
 
 .button {
-    background-color: var(--green-primary);
-    color: white;
+    display: block;
+    font-family: 'DM Sans', sans-serif;
     border: none;
+    border-radius: 999px;
     padding: 0.75rem 1.25rem;
     margin: 0.5rem 0;
-    border-radius: 999px;
     font-weight: bold;
     font-size: 0.95rem;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.button.full {
+.button--primary {
+    background-color: var(--green-primary);
+    color: var(--light-primary);
+}
+
+.button--secondary {
+    background-color: var(--dark-secondary);
+    color: var(--light-primary);
+}
+
+.button--light {
+    background-color: var(--light-tertiary);
+    color: var(--dark-primary);
+}
+
+.button--danger {
+    background-color: var(--red);
+    color: var(--light-primary);
+}
+
+
+.button--full {
     width: 100%;
+    margin: 0.5rem 0 2rem;
+}
+
+.button--thin {
+    padding: 0.25rem 1.25rem;
+    width: 100%;
+    border-radius: 0.5rem;
 }
 
 
-
-.button:hover {
+/* Hover effects */
+.button--primary:hover {
     background-color: #3e8e41;
+}
+
+.button--danger:hover {
+    background-color: #c14444;
+}
+
+.button--secondary:hover {
+    background-color: var(--dark-tertiary);
+}
+
+.button--light:hover {
+    background-color: #dfe6bc;
+}
+
+
+.is-selected {
+    background-color: var(--green-primary);
+    color: var(--light-primary)
+}
+
+.is-unselected {
+    background-color: var(--dark-secondary);
+    color: var(--light-primary);
+}
+
+
+/* Keep buttons compact */
+.session-status,
+.delete-btn {
+    font-size: 0.9rem;
+    border-radius: 0.5rem;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    appearance: none;
+    /* Prevent iOS default styling */
+
 }

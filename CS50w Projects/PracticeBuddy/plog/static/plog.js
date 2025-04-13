@@ -116,7 +116,7 @@ const LOG_FORM_HTML = `
 
     <form class="log-form">
         <div class="log-form-header">
-            <input type="submit" class="button small" style="margin-left: auto;" value="Finish">
+            <input type="submit" class="button button--primary" style="margin-left: auto;" value="Finish">
             <input type="text" class="log-name" placeholder="New Log">
             <p>[00:00]</p>
             <textarea placeholder="Notes" id="log-notes" class="log-notes" name="log-notes" rows="3"></textarea>
@@ -124,8 +124,8 @@ const LOG_FORM_HTML = `
 
         <div class="log-form-content">
             <div class="exercise-list"></div>
-            <button class="button full add-exercise-btn">+ Add Exercises</button>
-            <button class="button full cancel-btn">Cancel Workout</button>
+            <button class="button button--primary button--full add-exercise-btn">+ Add Exercises</button>
+            <button class="button button--full button--danger cancel-btn">Cancel Workout</button>
         </div>
     </form>   
 `;
@@ -148,7 +148,7 @@ const EXERCISE_CONTENT_HTML = `
                 <!-- Rows will be generated dynamically -->
             </tbody>
         </table>
-    <button type="button" class="button full">+ Add Session</button>
+    <button type="button" class="button button--thin button--secondary add-session-btn">+ Add Session</button>
 `;
 
 const SESSION_ROW_HTML = `
@@ -156,6 +156,6 @@ const SESSION_ROW_HTML = `
     <td><input type="text" class="session-duration" placeholder="00:00"></td>
     <td><input type="number" class="session-bpm" placeholder="0"></td>
     <td><input type="number" class="session-speed" placeholder="0"></td> 
-    <td><button type="button" class="session-status">✓</button></td>
-    <td><button type="button" class="small-button delete-btn">x</button></td>
+    <td><button type="button" class="button is-unselected session-status">✓</button></td>
+    <td><button type="button" class="button button--danger delete-btn">x</button></td>
     `;
