@@ -68,3 +68,20 @@ def get_user(request):
     if request.method == 'GET':
         logged_in_user = request.user
         return JsonResponse(logged_in_user.serialize())
+    
+
+def save_log(request):
+
+    try:
+        if request.method == 'POST':
+
+
+            pass
+    
+    
+
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found"}, status=404)
+    
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)

@@ -35,14 +35,24 @@ function show_home_view() {
 }
 
 function global_click_event_handlers() {
-  // Handle click event when the save button is pressed
+  
+    // SAVE SESSION event
+    // Handle click event when the save button is pressed
   document.addEventListener("click", function (e) {
     if (e.target.classList.contains("session-status")) {
       const row = e.target.closest(".session-row");
-      console.log("Im clicked");
       toggle_session_timer(row);
     }
   });
+
+  // DELETE SESSION event
+  document.addEventListener("click", function(e) {
+    if (e.target.classList.contains("delete-btn")) {
+        const row = e.target.closest(".session-row");
+        if (row) row.remove()
+    }
+  });
+
 }
 
 function show_empty_log_view() {
@@ -51,7 +61,7 @@ function show_empty_log_view() {
   const log_view_container = document.querySelector(".log-view-container");
 
   const new_log = document.createElement("div");
-  new_log.className = "new-log-container";
+  new_log.className = "log-container";
 
   new_log.innerHTML = LOG_FORM_HTML;
 
@@ -116,7 +126,7 @@ function toggle_session_timer(sessionRow) {
     // Styling the remaning elements
     sessionRow.querySelectorAll("input").forEach((inputBox) => {
       inputBox.classList.add("is-saved");
-      console.log("I was saved x4");
+      inputBox.readOnly = true;
     });
   } else {
     // if no timer, then starts new one
@@ -139,11 +149,11 @@ function toggle_session_timer(sessionRow) {
     // Styling the remaning elements
     sessionRow.querySelectorAll("input").forEach((inputBox) => {
       inputBox.classList.remove("is-saved");
+      inputBox.readOnly = false; // Make the input no longer immutable
     });
   }
 }
 
-// Function to auto add a timer
 
 // 1. Function to format time
 function formatTime(seconds) {
@@ -162,10 +172,77 @@ function create_session_row(session_body, sessionHTML, setData = null) {
   return row;
 }
 
+
+function save_log(new_log) {
+
+    const logName = new_log.querySelector(".log-name").value.trim();
+    const logNotes = new_log.querySelector(".log-notes").value.trim();
+
+    const exercises = [];
+
+    const allExercises = new_log.querySelectorAll(".exercise-container");
+
+    allExercises.forEach((single_exercise) => {
+      
+      const exerciseName = single_exercise.querySelector(".exercise-name");
+      const allSessions = single_exercise.querySelectorAll(".sessionRow");
+
+      const sessions = []
+
+      allSessions.forEach((row) => {
+        if (row.dataset.paused === "true") { // Check if the timer has been stopped (saved) for the session
+
+          const score = row.querySelector(".session-score").value || 1;
+          const bpm = row.querySelector("session-bpm").value || 0;
+          const speed = row.querySelector("session-speed").value || 0;
+
+          sessions.push({
+            score: score,
+            bpm: parseInt(bpm),
+            speed: parseInt(speed),
+          });
+        }
+      });
+
+      // Update the exercises in the list
+      exercises.push({ 
+        name: exerciseName,
+        sessions: sessions,
+      });
+    });
+
+    const logData = {
+      name: logName,
+      notes: logNotes,
+      exercises,
+    }
+
+    // Make the POST request
+    fetch("/save_log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(workoutData),
+    })
+    .then((response) => response.json())
+    .then((data) =>{ // receive the response from the API
+      console.log("Log saved", data);
+      alert("Log data saved!");
+
+      // Clear the old log after successful submission
+      document.querySelector(".log-container").remove();
+      get_home_view(); // return back to Home
+    })
+    .catch((error) => {
+      console.error("Error saving log:", error);
+      alert("There was an error saving your log")
+    });
+
+}
+
 // --*-- ALL HTML TEMPLATES --*-- //
 const HOME_VIEW_HTML = `
 
-    <div class="new-log-container">
+    <div class="log-container">
         <h3>Quick Start</h3>
         <button class="button full">Start Plogging</button>
     </div>
@@ -184,7 +261,7 @@ const LOG_FORM_HTML = `
         <div class="log-form-content">
             <div class="exercise-list"></div>
             <button class="button button--primary button--full add-exercise-btn">+ Add Exercises</button>
-            <button class="button button--full button--danger cancel-btn">Cancel Workout</button>
+            <button class="button button--full button--danger cancel-btn">Cancel Log</button>
         </div>
     </form>   
 `;
@@ -211,10 +288,10 @@ const EXERCISE_CONTENT_HTML = `
 `;
 
 const SESSION_ROW_HTML = `
-    <td><input type="number" class="session-score" placeholder="/ 5"></td>    
+    <td><input type="number" class="session-score" placeholder="1-5" min="1" max="5"></td>    
     <td><input type="text" class="session-duration" placeholder="00:00" readonly></td>
-    <td><input type="number" class="session-bpm" placeholder="0"></td>
-    <td><input type="number" class="session-speed" placeholder="0"></td> 
+    <td><input type="number" class="session-bpm" placeholder="0" min="0"></td>
+    <td><input type="number" class="session-speed" placeholder="0" min="0" max="200"></td> 
     <td><button type="button" class="button is-unselected session-status">✓</button></td>
     <td><button type="button" class="button button--danger delete-btn">x</button></td>
     `;

@@ -192,7 +192,6 @@ p {
 .log-form-content {
     background: var(--dark-primary);
     border-radius: 2rem 2rem 0 0;
-    height: 900px;
     padding: 0.75rem 1.25rem 1rem;
 }
 
@@ -313,6 +312,7 @@ p {
 
 .session-table input.is-saved { /* Color all the input box green */
     background-color: var(--green-primary);
+    cursor: default;
 }
 
 .session-table input.is-saved::placeholder {  /* Make the placeholder text white */
@@ -392,7 +392,8 @@ p {
 
 .is-selected {
     background-color: var(--green-primary);
-    color: var(--light-primary)
+    color: var(--light-primary);
+    cursor: pointer;
 }
 
 .is-unselected {
