@@ -200,7 +200,7 @@ function save_log(new_log) {
       allSessions.forEach((row) => {
 
         console.log(row.dataset.paused);
-        
+
         if (row.dataset.paused === "true") { // Check if the timer has been stopped (saved) for the session
 
           console.log("The session was scanned");
@@ -209,12 +209,14 @@ function save_log(new_log) {
           const bpm = row.querySelector(".session-bpm").value || 0;
           const speed = row.querySelector(".session-speed").value || 0;
           const desc = `${exerciseName} - BPM: ${bpm} - @ ${speed} %`;
+          const duration = row.dataset.duration || 0;
 
           sessions.push({
             score: parseInt(score),
             desc: desc,
             bpm: parseInt(bpm),
             speed: parseInt(speed),
+            duration: parseInt(duration),
           });
         }
       });

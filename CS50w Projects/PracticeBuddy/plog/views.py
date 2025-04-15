@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from datetime import timedelta
 
 from .models import User, Log, Exercise, Session
 
@@ -111,6 +112,7 @@ def save_log(request):
                         "bpm": s.get("bpm"),
                         "speed": s.get("speed"),
                         "score": s.get("score"),
+                        "duration": timedelta(seconds=s.get("duration", 0)),
                         "exercise": exercise,
                     }
 
