@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
@@ -69,16 +70,54 @@ def get_user(request):
         logged_in_user = request.user
         return JsonResponse(logged_in_user.serialize())
     
-
+@csrf_exempt
 def save_log(request):
 
     try:
         if request.method == 'POST':
+            data = json.loads(request.body)
+            user = request.user
+            log_name = data.get("name")
+            notes = data.get("notes", "")
 
+            exercises = data.get("exercises", [])
 
-            pass
-    
-    
+            newLog = Log.objects.create(
+                name=log_name,
+                user=user,
+                notes=notes,
+            )
+
+            for ex in exercises:
+                ex_name = ex.get("name", "Unnamed")
+                ex_notes = ex.get("notes", "")
+                ex_category = ex.get("category", "")
+                sessions = ex.get("sessions", [])
+
+                exercise = Exercise.objects.create(
+                    name=ex_name,
+                    notes=ex_notes,
+                    category=ex_category
+                )
+
+                # Add the exercises to the Log
+                newLog.exercises_in_log.add(exercise)
+
+                print("Sessions is:", sessions)
+
+                for s in sessions:
+                    session_fields = {
+                        "desc": s.get("desc"),
+                        "bpm": s.get("bpm"),
+                        "speed": s.get("speed"),
+                        "score": s.get("score"),
+                        "exercise": exercise,
+                    }
+
+                    Session.objects.create(**session_fields)
+
+            return JsonResponse({
+                "message": "Log saved successfully!"}, status=201)
 
     except User.DoesNotExist:
         return JsonResponse({"error": "User not found"}, status=404)

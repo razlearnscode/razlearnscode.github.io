@@ -77,6 +77,13 @@ function show_empty_log_view() {
     const new_exercise = add_exercise(EXERCISE_CONTENT_HTML, SESSION_ROW_HTML);
     exercise_list.append(new_exercise);
   });
+
+  log_form.addEventListener("submit", function(event) {
+    event.preventDefault();
+    save_log(new_log);
+  });
+
+
 }
 
 function add_exercise(exerciseHTML, sessionHTML, exerciseData = null) {
@@ -178,35 +185,48 @@ function save_log(new_log) {
     const logName = new_log.querySelector(".log-name").value.trim();
     const logNotes = new_log.querySelector(".log-notes").value.trim();
 
+
     const exercises = [];
 
     const allExercises = new_log.querySelectorAll(".exercise-container");
 
     allExercises.forEach((single_exercise) => {
       
-      const exerciseName = single_exercise.querySelector(".exercise-name");
-      const allSessions = single_exercise.querySelectorAll(".sessionRow");
+      const exerciseName = single_exercise.querySelector(".exercise-name").value.trim();
+      const allSessions = single_exercise.querySelectorAll(".session-row");
 
       const sessions = []
 
       allSessions.forEach((row) => {
+
+        console.log(row.dataset.paused);
+        
         if (row.dataset.paused === "true") { // Check if the timer has been stopped (saved) for the session
 
+          console.log("The session was scanned");
+
           const score = row.querySelector(".session-score").value || 1;
-          const bpm = row.querySelector("session-bpm").value || 0;
-          const speed = row.querySelector("session-speed").value || 0;
+          const bpm = row.querySelector(".session-bpm").value || 0;
+          const speed = row.querySelector(".session-speed").value || 0;
+          const desc = `${exerciseName} - BPM: ${bpm} - @ ${speed} %`;
 
           sessions.push({
-            score: score,
+            score: parseInt(score),
+            desc: desc,
             bpm: parseInt(bpm),
             speed: parseInt(speed),
           });
         }
       });
 
+      const notes = "";
+      const category = "OTHERS"; // default to this now. I'll update this later
+
       // Update the exercises in the list
       exercises.push({ 
         name: exerciseName,
+        notes: notes,
+        category: category,
         sessions: sessions,
       });
     });
@@ -221,7 +241,7 @@ function save_log(new_log) {
     fetch("/save_log", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(workoutData),
+      body: JSON.stringify(logData),
     })
     .then((response) => response.json())
     .then((data) =>{ // receive the response from the API
