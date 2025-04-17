@@ -653,7 +653,6 @@ const NEW_TEMPLATE_WORKOUT_HTML = `
             <div class="exercise-list"></div>
             <button type="button" class="full-button blue add-exercise-btn">+ Add Exercises</button>
         </form>   
-
     `;
 
 

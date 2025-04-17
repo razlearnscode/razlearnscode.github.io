@@ -263,7 +263,6 @@ p {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-
 }
 
 .log-form-header {
@@ -288,7 +287,8 @@ p {
     font-size: 2.2rem;
 }
 
-.log-notes {
+.log-notes,
+.template-desc {
     background: transparent;
     border: transparent;
     width: 100%;
@@ -360,44 +360,49 @@ p {
 
 
 /* Column widths (matching your 6-column layout) */
-.session-table th:nth-child(1),
-.session-table td:nth-child(1) {
+.session-table .score-header,
+.session-table .score-cell {
     width: 16.67%;
 
 }
 
 /* Score */
 
-.session-table th:nth-child(2),
-.session-table td:nth-child(2) {
+.session-table .duration-header,
+.session-table .duration-cell {
     width: 25%;
+}
+
+.session-table .target-duration-cell,
+.session-table .target-duration-cell {
+    width: 37.5%;
 }
 
 /* Duration */
 
-.session-table th:nth-child(3),
-.session-table td:nth-child(3) {
+.session-table .bpm-header,
+.session-table .bpm-cell {
     width: 16.67%;
 }
 
 /* BPM */
 
-.session-table th:nth-child(4),
-.session-table td:nth-child(4) {
+.session-table .speed-header,
+.session-table .speed-cell {
     width: 16.67%;
 }
 
 /* Speed(%) */
 
-.session-table th:nth-child(5),
-.session-table td:nth-child(5) {
+.session-table .status-header,
+.session-table .status-cell {
     width: 12.5%;
 }
 
 /* ✓ Save */
 
-.session-table th:nth-child(6),
-.session-table td:nth-child(6) {
+.session-table .delete-header,
+.session-table .delete-cell {
     width: 12.5%;
 }
 

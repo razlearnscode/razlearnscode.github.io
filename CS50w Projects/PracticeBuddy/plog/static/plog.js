@@ -3,7 +3,7 @@ let logged_in_user = null; // get the user info globally
 document.addEventListener("DOMContentLoaded", async () => {
   // Having await helps that I don't have to wait for user to load, I can still proceed with the below function call
   logged_in_user = await get_user(); // Fetch one and reuse for all functions
-  get_home_view();
+  get_new_template_view();
 });
 
 function get_user() {
@@ -12,17 +12,27 @@ function get_user() {
 
 function get_home_view() {
   document.querySelector(".log-view-container").style.display = "none";
+  document.querySelector(".create-template-view").style.display = "none";
   document.querySelector(".home-view-container").style.display = "block";
   show_home_view();
 }
 
 function get_log_view() {
   document.querySelector(".home-view-container").style.display = "none";
+  document.querySelector(".create-template-view").style.display = "none";
   document.querySelector(".log-view-container").style.display = "block";
   document.querySelector(".navbar").style.display = "none";
   show_empty_log_view();
 }
 
+function get_new_template_view() {
+  document.querySelector(".home-view-container").style.display = "none";
+  document.querySelector(".log-view-container").style.display = "none";
+  document.querySelector(".create-template-view").style.display = "block";
+  create_template();
+}
+
+// 0000000000 --*-- HOME VIEW --*-- 0000000000 //
 function show_home_view() {
   const home_view_container = document.querySelector(".home-view-container");
 
@@ -32,6 +42,13 @@ function show_home_view() {
   home_content.innerHTML = HOME_VIEW_HTML;
 
   home_view_container.append(home_content);
+
+  const new_template_btn = home_content.querySelector(".new-template-btn");
+
+  new_template_btn.addEventListener("click", function(e) {
+    e.stopPropagation();
+
+  });
 
   show_saved_template(home_view_container);
 }
@@ -66,7 +83,6 @@ function show_saved_template(home_view_container) {
 
   })
 
-
 }
 
 function global_click_event_handlers() {
@@ -76,7 +92,7 @@ function global_click_event_handlers() {
   document.addEventListener("click", function (e) {
     if (e.target.classList.contains("session-status")) {
       const row = e.target.closest(".session-row");
-      toggle_session_timer(row);
+      toggle_session_timer(row); // I only want this to trigger when this is for new template
     }
   });
 
@@ -102,9 +118,44 @@ function global_click_event_handlers() {
       dropdown.classList.toggle("open");
     }
   });
+}
+
+// 0000000000 --*-- CREATE TEMPLATE VIEW --*-- 0000000000 //
+
+function create_template() {
+  const new_template_view = document.querySelector(".create-template-view");
+
+  const new_template = document.createElement("div");
+  new_template.className = "new-template-container";
+
+  new_template.innerHTML = NEW_TEMPLATE_LOG_HTML;
+  new_template_view.append(new_template);
+
+  const template_form = new_template.querySelector(".log-form");
+  const exercise_list = new_template.querySelector(".exercise-list");
+  const add_exercise_btn = new_template.querySelector(".add-exercise-btn");
+  const cancel_btn = new_template.querySelector(".add-exercise-btn");
+
+  add_exercise_btn.addEventListener("click", function (event) {
+    event.preventDefault();
+    const new_exercise = add_exercise(NEW_TEMPLATE_EXERCISE_HTML, NEW_TEMPLATE_SESSION_HTML);
+    exercise_list.append(new_exercise);
+  });
+
+  template_form.addEventListener("submit", function(event) {
+    event.preventDefault();
+    save_new_template();
+  });
 
 }
 
+function save_new_template() {
+
+}
+
+
+
+// 0000000000 --*-- LOG VIEW --*-- 0000000000 //
 function show_empty_log_view() {
 
     global_click_event_handlers();
@@ -225,7 +276,11 @@ function create_session_row(session_body, sessionHTML, setData = null) {
   row.innerHTML = sessionHTML;
 
   session_body.append(row);
-  toggle_session_timer(row);
+
+  if (row.querySelector(".session-status")) {
+    toggle_session_timer(row); // Only toggle this if the session duration is available
+  }
+
   return row;
 }
 
@@ -323,7 +378,7 @@ const HOME_VIEW_HTML = `
     <div class="my-template-container">
       <div class="my-template-header">
         <h2>Templates</h2>
-        <button class="button button--secondary">+ Template</button>
+        <button class="button button--secondary new-template-btn">+ Template</button>
       </div>
       <h3>My Templates</h3>
       <div class="template-cards-container"></div>
@@ -344,6 +399,52 @@ const TEMPLATE_CARD_HTML = `
   </div>
   <p class="saved-temlate-desc">__DESC__</p>
   <p class="saved-temlate-days-counter">Last updated: __DAYS__</p>
+`;
+
+
+// --*-- NEW TEMPLATE VIEW TEMPLATES --*-- //
+const NEW_TEMPLATE_LOG_HTML = `
+  <form class="log-form">
+    <div class="log-form-header">
+      <input type="submit" class="button button--primary" style="margin-left: auto;" value="Finish">
+      <input type="text" class="log-name" placeholder="Name the Template">
+      <textarea placeholder="Description" id="template-desc" class="template-desc" name="template-desc" rows="3"></textarea>
+    </div>
+
+      <div class="log-form-content">
+        <div class="exercise-list"></div>
+        <button class="button button--primary button--full add-exercise-btn">+ Add Exercises</button>
+        <button class="button button--full button--danger cancel-btn">Cancel</button>
+    </div>
+  </form>   
+`;
+
+const NEW_TEMPLATE_EXERCISE_HTML = `
+      <input type="text" class="exercise-name" placeholder="Name Your Exercise">
+        <table class="session-table">
+            <thead>
+                <tr>
+                    <th class="score-header">★</th>
+                    <th class="target-duration-header">Duration</th>
+                    <th class="bpm-header">BPM</th>
+                    <th class="speed-header">Speed</th>
+                    <th class="delete-header"> </th>
+                </tr>
+            </thead>
+            <tbody class="session-body">
+                
+            </tbody>
+        </table>
+    <button type="button" class="button button--thin button--secondary add-session-btn">+ Add Session</button>
+`;
+
+// Let's update and remove the readonly in session-template-duration later
+const NEW_TEMPLATE_SESSION_HTML = `
+  <td class="score-cell"><input type="number" class="session-score" placeholder="1-5" min="1" max="5"></td>    
+  <td class="target-duration-cell"><input type="text" class="session-duration" placeholder="00:00" readonly></td>
+  <td class="bpm-cell"><input type="number" class="session-bpm" placeholder="0" min="0"></td>
+  <td class="speed-cell"><input type="number" class="session-speed" placeholder="0" min="0" max="200"></td> 
+  <td class="delete-cell"><button type="button" class="button button--danger delete-btn">x</button></td>
 `;
 
 
@@ -373,12 +474,12 @@ const EXERCISE_CONTENT_HTML = `
         <table class="session-table">
             <thead>
                 <tr>
-                    <th>★</th>
-                    <th>Duration</th>
-                    <th>BPM</th>
-                    <th>Speed</th>
-                    <th>✓</th>
-                    <th> </th>
+                    <th class="score-header">★</th>
+                    <th class="duration-header">Duration</th>
+                    <th class="bpm-header">BPM</th>
+                    <th class="speed-header">Speed</th>
+                    <th class="status-header>✓</th>
+                    <th class="delete-header"> </th>
                 </tr>
             </thead>
             <tbody class="session-body">
@@ -389,10 +490,10 @@ const EXERCISE_CONTENT_HTML = `
 `;
 
 const SESSION_ROW_HTML = `
-    <td><input type="number" class="session-score" placeholder="1-5" min="1" max="5"></td>    
-    <td><input type="text" class="session-duration" placeholder="00:00" readonly></td>
-    <td><input type="number" class="session-bpm" placeholder="0" min="0"></td>
-    <td><input type="number" class="session-speed" placeholder="0" min="0" max="200"></td> 
-    <td><button type="button" class="button is-unselected session-status">✓</button></td>
-    <td><button type="button" class="button button--danger delete-btn">x</button></td>
+    <td class="score-cell"><input type="number" class="session-score" placeholder="1-5" min="1" max="5"></td>    
+    <td class="duration-cell"><input type="text" class="session-duration" placeholder="00:00" readonly></td>
+    <td class="bpm-cell"><input type="number" class="session-bpm" placeholder="0" min="0"></td>
+    <td class="speed-cell"><input type="number" class="session-speed" placeholder="0" min="0" max="200"></td> 
+    <td class="status-cell"><button type="button" class="button is-unselected session-status">✓</button></td>
+    <td class="delete-cell"><button type="button" class="button button--danger delete-btn">x</button></td>
     `;
