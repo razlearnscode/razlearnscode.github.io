@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from datetime import timedelta
 
-from .models import User, Log, Exercise, Session
+from .models import User, Log, Exercise, Session, LogTemplate, ExerciseTemplate, SessionTemplate
 
 # Create your views here.
 def index(request):
@@ -70,6 +70,18 @@ def get_user(request):
     if request.method == 'GET':
         logged_in_user = request.user
         return JsonResponse(logged_in_user.serialize())
+    
+
+def get_templates(request, userID):
+    if request.method == 'GET':
+        
+        user = User.objects.get(pk=userID)
+        saved_templates = LogTemplate.objects.filter(user=user).all()
+
+        return JsonResponse([template.serialize() for template in saved_templates], safe=False)
+
+
+    pass
     
 @csrf_exempt
 def save_log(request):

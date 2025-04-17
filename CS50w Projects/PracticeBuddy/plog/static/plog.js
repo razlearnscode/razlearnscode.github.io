@@ -3,7 +3,7 @@ let logged_in_user = null; // get the user info globally
 document.addEventListener("DOMContentLoaded", async () => {
   // Having await helps that I don't have to wait for user to load, I can still proceed with the below function call
   logged_in_user = await get_user(); // Fetch one and reuse for all functions
-  get_log_view();
+  get_home_view();
 });
 
 function get_user() {
@@ -32,6 +32,41 @@ function show_home_view() {
   home_content.innerHTML = HOME_VIEW_HTML;
 
   home_view_container.append(home_content);
+
+  show_saved_template(home_view_container);
+}
+
+function show_saved_template(home_view_container) {
+
+  global_click_event_handlers();
+
+  const template_cards_container = home_view_container.querySelector(".template-cards-container");
+
+  // fetch(`/templates/${logged_in_user.id}`)
+  fetch(`/templates/1`)
+  .then((response) => response.json())
+  .then((saved_templates) => {
+
+    saved_templates.forEach((tempEl) => {
+        
+        console.log(tempEl);
+
+        const filled_in_template = TEMPLATE_CARD_HTML
+        .replace(/__ID__/g, tempEl.id)
+        .replace(/__NAME__/g, tempEl.name)
+        .replace(/__DESC__/g, tempEl.desc || "")
+        .replace(/__DAYS__/g, tempEl.days_since_updated === 0 ? 'Today' : `${tempEl.days_since_updated} days ago`);
+
+        const template_card = document.createElement("div");
+        template_card.className = "template-card";        
+
+        template_card.innerHTML = filled_in_template;
+        template_cards_container.append(template_card);
+    })
+
+  })
+
+
 }
 
 function global_click_event_handlers() {
@@ -50,6 +85,28 @@ function global_click_event_handlers() {
     if (e.target.classList.contains("delete-btn")) {
         const row = e.target.closest(".session-row");
         if (row) row.remove()
+    }
+  });
+
+  // DROPDOWN TOGGLE EVENT
+  document.addEventListener("click", function(e) {
+
+    const isToggle = e.target.classList.contains("dropdown-toggle");
+    e.stopPropagation();
+
+    if (isToggle) {
+      // Close other dropdowns
+      document.querySelectorAll(".dropdown").forEach(drop => {
+      drop.classList.remove("open");
+
+      const dropdown = e.target.closest(".dropdown")
+      dropdown.classList.add("open");
+      });
+    } else {
+      // If clicked outside, close all window
+      document.querySelector(".dropdown").forEach(drop => {
+        drop.classList.remove("open");
+      });
     }
   });
 
@@ -261,14 +318,43 @@ function save_log(new_log) {
 
 }
 
-// --*-- ALL HTML TEMPLATES --*-- //
+// 000000000 --*-- ALL HTML TEMPLATES --*-- 000000000 //
+
+// --*-- HOME VIEW TEMPLATES --*-- //
 const HOME_VIEW_HTML = `
 
     <div class="log-container">
         <h3>Quick Start</h3>
-        <button class="button full">Start Plogging</button>
+        <button class="button button--primary button--full">Start Plogging</button>
+    </div>
+    <div class="my-template-container">
+      <div class="my-template-header">
+        <h2>Templates</h2>
+        <button class="button button--secondary">+ Template</button>
+      </div>
+      <h3>My Templates</h3>
+      <div class="template-cards-container"></div>
     </div>
 `;
+
+const TEMPLATE_CARD_HTML = `
+  <div class="template-card-header">
+    <h3 class="saved-temlate-name">__NAME__</h3>
+    <div class="dropdown">
+      <button class="dropdown-toggle">…</button>
+      <div class="dropdown-menu">
+        <button onclick="start_log_from_template">Start Plog</button>
+        <button onclick="editTemplate(__ID__)">Edit</button>
+        <button onclick="deleteTemplate(__ID__)">Delete</button>
+      </div>
+    </div>
+  </div>
+  <p class="saved-temlate-desc">__DESC__</p>
+  <p class="saved-temlate-days-counter">Last updated: __DAYS__</p>
+`;
+
+
+// --*-- LOG VIEW TEMPLATES --*-- //
 
 const LOG_FORM_HTML = `
 

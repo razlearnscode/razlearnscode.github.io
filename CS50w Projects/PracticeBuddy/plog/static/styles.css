@@ -61,6 +61,11 @@ h2 {
     font-size: 1.5rem;
 }
 
+h3 {
+    font-size: 1rem;
+}
+
+
 p {
     font-size: 1rem;
     line-height: 1.5;
@@ -142,6 +147,116 @@ p {
 
 /* ------------------------------------------------------------------------- */
 
+/* -*- HOME styles -*- */
+
+.my-template-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.template-cards-container {
+    /* margin: 20px 0px; */
+    margin-top: 1rem;
+    display: grid;
+    /* So that I can split the cards into 2 columns */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.template-card {
+    box-sizing: border-box;
+    border-radius: 0.5rem;
+    border: 1px solid var(--light-tertiary);
+    background-color: var(--light-tertiary);
+
+
+    width: 100%;
+    height: 10rem;
+
+    padding: 0.75rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* start flushing everything from start to bottom */
+
+    gap: 0.5rem;
+
+    line-clamp: 3;
+}
+
+.template-card-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: top;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {  /* the dropdown toggle with elipses */
+    background: none;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1.25rem;
+    padding: 0.25rem;
+    font-size: bold;
+    cursor: pointer;
+    text-align: center;
+    color: var(--green-primary);
+    background-color: var(--light-primary);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 2.5rem;
+    width: 100px;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 0.5rem;
+    z-index: 100;
+    padding: 10px;
+    flex-direction: column;
+    background-color: var(--light-primary);
+}
+
+.dropdown-menu button {
+    display: block;
+    background: none;
+    border: none;
+    border-radius: 0.5rem;
+    text-align: left;
+    padding: 8px;
+    width: 100%;
+    cursor: pointer;  
+    background-color: var(--light-primary);
+}
+
+.dropdown-menu button:hover {
+    background-color: #dfe6bc;
+}
+
+.dropdown.open .dropdown-menu {
+    display: flex;
+}
+
+.saved-temlate-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2rem;  /* this is so that the bottom of the text is not cut off */
+}
+
+/* ------------------------------------------------------------------------- */
+
 /* -*- FORM styles -*- */
 
 .log-form {
@@ -176,6 +291,7 @@ p {
 .log-notes {
     background: transparent;
     border: transparent;
+    width: 100%;
     font-size: 1rem;
     font-weight: 600;
     line-height: 1.5;
@@ -350,7 +466,7 @@ p {
 }
 
 .button--light {
-    background-color: var(--light-tertiary);
+    background-color: #efefef;
     color: var(--dark-primary);
 }
 
