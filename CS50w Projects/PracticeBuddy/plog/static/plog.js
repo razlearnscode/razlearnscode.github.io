@@ -91,22 +91,15 @@ function global_click_event_handlers() {
   // DROPDOWN TOGGLE EVENT
   document.addEventListener("click", function(e) {
 
-    const isToggle = e.target.classList.contains("dropdown-toggle");
-    e.stopPropagation();
-
-    if (isToggle) {
-      // Close other dropdowns
-      document.querySelectorAll(".dropdown").forEach(drop => {
+    // First, I need to make sure all dropdown are closed by default
+    document.querySelectorAll(".dropdown").forEach(drop => {
       drop.classList.remove("open");
+    });
 
+    if (e.target.classList.contains("dropdown-toggle")) {
+      e.stopPropagation();
       const dropdown = e.target.closest(".dropdown")
-      dropdown.classList.add("open");
-      });
-    } else {
-      // If clicked outside, close all window
-      document.querySelector(".dropdown").forEach(drop => {
-        drop.classList.remove("open");
-      });
+      dropdown.classList.toggle("open");
     }
   });
 
