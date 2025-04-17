@@ -478,7 +478,7 @@ const EXERCISE_CONTENT_HTML = `
                     <th class="duration-header">Duration</th>
                     <th class="bpm-header">BPM</th>
                     <th class="speed-header">Speed</th>
-                    <th class="status-header>✓</th>
+                    <th class="status-header">✓</th>
                     <th class="delete-header"> </th>
                 </tr>
             </thead>

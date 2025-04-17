@@ -354,10 +354,13 @@ p {
     text-align: center;
     font-size: 16px;
     vertical-align: middle;
+    
 }
 
-
-
+/* Prevent auto padding to my td element */
+.session-row td { 
+    padding: 0 0.25rem !important;
+}
 
 /* Column widths (matching your 6-column layout) */
 .session-table .score-header,
