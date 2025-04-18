@@ -11,4 +11,5 @@ urlpatterns = [
     path("user", views.get_user, name="get_user"),
     path("save_log", views.save_log, name="save_log"), # save new log 
     path("templates/<int:userID>", views.get_templates, name="get_templates"),
+    path("save_template", views.save_template, name="save_template"),
 ]

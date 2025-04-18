@@ -138,3 +138,48 @@ def save_log(request):
     
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+    
+
+def save_template(request):
+    
+    try:
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            user = request.user
+            template_name = data.get("name")
+            template_desc = data.get("desc", "")
+            exercises = data.get("exercisesTemplate", [])
+
+            newTemplate = WorkoutTemplate.objects.create(
+                user=user,
+                name=template_name,
+                desc=template_desc,
+            )
+
+            for ex in exercises:
+                ex_name = ex.get("name")
+                sessions = ex.get("sessions", [])
+
+                newExercise = Exercise.objects.create(
+                    name=ex_name,
+                )
+
+                newExerciseTemplate = ExerciseTemplate.objects.create(
+                    log_template=newTemplate,
+                    exercise=newExercise,
+                )
+
+                for s in sessions:
+                    SessionTemplate.objects.create(
+                        exercise_template=newExerciseTemplate,
+                        bpm=s.get("bpm") or 0,
+                        speed=s.get("speed") or 0,
+                        desc=s.get("desc", ""), 
+                    )
+        return JsonResponse({"message": "Template saved successfully!"}, status=201)
+                
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found"}, status=404)
+    
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)

@@ -123,6 +123,9 @@ function global_click_event_handlers() {
 // 0000000000 --*-- CREATE TEMPLATE VIEW --*-- 0000000000 //
 
 function create_template() {
+
+  global_click_event_handlers();
+
   const new_template_view = document.querySelector(".create-template-view");
 
   const new_template = document.createElement("div");
@@ -134,7 +137,7 @@ function create_template() {
   const template_form = new_template.querySelector(".log-form");
   const exercise_list = new_template.querySelector(".exercise-list");
   const add_exercise_btn = new_template.querySelector(".add-exercise-btn");
-  const cancel_btn = new_template.querySelector(".add-exercise-btn");
+  const cancel_btn = new_template.querySelector(".cancel-btn");
 
   add_exercise_btn.addEventListener("click", function (event) {
     event.preventDefault();
@@ -144,12 +147,81 @@ function create_template() {
 
   template_form.addEventListener("submit", function(event) {
     event.preventDefault();
-    save_new_template();
+    save_new_template(template_form);
+  });
+
+  cancel_btn.addEventListener("click", function(event) {
+    event.preventDefault();
+    get_home_view();
+    new_log.remove();
   });
 
 }
 
-function save_new_template() {
+function save_new_template(new_template) {
+
+  const templateName = new_template.querySelector(".log-name").value.trim();
+  const templateDesc = new_template.querySelector(".template-desc").value.trim();
+
+  const exercisesTemplate = [];
+  const allExercises = new_template.querySelectorAll(".exercise-container");
+
+  allExercises.forEach((single_exercise) => {
+    const exerciseName = single_exercise.querySelector(".exercise-name").value;
+    const allSessions = single_exercise.querySelectorAll(".session-row");
+
+    const sessions = [];
+
+    allSessions.forEach((row) => {
+      
+      const bpm = row.querySelector(".session-bpm").value || 0;
+      const speed = row.querySelector(".session-speed").value || 0;
+      const desc = `${exerciseName} - BPM: ${bpm} - @ ${speed} %`;
+      
+      sessions.push({
+        bpm: parseInt(bpm),
+        speed: parseInt(speed),
+        desc: desc,
+      });
+
+    });
+
+
+    exercisesTemplate.push({
+      name: exerciseName,
+      sessions: sessions,
+      // notes = models.CharField(max_length=500, blank=True, null=True)
+      // target = models.PositiveIntegerField(blank=True, null=True) # can be BPM, speed, etc. Keep it broad for now
+      // category = models.CharField(max_length=64, choices=CATEGORIES, default='OTHERS', blank=True, null=True)
+    });
+
+    
+  });
+
+  const templateData = {
+    name: templateName,
+    desc: templateDesc,
+    exercisesTemplate,
+  };
+
+  fetch("/save_template", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(templateData),
+  })
+  .then((response) => response.json())
+  .then((data) => {
+    console.log("New Template saved:", data);
+    alert("Template saved!");
+
+    // Clear existing form and redirect back to index
+    document.querySelector(".new-template-container").remove();
+    get_home_view();
+  })
+  .catch((error) => {
+    console.error("Error saving template:", error);
+    alert("There was an error saving your template.");
+  });
 
 }
 
@@ -158,7 +230,7 @@ function save_new_template() {
 // 0000000000 --*-- LOG VIEW --*-- 0000000000 //
 function show_empty_log_view() {
 
-    global_click_event_handlers();
+  global_click_event_handlers();
   const log_view_container = document.querySelector(".log-view-container");
 
   const new_log = document.createElement("div");
@@ -171,12 +243,18 @@ function show_empty_log_view() {
   const log_form = new_log.querySelector(".log-form");
   const exercise_list = new_log.querySelector(".exercise-list");
   const add_exercise_btn = new_log.querySelector(".add-exercise-btn");
-  const cancel_btn = new_log.querySelector(".add-exercise-btn");
+  const cancel_btn = new_log.querySelector(".cancel-btn");
 
   add_exercise_btn.addEventListener("click", function (event) {
     event.preventDefault();
     const new_exercise = add_exercise(EXERCISE_CONTENT_HTML, SESSION_ROW_HTML);
     exercise_list.append(new_exercise);
+  });
+
+  cancel_btn.addEventListener("click", function(event) {
+    event.preventDefault();
+    get_home_view();
+    new_log.remove();
   });
 
   log_form.addEventListener("submit", function(event) {
@@ -300,11 +378,9 @@ function save_log(new_log) {
       const exerciseName = single_exercise.querySelector(".exercise-name").value.trim();
       const allSessions = single_exercise.querySelectorAll(".session-row");
 
-      const sessions = []
+      const sessions = [];
 
       allSessions.forEach((row) => {
-
-        console.log(row.dataset.paused);
 
         if (row.dataset.paused === "true") { // Check if the timer has been stopped (saved) for the session
 
