@@ -140,6 +140,7 @@ def save_log(request):
         return JsonResponse({"error": str(e)}, status=500)
     
 
+@csrf_exempt
 def save_template(request):
     
     try:
@@ -150,7 +151,7 @@ def save_template(request):
             template_desc = data.get("desc", "")
             exercises = data.get("exercisesTemplate", [])
 
-            newTemplate = WorkoutTemplate.objects.create(
+            newTemplate = LogTemplate.objects.create(
                 user=user,
                 name=template_name,
                 desc=template_desc,
