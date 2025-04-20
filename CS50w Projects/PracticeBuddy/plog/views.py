@@ -79,9 +79,16 @@ def get_templates(request, userID):
         saved_templates = LogTemplate.objects.filter(user=user).all()
 
         return JsonResponse([template.serialize() for template in saved_templates], safe=False)
+    
+def get_template_data(request, templateID):
+
+    if request.method == 'GET':
+
+        requested_template = LogTemplate.objects.get(pk=templateID)
+
+        return JsonResponse(requested_template.serialize(), safe=False)
 
 
-    pass
     
 @csrf_exempt
 def save_log(request):

@@ -35,6 +35,33 @@ class Exercise(models.Model):
         return f"Exercise: {self.name} - #{self.id}"
     
 
+class LogTemplate(models.Model):
+
+    name = models.CharField(max_length=255)
+    desc = models.CharField(max_length=500, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="log_templates")
+
+    def __str__(self):
+        return f"Template: {self.name} - #{self.id}"
+    
+    def serialize(self):
+        now = timezone.now()
+        days_ago = (now - self.last_updated).days
+
+        return {
+            "id": self.id,
+            "name": self.name,
+            "desc": self.desc,
+            "user_id": self.user.id,
+            "created_at": self.created_at.isoformat(),
+            "last_updated": self.last_updated.isoformat(),
+            "days_since_updated": days_ago,
+            "exercises": [exercise.serialize() for exercise in self.exercises_template.all()]
+        }
+
 # Each log entry
 class Log(models.Model):
 
@@ -51,6 +78,10 @@ class Log(models.Model):
         ],
         help_text="Score between 1 (lowest) and 5 (highest)"
     )
+
+    template = models.ForeignKey(LogTemplate,on_delete=models.SET_NULL,
+                                 null=True, blank=True, related_name="logs_created_from_template",
+                                 help_text="Optional. Reference to the template used to create this log")
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="logs_of_user")
 
@@ -93,36 +124,8 @@ class Session(models.Model):
 
     def __str__(self):
         formatted_date = self.practice_date.strftime("%d/%m/%Y") if self.practice_date else "Unknown Date"
-        return f"{self.desc} - {self.bpm} - #{formatted_date}"
-    
+        return f"{self.exercise.name} - BPM: {self.bpm} - Speed: {self.speed} - Dur: {self.duration} - #{formatted_date}"
 
-class LogTemplate(models.Model):
-
-    name = models.CharField(max_length=255)
-    desc = models.CharField(max_length=500, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    last_updated = models.DateTimeField(auto_now=True)
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="log_templates")
-
-    def __str__(self):
-        return f"Template: {self.name} - #{self.id}"
-    
-    def serialize(self):
-        now = timezone.now()
-        days_ago = (now - self.last_updated).days
-
-        return {
-            "id": self.id,
-            "name": self.name,
-            "desc": self.desc,
-            "user_id": self.user.id,
-            "created_at": self.created_at.isoformat(),
-            "last_updated": self.last_updated.isoformat(),
-            "days_since_updated": days_ago,
-            "exercises": [exercise.serialize() for exercise in self.exercises_template.all()]
-        }
-    
 
     
 class ExerciseTemplate(models.Model):

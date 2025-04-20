@@ -3,7 +3,7 @@ let logged_in_user = null; // get the user info globally
 document.addEventListener("DOMContentLoaded", async () => {
   // Having await helps that I don't have to wait for user to load, I can still proceed with the below function call
   logged_in_user = await get_user(); // Fetch one and reuse for all functions
-  get_new_template_view();
+  get_home_view();
 });
 
 function get_user() {
@@ -22,14 +22,59 @@ function get_log_view() {
   document.querySelector(".create-template-view").style.display = "none";
   document.querySelector(".log-view-container").style.display = "block";
   document.querySelector(".navbar").style.display = "none";
-  show_empty_log_view();
 }
 
 function get_new_template_view() {
   document.querySelector(".home-view-container").style.display = "none";
   document.querySelector(".log-view-container").style.display = "none";
   document.querySelector(".create-template-view").style.display = "block";
-  create_template();
+}
+
+function home_global_events_handler() {
+  
+  // DROPDOWN TOGGLE EVENT
+  document.addEventListener("click", function(e) {
+
+    // First, I need to make sure all dropdown are closed by default
+    document.querySelectorAll(".dropdown").forEach(drop => {
+      drop.classList.remove("open");
+    });
+
+    if (e.target.classList.contains("dropdown-toggle")) {
+      e.stopPropagation();
+      const dropdown = e.target.closest(".dropdown");
+      dropdown.classList.toggle("open");
+    }
+
+    if (e.target.classList.contains("start-plog-from-template-btn")) {
+      e.stopPropagation();
+      const template_card = e.target.closest(".template-card");
+      const templateID = template_card.dataset.templateId;
+
+      // Show new log with template info pre-filled
+      start_log_from_template(templateID);
+      
+    };
+  });
+}
+
+function forms_events_handler() {
+  // SAVE SESSION event
+  // Handle click event when the save button is pressed
+  document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("session-status")) {
+      const row = e.target.closest(".session-row");
+      toggle_session_timer(row); // I only want this to trigger when this is for new template
+    }
+  });
+
+  // DELETE SESSION event
+  document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("delete-btn")) {
+      const row = e.target.closest(".session-row");
+      if (row) row.remove();
+    }
+  });
 }
 
 // 0000000000 --*-- HOME VIEW --*-- 0000000000 //
@@ -43,11 +88,19 @@ function show_home_view() {
 
   home_view_container.append(home_content);
 
+  const new_empty_log_btn = home_content.querySelector(".start-empty-log-btn");
   const new_template_btn = home_content.querySelector(".new-template-btn");
 
+  new_empty_log_btn.addEventListener("click", function(e) {
+    e.stopPropagation();
+    get_log_view();
+    start_log();
+  })
+  
   new_template_btn.addEventListener("click", function(e) {
     e.stopPropagation();
-
+    get_new_template_view();
+    create_template();
   });
 
   show_saved_template(home_view_container);
@@ -55,12 +108,9 @@ function show_home_view() {
 
 function show_saved_template(home_view_container) {
 
-  global_click_event_handlers();
-
   const template_cards_container = home_view_container.querySelector(".template-cards-container");
 
-  // fetch(`/templates/${logged_in_user.id}`)
-  fetch(`/templates/1`)
+  fetch(`user/1/templates`)
   .then((response) => response.json())
   .then((saved_templates) => {
 
@@ -75,56 +125,63 @@ function show_saved_template(home_view_container) {
         .replace(/__DAYS__/g, tempEl.days_since_updated === 0 ? 'Today' : `${tempEl.days_since_updated} days ago`);
 
         const template_card = document.createElement("div");
-        template_card.className = "template-card";        
+        template_card.className = "template-card";    
+
+        // Add the ID to the template card
+        template_card.dataset.templateId = tempEl.id;
 
         template_card.innerHTML = filled_in_template;
         template_cards_container.append(template_card);
+
     })
 
   })
 
+  home_global_events_handler();
+
 }
 
-function global_click_event_handlers() {
+function start_log_from_template(templateId) {
+
+  get_log_view();
+  console.log("Start log for template:", templateId);
+
   
-    // SAVE SESSION event
-    // Handle click event when the save button is pressed
-  document.addEventListener("click", function (e) {
-    if (e.target.classList.contains("session-status")) {
-      const row = e.target.closest(".session-row");
-      toggle_session_timer(row); // I only want this to trigger when this is for new template
-    }
-  });
 
-  // DELETE SESSION event
-  document.addEventListener("click", function(e) {
-    if (e.target.classList.contains("delete-btn")) {
-        const row = e.target.closest(".session-row");
-        if (row) row.remove()
-    }
-  });
+  // GET API to collect all data related to the templateId for display
+  fetch(`template/${templateId}`)
+  .then((response) => response.json())
+  .then((data)=> {
 
-  // DROPDOWN TOGGLE EVENT
-  document.addEventListener("click", function(e) {
+    const logName = data.name;
+    const all_exercises = data.exercises;
 
-    // First, I need to make sure all dropdown are closed by default
-    document.querySelectorAll(".dropdown").forEach(drop => {
-      drop.classList.remove("open");
+    start_log();
+
+    const log_container = document.querySelector(".log-container");
+    const exercise_list = document.querySelector(".exercise-list");
+
+    // Prefill the log data using template data
+    console.log("Log Name is", data.name);
+    document.querySelector(".log-name").placeholder = logName;
+
+    all_exercises.forEach((exerciseData) => {
+      const exercise_element = add_exercise(EXERCISE_CONTENT_HTML, SESSION_ROW_HTML, exerciseData);
+      exercise_list.append(exercise_element);
     });
 
-    if (e.target.classList.contains("dropdown-toggle")) {
-      e.stopPropagation();
-      const dropdown = e.target.closest(".dropdown")
-      dropdown.classList.toggle("open");
-    }
-  });
+  })
+
+
+
 }
+
 
 // 0000000000 --*-- CREATE TEMPLATE VIEW --*-- 0000000000 //
 
 function create_template() {
 
-  global_click_event_handlers();
+  forms_events_handler();
 
   const new_template_view = document.querySelector(".create-template-view");
 
@@ -228,9 +285,9 @@ function save_new_template(new_template) {
 
 
 // 0000000000 --*-- LOG VIEW --*-- 0000000000 //
-function show_empty_log_view() {
+function start_log() {
 
-  global_click_event_handlers();
+  forms_events_handler();
   const log_view_container = document.querySelector(".log-view-container");
 
   const new_log = document.createElement("div");
@@ -273,12 +330,16 @@ function add_exercise(exerciseHTML, sessionHTML, exerciseData = null) {
 
   const session_body = exercise_container.querySelector(".session-body");
 
-  const default_row = create_session_row(session_body, sessionHTML);
-
   if (exerciseData) {
-    // Let's do nothing for now, until I set up the template later
+    
+    // Prefill the exercises with existing data 
+    if (exerciseData.exercise_name) {
+      exercise_container.querySelector(".exercise-name").value = exerciseData.exercise_name;
+    }
+    
   } else {
     // Empty log --> Call create session row function
+    const default_row = create_session_row(session_body, sessionHTML);
   }
 
   // Add Event listener for 'Add Exercise Btn'
@@ -449,7 +510,7 @@ const HOME_VIEW_HTML = `
 
     <div class="log-container">
         <h3>Quick Start</h3>
-        <button class="button button--primary button--full">Start Plogging</button>
+        <button class="button button--primary button--full start-empty-log-btn">Start Plogging</button>
     </div>
     <div class="my-template-container">
       <div class="my-template-header">
@@ -467,9 +528,9 @@ const TEMPLATE_CARD_HTML = `
     <div class="dropdown">
       <button class="dropdown-toggle">…</button>
       <div class="dropdown-menu">
-        <button onclick="start_log_from_template">Start Plog</button>
-        <button onclick="editTemplate(__ID__)">Edit</button>
-        <button onclick="deleteTemplate(__ID__)">Delete</button>
+        <button class="start-plog-from-template-btn">Start Plog</button>
+        <button class="edit-plog-template-btn">Edit</button>
+        <button class="delete-plog-template-btn">Delete</button>
       </div>
     </div>
   </div>
