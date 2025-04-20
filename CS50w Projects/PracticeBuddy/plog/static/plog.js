@@ -94,7 +94,7 @@ function show_home_view() {
   new_empty_log_btn.addEventListener("click", function(e) {
     e.stopPropagation();
     get_log_view();
-    start_log();
+    const empty_log_container = start_log();
   })
   
   new_template_btn.addEventListener("click", function(e) {
@@ -156,23 +156,30 @@ function start_log_from_template(templateId) {
     const logName = data.name;
     const all_exercises = data.exercises;
 
-    start_log();
 
-    const log_container = document.querySelector(".log-container");
-    const exercise_list = document.querySelector(".exercise-list");
 
-    // Prefill the log data using template data
-    console.log("Log Name is", data.name);
-    document.querySelector(".log-name").placeholder = logName;
 
-    all_exercises.forEach((exerciseData) => {
-      const exercise_element = add_exercise(EXERCISE_CONTENT_HTML, SESSION_ROW_HTML, exerciseData);
-      exercise_list.append(exercise_element);
-    });
+      const log_container = start_log();
+      const exercise_list = log_container?.querySelector(".exercise-list");  // allow to check if the component actually exists
 
+      if (!log_container || !exercise_list) {
+        console.error("DOM not ready yet - null component");
+        return;
+      }
+
+      document.querySelector(".log-name").placeholder = logName;
+
+      all_exercises.forEach((exerciseData) => {
+        const exercise_element = add_exercise(EXERCISE_CONTENT_HTML, SESSION_ROW_HTML, exerciseData);
+        exercise_list.append(exercise_element);
+      });
+
+      console.log("Log successfully prefilled from template.");
   })
-
-
+  .catch((err) => {
+    console.error("Error starting log from template:", err);
+    alert("Something went wrong while loading your log.");
+  });
 
 }
 
@@ -318,6 +325,8 @@ function start_log() {
     event.preventDefault();
     save_log(new_log);
   });
+
+  return new_log;
 
 
 }

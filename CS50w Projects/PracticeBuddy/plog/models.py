@@ -89,7 +89,7 @@ class Log(models.Model):
     exercises_in_log = models.ManyToManyField(Exercise, related_name="logs")
 
     def __str__(self):
-        return f"Entry {self.name} on {self.entry_date}"
+        return f"{self.name} on {self.entry_date}"
 
 
 class Session(models.Model):
