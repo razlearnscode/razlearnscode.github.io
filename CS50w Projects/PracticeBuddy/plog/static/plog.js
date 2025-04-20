@@ -35,26 +35,41 @@ function home_global_events_handler() {
   // DROPDOWN TOGGLE EVENT
   document.addEventListener("click", function(e) {
 
-    // First, I need to make sure all dropdown are closed by default
-    document.querySelectorAll(".dropdown").forEach(drop => {
-      drop.classList.remove("open");
+    const isToggle = e.target.classList.contains("dropdown-toggle");
+    const clickedDropdown = e.target.closest(".dropdown");
+
+    // 1. Close all other dropdown (not from my click)
+    document.querySelectorAll(".dropdown.open").forEach(drop => {
+      if (drop !== clickedDropdown) {
+        drop.classList.remove("open");
+      }
     });
 
-    if (e.target.classList.contains("dropdown-toggle")) {
+    // 2. Display dropdown from current clicked toggle
+    if (isToggle && clickedDropdown) {
       e.stopPropagation();
-      const dropdown = e.target.closest(".dropdown");
-      dropdown.classList.toggle("open");
+      clickedDropdown.classList.toggle("open");
     }
 
+    // 3. Hanlde "Start plog from Template"
     if (e.target.classList.contains("start-plog-from-template-btn")) {
       e.stopPropagation();
       const template_card = e.target.closest(".template-card");
       const templateID = template_card.dataset.templateId;
-
       // Show new log with template info pre-filled
       start_log_from_template(templateID);
-      
     };
+
+    // 4. Handle Delete template event
+    if (e.target.classList.contains("delete-plog-template-btn")) {
+      e.stopPropagation();
+      const template_card = e.target.closest(".template-card");
+      const templateID = template_card.dataset.templateId;
+
+      delete_template(templateID);
+
+    };
+
   });
 }
 
@@ -285,6 +300,30 @@ function save_new_template(new_template) {
   .catch((error) => {
     console.error("Error saving template:", error);
     alert("There was an error saving your template.");
+  });
+
+}
+
+function delete_template(templateID) {
+  
+  fetch(`template/${templateID}/delete`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+  })
+  .then((response) => response.json())
+  .then((data) => {
+
+    if (data.success) {
+      console.log("Template deleted!");
+
+      // Remove the card from the UI
+      const card = document.querySelector(`.template-card[data-template-id="${templateID}"]`);
+      if (card) card.remove();
+    }
+  })
+  .catch((error) => {
+    console.error("Error deleting template:", error);
+    alert("Failed to delete template. Please try again.");
   });
 
 }

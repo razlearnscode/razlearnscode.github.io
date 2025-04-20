@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from datetime import timedelta
+from django.shortcuts import get_object_or_404
 
 from .models import User, Log, Exercise, Session, LogTemplate, ExerciseTemplate, SessionTemplate
 
@@ -88,6 +89,15 @@ def get_template_data(request, templateID):
 
         return JsonResponse(requested_template.serialize(), safe=False)
 
+@csrf_exempt
+def delete_template(request, templateID):
+
+    if request.method == 'POST':
+        template = get_object_or_404(LogTemplate, id=templateID, user=request.user)
+        template.delete()
+
+        return JsonResponse({"success": True})
+    return JsonResponse({"error": "Invalid method"}, status=405)
 
     
 @csrf_exempt
