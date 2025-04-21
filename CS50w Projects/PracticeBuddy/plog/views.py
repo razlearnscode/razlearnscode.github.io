@@ -110,12 +110,21 @@ def save_log(request):
             log_name = data.get("name")
             notes = data.get("notes", "")
 
+            template_id = data.get("template_id", None)
             exercises = data.get("exercises", [])
+
+            log_template = None # don't want to use get_or_404 because even without template, we can still save the log
+            if template_id:
+                try:
+                    log_template = LogTemplate.objects.get(pk=template_id)
+                except LogTemplate.DoesNotExist:
+                    print(f"Warning: Template ID {template_id} does not exist.")
 
             newLog = Log.objects.create(
                 name=log_name,
                 user=user,
                 notes=notes,
+                template=log_template,
             )
 
             for ex in exercises:

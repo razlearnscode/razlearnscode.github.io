@@ -3,7 +3,7 @@ let logged_in_user = null; // get the user info globally
 document.addEventListener("DOMContentLoaded", async () => {
   // Having await helps that I don't have to wait for user to load, I can still proceed with the below function call
   logged_in_user = await get_user(); // Fetch one and reuse for all functions
-  get_home_view();
+  get_log_view();
 });
 
 function get_user() {
@@ -22,6 +22,7 @@ function get_log_view() {
   document.querySelector(".create-template-view").style.display = "none";
   document.querySelector(".log-view-container").style.display = "block";
   document.querySelector(".navbar").style.display = "none";
+  start_log(); // only temporary
 }
 
 function get_new_template_view() {
@@ -161,8 +162,6 @@ function start_log_from_template(templateId) {
   get_log_view();
   console.log("Start log for template:", templateId);
 
-  
-
   // GET API to collect all data related to the templateId for display
   fetch(`template/${templateId}`)
   .then((response) => response.json())
@@ -171,10 +170,7 @@ function start_log_from_template(templateId) {
     const logName = data.name;
     const all_exercises = data.exercises;
 
-
-
-
-      const log_container = start_log();
+      const log_container = start_log(templateId);
       const exercise_list = log_container?.querySelector(".exercise-list");  // allow to check if the component actually exists
 
       if (!log_container || !exercise_list) {
@@ -328,16 +324,18 @@ function delete_template(templateID) {
 
 }
 
-
-
 // 0000000000 --*-- LOG VIEW --*-- 0000000000 //
-function start_log() {
+function start_log(templateID = null) {
 
   forms_events_handler();
   const log_view_container = document.querySelector(".log-view-container");
 
   const new_log = document.createElement("div");
   new_log.className = "log-container";
+
+  if (templateID) {
+    new_log.dataset.templateId = templateID;
+  }
 
   new_log.innerHTML = LOG_FORM_HTML;
 
@@ -477,6 +475,8 @@ function save_log(new_log) {
     const logName = new_log.querySelector(".log-name").value.trim();
     const logNotes = new_log.querySelector(".log-notes").value.trim();
 
+    const logTemplate = new_log.dataset.templateId || null;
+
 
     const exercises = [];
 
@@ -527,6 +527,7 @@ function save_log(new_log) {
       name: logName,
       notes: logNotes,
       exercises,
+      template_id: logTemplate,
     }
 
     // Make the POST request
@@ -598,7 +599,7 @@ const NEW_TEMPLATE_LOG_HTML = `
 
       <div class="log-form-content">
         <div class="exercise-list"></div>
-        <button class="button button--primary button--full add-exercise-btn">+ Add Exercises</button>
+        <button class="button button--primary button--full add-exercise-btn"><i class="fa-solid fa-plus"></i> Add Exercises</button>
         <button class="button button--full button--danger cancel-btn">Cancel</button>
     </div>
   </form>   
@@ -620,7 +621,7 @@ const NEW_TEMPLATE_EXERCISE_HTML = `
                 
             </tbody>
         </table>
-    <button type="button" class="button button--thin button--secondary add-session-btn">+ Add Session</button>
+    <button type="button" class="button button--thin button--secondary add-session-btn"><i class="fa-solid fa-plus"></i> Add Session</button>
 `;
 
 // Let's update and remove the readonly in session-template-duration later
@@ -642,12 +643,12 @@ const LOG_FORM_HTML = `
             <input type="submit" class="button button--primary" style="margin-left: auto;" value="Finish">
             <input type="text" class="log-name" placeholder="New Log">
             <p>[00:00]</p>
-            <textarea placeholder="Notes" id="log-notes" class="log-notes" name="log-notes" rows="3"></textarea>
+            <textarea placeholder="Notes" id="log-notes" class="log-notes" name="log-notes" rows="2"></textarea>
         </div>
 
         <div class="log-form-content">
             <div class="exercise-list"></div>
-            <button class="button button--primary button--full add-exercise-btn">+ Add Exercises</button>
+            <button class="button button--primary button--full add-exercise-btn"><i class="fa-solid fa-plus"></i> Add Exercises</button>
             <button class="button button--full button--danger cancel-btn">Cancel Log</button>
         </div>
     </form>   
@@ -656,6 +657,11 @@ const LOG_FORM_HTML = `
 const EXERCISE_CONTENT_HTML = `
 
     <input type="text" class="exercise-name" placeholder="Name Your Exercise">
+    <div class="exercise-note-container">
+      <textarea placeholder="Exercise Notes" id="exercise-notes" class="exercise-notes" name="exercise-notes" rows="1"></textarea>
+      <button type="button" class="button button--secondary button--compact pin-btn"><i class="fa-solid fa-thumbtack"></i></button>
+    </div>
+    
         <table class="session-table">
             <thead>
                 <tr>
@@ -663,15 +669,15 @@ const EXERCISE_CONTENT_HTML = `
                     <th class="duration-header">Duration</th>
                     <th class="bpm-header">BPM</th>
                     <th class="speed-header">Speed</th>
-                    <th class="status-header">✓</th>
-                    <th class="delete-header"> </th>
+                    <th class="status-header"><i class="fa-solid fa-bookmark"></i></th>
+                    <th class="delete-header"><i class="fa-solid fa-trash"></i></th>
                 </tr>
             </thead>
             <tbody class="session-body">
                 <!-- Rows will be generated dynamically -->
             </tbody>
         </table>
-    <button type="button" class="button button--thin button--secondary add-session-btn">+ Add Session</button>
+    <button type="button" class="button button--thin button--secondary add-session-btn"><i class="fa-solid fa-plus"></i> Add Session</button>
 `;
 
 const SESSION_ROW_HTML = `
@@ -679,6 +685,6 @@ const SESSION_ROW_HTML = `
     <td class="duration-cell"><input type="text" class="session-duration" placeholder="00:00" readonly></td>
     <td class="bpm-cell"><input type="number" class="session-bpm" placeholder="0" min="0"></td>
     <td class="speed-cell"><input type="number" class="session-speed" placeholder="0" min="0" max="200"></td> 
-    <td class="status-cell"><button type="button" class="button is-unselected session-status">✓</button></td>
-    <td class="delete-cell"><button type="button" class="button button--danger delete-btn">x</button></td>
+    <td class="status-cell"><button type="button" class="button is-unselected button--compact session-status"><i class="fa-solid fa-bookmark"></i></button></td>
+    <td class="delete-cell"><button type="button" class="button button--danger button--compact delete-btn"><i class="fa-solid fa-trash"></i></button></td>
     `;

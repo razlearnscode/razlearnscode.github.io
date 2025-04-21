@@ -5,15 +5,15 @@
     --green-tertiary: #a5d4a7;
 
     --light-primary: #f8faed;
-    --light-secondary: #f1f5df;
-    --light-tertiary: #e4eac6;
+    --light-secondary: #F5F5F5;   /* Card backgrounds */
+    --light-tertiary: #EAEAE0;    /* Soft outlines or inner borders */
 
-    --dark-primary: #232323;
-    --dark-secondary: #3B3B3B;
-    --dark-tertiary: #4C4C4C;
-    --dark-border: #2F2F2F;
+    --dark-primary: #1C1C1C;      /* Primary text */
+    --dark-secondary: #2E2E2E;    /* Secondary text */
+    --dark-tertiary: #4C4C4C;     /* Tertiary labels, less emphasis */
+    --dark-border: #DADADA;
 
-    --gray: #c4c5ba;
+    --gray: #B0B0B0;
     --red: #E17878;
 }
 
@@ -168,8 +168,8 @@ p {
 .template-card {
     box-sizing: border-box;
     border-radius: 0.5rem;
-    border: 1px solid var(--light-tertiary);
-    background-color: var(--light-tertiary);
+    border: 1px solid var(--dark-border);
+    background-color: var(--light-secondary);
 
 
     width: 100%;
@@ -199,16 +199,14 @@ p {
 }
 
 .dropdown-toggle {  /* the dropdown toggle with elipses */
-    background: none;
+    background-color: transparent;
     border: none;
-    border-radius: 0.5rem;
     font-size: 1.25rem;
-    padding: 0.25rem;
-    font-size: bold;
-    cursor: pointer;
-    text-align: center;
-    color: var(--green-primary);
-    background-color: var(--light-primary);
+    color: #666;
+}
+
+.dropdown-toggle:hover {
+    color: #333;
 }
 
 .dropdown-menu {
@@ -276,6 +274,7 @@ p {
 /* Make sure the font-size for the placeholder and the value is the same, otherwise it will look cut off */
 .log-name {
     line-height: 1.2;
+    font-weight: 700;
     font-size: 2.2rem;
     border: transparent;
     background: transparent;
@@ -293,14 +292,16 @@ p {
     border: transparent;
     width: 100%;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 400;
     line-height: 1.5;
+    margin: 0.75rem 0;
 }
 
 .log-notes::placeholder {
     background: transparent;
     border: transparent;
     font-size: 1rem;
+    font-weight: 400;
     line-height: 1.5;
     color: var(--gray);
 }
@@ -332,6 +333,24 @@ p {
     color: var(--light-primary);
 }
 
+.exercise-note-container {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    border-bottom: 1px solid var(--dark-border);
+}
+
+.exercise-notes {
+    background: transparent;
+    border: transparent;
+    margin: 0.25rem 0;
+    color: var(--light-primary);
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
 
 .session-table {
     border-collapse: collapse; /* Ensures <thead> and <tbody> align */
@@ -340,12 +359,11 @@ p {
     color: var(--gray);
     box-sizing: border-box;
     table-layout: fixed;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
 }
 
 .session-table thead th {
-    border-bottom: 1px solid #ccc;
+
 }
 
 .session-table thead th,
@@ -495,6 +513,23 @@ p {
     border-radius: 0.5rem;
 }
 
+/* Keep buttons compact */
+.button--compact {
+    font-size: 0.9rem;
+    border-radius: 0.5rem;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    appearance: none;
+    /* Prevent iOS default styling */
+}
+
+.pin-btn {
+    width: 2rem; /* Adjust to match .session-status or .delete-btn */
+    min-width: unset; /* Optional reset */
+    padding: 0.25rem; /* Matches .button--compact */
+}
 
 /* Hover effects */
 .button--primary:hover {
@@ -525,16 +560,5 @@ p {
     color: var(--light-primary);
 }
 
-/* Keep buttons compact */
-.session-status,
-.delete-btn {
-    font-size: 0.9rem;
-    border-radius: 0.5rem;
-    border: none;
-    padding: 0.25rem 0.5rem;
-    width: 100%;
-    box-sizing: border-box;
-    appearance: none;
-    /* Prevent iOS default styling */
 
-}
+

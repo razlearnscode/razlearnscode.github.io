@@ -27,7 +27,6 @@ class Exercise(models.Model):
     ]
     
     name = models.CharField(max_length=255)
-    notes = models.CharField(max_length=500, blank=True, null=True)
     target = models.PositiveIntegerField(blank=True, null=True) # can be BPM, speed, etc. Keep it broad for now
     category = models.CharField(max_length=64, choices=CATEGORIES, default='OTHERS', blank=True, null=True)
 
@@ -172,3 +171,22 @@ class SessionTemplate(models.Model):
             "bpm": self.bpm if self.bpm is not None else 0,
             "speed": int(100),
         }
+    
+
+class ExerciseNote(models.Model):
+
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name="notes")
+    log = models.ForeignKey(Log, on_delete=models.CASCADE, related_name="exercise_notes")
+    content = models.TextField(blank=True)
+    pinned = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-pinned', '-created_at'] # Pinned and latest notes come first
+
+    def pinned_note(self):
+        return self.notes.filter(pinned=True).first()
+
+    def __str__(self):
+        return f"Note for {self.exercise.name} dated {self.created_at}"
+    
