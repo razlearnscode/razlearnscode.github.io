@@ -88,6 +88,9 @@ def get_template_data(request, templateID):
         requested_template = LogTemplate.objects.get(pk=templateID)
 
         return JsonResponse(requested_template.serialize(), safe=False)
+    
+def get_log_data(request, logID):
+    pass
 
 @csrf_exempt
 def delete_template(request, templateID):
