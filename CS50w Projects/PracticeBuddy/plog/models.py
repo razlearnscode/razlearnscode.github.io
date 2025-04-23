@@ -33,6 +33,16 @@ class Exercise(models.Model):
     def __str__(self):
         return f"Exercise: {self.name} - #{self.id}"
     
+    def serialize(self):
+
+        return {
+            "exercise_id": self.id,
+            "exercise_name": self.name,
+            "exercise_cat": self.category.lower() if self.category else None, # convert to lowercase because my option value is all lowercase
+            "exercise_note": self.note.content,
+            "sessions": [session.serialize() for session in self.sessions.all()]
+        }
+    
 
 class LogTemplate(models.Model):
 
@@ -88,7 +98,19 @@ class Log(models.Model):
     exercises_in_log = models.ManyToManyField(Exercise, related_name="logs")
 
     def __str__(self):
-        return f"{self.name} on {self.entry_date}"
+        return f"#{self.id} - {self.name} - {self.entry_date}"
+    
+    def serialize(self):
+
+        return {
+            "id": self.id,
+            "name": self.name,
+            "notes": self.notes,
+            "user_id": self.user.id,
+            "entry_date": self.entry_date.isoformat(),
+            "log_template_id": self.template.id,
+            "exercises": [exercise.serialize() for exercise in self.exercises_in_log.all()]
+        }
 
 
 class Session(models.Model):
@@ -124,6 +146,13 @@ class Session(models.Model):
     def __str__(self):
         formatted_date = self.practice_date.strftime("%d/%m/%Y") if self.practice_date else "Unknown Date"
         return f"{self.exercise.name} - BPM: {self.bpm} - Speed: {self.speed} - Dur: {self.duration} - #{formatted_date}"
+    
+    def serialize(self):
+        return {
+            "id": self.id,
+            "bpm": self.bpm,
+            "speed": self.speed,
+        }
 
 
     
@@ -175,7 +204,7 @@ class SessionTemplate(models.Model):
 
 class ExerciseNote(models.Model):
 
-    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name="notes")
+    exercise = models.OneToOneField(Exercise, on_delete=models.CASCADE, related_name="note")
     log = models.ForeignKey(Log, on_delete=models.CASCADE, related_name="exercise_notes")
     content = models.TextField(blank=True)
     pinned = models.BooleanField(default=False)
@@ -189,4 +218,5 @@ class ExerciseNote(models.Model):
 
     def __str__(self):
         return f"Note for {self.exercise.name} dated {self.created_at}"
+    
     
