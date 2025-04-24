@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from datetime import timedelta
 from django.shortcuts import get_object_or_404
 
-from .models import User, Log, Exercise, Session, LogTemplate, ExerciseTemplate, SessionTemplate
+from .models import User, Log, Exercise, Session, LogTemplate, ExerciseTemplate, SessionTemplate, ExerciseNote
 
 # Create your views here.
 def index(request):
@@ -138,14 +138,21 @@ def save_log(request):
 
             for ex in exercises:
                 ex_name = ex.get("name", "Unnamed")
-                ex_notes = ex.get("notes", "")
+                ex_note = ex.get("note", "")
                 ex_category = ex.get("category", "")
                 sessions = ex.get("sessions", [])
 
+                # Create the Exercise 
                 exercise = Exercise.objects.create(
                     name=ex_name,
-                    notes=ex_notes,
                     category=ex_category
+                )
+
+                # Create the ExerciseNote object
+                exerciseNote = ExerciseNote.objects.create(
+                    exercise=exercise,
+                    log=newLog,
+                    content=ex_note
                 )
 
                 # Add the exercises to the Log

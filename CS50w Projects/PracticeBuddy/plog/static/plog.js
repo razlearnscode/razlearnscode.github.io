@@ -14,7 +14,15 @@ function get_home_view() {
   document.querySelector(".log-view-container").style.display = "none";
   document.querySelector(".create-template-view").style.display = "none";
   document.querySelector(".home-view-container").style.display = "block";
-  show_home_view();
+  document.querySelector(".navbar").style.display = "block";
+
+  const existing_home_view = document.querySelector(".home-content");
+
+  // only show homeview if no existing content is available, to avoid adding it twice
+  if (!existing_home_view) {
+    show_home_view();
+  }
+  
 }
 
 function get_log_view() {
@@ -22,13 +30,13 @@ function get_log_view() {
   document.querySelector(".create-template-view").style.display = "none";
   document.querySelector(".log-view-container").style.display = "block";
   document.querySelector(".navbar").style.display = "none";
-
 }
 
 function get_new_template_view() {
   document.querySelector(".home-view-container").style.display = "none";
   document.querySelector(".log-view-container").style.display = "none";
   document.querySelector(".create-template-view").style.display = "block";
+  document.querySelector(".navbar").style.display = "none";
 }
 
 function home_global_events_handler() {
@@ -175,10 +183,10 @@ function start_log_from_template(templateId) {
 
       if (!log_container || !exercise_list) {
         console.error("DOM not ready yet - null component");
-        return;
+        return;   
       }
 
-      document.querySelector(".log-name").placeholder = logName;
+      document.querySelector(".log-name").value = logName;
 
       all_exercises.forEach((exerciseData) => {
         const exercise_element = add_exercise(EXERCISE_CONTENT_HTML, SESSION_ROW_HTML, exerciseData);
@@ -227,8 +235,8 @@ function create_template() {
 
   cancel_btn.addEventListener("click", function(event) {
     event.preventDefault();
+    new_template.remove();
     get_home_view();
-    new_log.remove();
   });
 
 }
@@ -354,8 +362,8 @@ function start_log(templateID = null) {
 
   cancel_btn.addEventListener("click", function(event) {
     event.preventDefault();
-    get_home_view();
     new_log.remove();
+    get_home_view();
   });
 
   log_form.addEventListener("submit", function(event) {
@@ -512,13 +520,12 @@ function save_log(new_log) {
         }
       });
 
-      const notes = "";
       const category = "OTHERS"; // default to this now. I'll update this later
 
       // Update the exercises in the list
       exercises.push({ 
         name: exerciseName,
-        notes: notes,
+        note: exerciseNote,
         category: category,
         sessions: sessions,
       });
@@ -558,10 +565,11 @@ function save_log(new_log) {
 // --*-- HOME VIEW TEMPLATES --*-- //
 const HOME_VIEW_HTML = `
 
-    <div class="log-container">
+    <div class="new-log-container">
         <h3>Quick Start</h3>
         <button class="button button--primary button--full start-empty-log-btn">Start Plogging</button>
     </div>
+    <div class="record-container"></div>
     <div class="my-template-container">
       <div class="my-template-header">
         <h2>Templates</h2>
