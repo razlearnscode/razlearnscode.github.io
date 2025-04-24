@@ -1,0 +1,28 @@
+{% extends "plog/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+{% if user.is_authenticated %}
+
+<!-- All app components will be inside the app-content -->
+<div class="app-content">
+    <div class="records-view-container">
+        <div class="records-view-header">
+            <h1>Exercise Records</h1>
+        </div>
+
+    </div>
+
+</div>
+
+
+{% else %}
+<p>Sign up to become a member</p>
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'records.js' %}"></script>
+{% endblock %}

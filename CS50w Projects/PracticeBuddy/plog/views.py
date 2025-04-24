@@ -38,6 +38,10 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
+    
+def records_view(request):
+
+    return render(request, "plog/records.html")
 
 
 def register(request):
@@ -138,21 +142,29 @@ def save_log(request):
 
             for ex in exercises:
                 ex_name = ex.get("name", "Unnamed")
-                ex_note = ex.get("note", "")
+                ex_id = ex.get("id", None)
+                ex_notes = ex.get("notes", "")
                 ex_category = ex.get("category", "")
                 sessions = ex.get("sessions", [])
 
-                # Create the Exercise 
-                exercise = Exercise.objects.create(
-                    name=ex_name,
-                    category=ex_category
-                )
+                # Update or create the Exercise 
+                if ex_id:
+                    try:
+                        exercise = Exercise.objects.get(id=ex_id)
+                    except Exercise.DoesNotExist: # CASE: id exists but does not match existing records
+                        exercise = Exercise.objects.create(
+                            name=ex_name, 
+                            category=ex_category
+                        )
+                else: # CASE: id does not exist, so create new exercise
+                    exercise = Exercise.objects.create(name=ex_name, category=ex_category)
+
 
                 # Create the ExerciseNote object
                 exerciseNote = ExerciseNote.objects.create(
                     exercise=exercise,
                     log=newLog,
-                    content=ex_note
+                    content=ex_notes
                 )
 
                 # Add the exercises to the Log

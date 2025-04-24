@@ -101,6 +101,7 @@ function forms_events_handler() {
   });
 }
 
+
 // 0000000000 --*-- HOME VIEW --*-- 0000000000 //
 function show_home_view() {
   const home_view_container = document.querySelector(".home-view-container");
@@ -388,7 +389,11 @@ function add_exercise(exerciseHTML, sessionHTML, exerciseData = null) {
     
     // Prefill the exercises with existing data 
     if (exerciseData.exercise_name) {
+
       exercise_container.querySelector(".exercise-name").value = exerciseData.exercise_name;
+      if (exerciseData.exercise_id != null) {
+        exercise_container.dataset.templateId = exerciseData.exercise_id;
+      }
     }
     
   } else {
@@ -494,7 +499,8 @@ function save_log(new_log) {
       
       const exerciseName = single_exercise.querySelector(".exercise-name").value.trim();
       const allSessions = single_exercise.querySelectorAll(".session-row");
-      const exerciseNote = single_exercise.querySelector(".exercise-notes").value.trim();
+      const exerciseNotes = single_exercise.querySelector(".exercise-notes").value.trim();
+      const exerciseID = single_exercise.dataset.templateId;
 
       const sessions = [];
 
@@ -525,7 +531,8 @@ function save_log(new_log) {
       // Update the exercises in the list
       exercises.push({ 
         name: exerciseName,
-        note: exerciseNote,
+        id: exerciseID,
+        notes: exerciseNotes,
         category: category,
         sessions: sessions,
       });
@@ -697,3 +704,5 @@ const SESSION_ROW_HTML = `
     <td class="status-cell"><button type="button" class="button is-unselected button--compact session-status"><i class="fa-solid fa-bookmark"></i></button></td>
     <td class="delete-cell"><button type="button" class="button button--danger button--compact delete-btn"><i class="fa-solid fa-trash"></i></button></td>
     `;
+
+

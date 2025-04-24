@@ -98,12 +98,14 @@ p {
     margin: 0 auto;
 }
 
-.home-view-container {
+.home-view-container,
+.records-view-container {
     padding: 1.25rem;
 }
 
 /* Optional header styling */
-.home-header {
+.home-header,
+.records-view-header {
     padding-top: 1rem;
     padding-bottom: 2rem;
 }

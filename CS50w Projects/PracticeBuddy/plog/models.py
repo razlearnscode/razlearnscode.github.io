@@ -204,7 +204,7 @@ class SessionTemplate(models.Model):
 
 class ExerciseNote(models.Model):
 
-    exercise = models.OneToOneField(Exercise, on_delete=models.CASCADE, related_name="note")
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name="notes")
     log = models.ForeignKey(Log, on_delete=models.CASCADE, related_name="exercise_notes")
     content = models.TextField(blank=True)
     pinned = models.BooleanField(default=False)
