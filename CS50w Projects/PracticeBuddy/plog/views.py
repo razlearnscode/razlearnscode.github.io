@@ -101,6 +101,16 @@ def get_log_data(request, logID):
 
         return JsonResponse(requested_log.serialize(), safe=False)
     
+def get_all_exercises_fr_users(request, userID):
+    
+    if request.method == 'GET':
+
+        user = User.objects.get(pk=userID)
+        exercises = Exercise.objects.filter(user=user).all()
+
+        return JsonResponse([exercise.serialize() for exercise in exercises], safe=False)
+
+    
 
 @csrf_exempt
 def delete_template(request, templateID):

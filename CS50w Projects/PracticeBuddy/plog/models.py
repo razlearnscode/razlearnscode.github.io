@@ -30,6 +30,8 @@ class Exercise(models.Model):
     target = models.PositiveIntegerField(blank=True, null=True) # can be BPM, speed, etc. Keep it broad for now
     category = models.CharField(max_length=64, choices=CATEGORIES, default='OTHERS', blank=True, null=True)
 
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="exercises_of_user")
+
     def __str__(self):
         return f"Exercise: {self.name} - #{self.id}"
     
@@ -39,7 +41,7 @@ class Exercise(models.Model):
             "exercise_id": self.id,
             "exercise_name": self.name,
             "exercise_cat": self.category.lower() if self.category else None, # convert to lowercase because my option value is all lowercase
-            "exercise_note": self.note.content,
+            "exercise_notes": [note.serialize() for note in self.notes.all()], 
             "sessions": [session.serialize() for session in self.sessions.all()]
         }
     
@@ -148,10 +150,13 @@ class Session(models.Model):
         return f"{self.exercise.name} - BPM: {self.bpm} - Speed: {self.speed} - Dur: {self.duration} - #{formatted_date}"
     
     def serialize(self):
+        formatted_date = self.practice_date.strftime("%d/%m/%Y") if self.practice_date else "Unknown Date"
+        
         return {
             "id": self.id,
             "bpm": self.bpm,
             "speed": self.speed,
+            "session_date": formatted_date,
         }
 
 
@@ -218,5 +223,13 @@ class ExerciseNote(models.Model):
 
     def __str__(self):
         return f"Note for {self.exercise.name} dated {self.created_at}"
+    
+    def serialize(self):
+        formatted_date = self.created_at.strftime("%d/%m/%Y") if self.created_at else "Unknown Date"
+        return {
+            "id": self.id,
+            "content": self.content,
+            "entry_date": formatted_date,
+        }
     
     
