@@ -201,6 +201,7 @@ def save_log(request):
                         "score": s.get("score"),
                         "duration": timedelta(seconds=s.get("duration", 0)),
                         "exercise": exercise,
+                        "log": newLog,
                     }
 
                     Session.objects.create(**session_fields)

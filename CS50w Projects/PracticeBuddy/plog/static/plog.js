@@ -487,7 +487,6 @@ function save_log(new_log) {
 
     const logName = new_log.querySelector(".log-name").value.trim();
     const logNotes = new_log.querySelector(".log-notes").value.trim();
-
     const logTemplate = new_log.dataset.templateId || null;
 
     const exercises = [];
@@ -497,18 +496,17 @@ function save_log(new_log) {
     allExercises.forEach((single_exercise) => {
       
       const exerciseName = single_exercise.querySelector(".exercise-name").value.trim();
-      const allSessions = single_exercise.querySelectorAll(".session-row");
       const exerciseNotes = single_exercise.querySelector(".exercise-notes").value.trim();
       const exerciseID = single_exercise.dataset.templateId;
-
+      const category = "OTHERS"; // default to this now. I'll update this later
+      
       const sessions = [];
+
+      const allSessions = single_exercise.querySelectorAll(".session-row");
 
       allSessions.forEach((row) => {
 
         if (row.dataset.paused === "true") { // Check if the timer has been stopped (saved) for the session
-
-          console.log("The session was scanned");
-
           const score = row.querySelector(".session-score").value || 1;
           const bpm = row.querySelector(".session-bpm").value || 0;
           const speed = row.querySelector(".session-speed").value || 0;
@@ -525,15 +523,13 @@ function save_log(new_log) {
         }
       });
 
-      const category = "OTHERS"; // default to this now. I'll update this later
-
       // Update the exercises in the list
       exercises.push({ 
-        name: exerciseName,
         id: exerciseID,
+        name: exerciseName,
+        category,
         notes: exerciseNotes,
-        category: category,
-        sessions: sessions,
+        sessions,
       });
     });
 

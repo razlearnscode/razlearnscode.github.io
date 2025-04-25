@@ -46,6 +46,11 @@ class Exercise(models.Model):
         for log in logs:
             #Filter only sessions of this exercise in this log
             sessions = log.sessions.filter(exercise=self)
+
+            # append the log only if it has sessions, else abort and move to the the next log
+            if not sessions.exists():
+                continue # Skip logs where this exercise has no sessions
+            
             sessions_grouped_by_log.append({
                 "log_id": log.id,
                 "log_name": log.name,
