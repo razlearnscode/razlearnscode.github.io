@@ -35,14 +35,30 @@ class Exercise(models.Model):
     def __str__(self):
         return f"Exercise: {self.name} - #{self.id}"
     
+
     def serialize(self):
+
+        # Group session by logs for data visualization
+        logs = self.logs.all().order_by("-entry_date")
+
+        sessions_grouped_by_log = []
+
+        for log in logs:
+            #Filter only sessions of this exercise in this log
+            sessions = log.sessions.filter(exercise=self)
+            sessions_grouped_by_log.append({
+                "log_id": log.id,
+                "log_name": log.name,
+                "entry_date": log.entry_date.strftime("%d/%m/%Y"),
+                "sessions": [session.serialize() for session in sessions]
+            })
 
         return {
             "exercise_id": self.id,
             "exercise_name": self.name,
             "exercise_cat": self.category.lower() if self.category else None, # convert to lowercase because my option value is all lowercase
             "exercise_notes": [note.serialize() for note in self.notes.all()], 
-            "sessions": [session.serialize() for session in self.sessions.all()]
+            "sessions_by_log": sessions_grouped_by_log
         }
     
 
@@ -144,6 +160,8 @@ class Session(models.Model):
 
     # 1 session can be in 1 exercise, but 1 exercise can have multiple sessions
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name='sessions')
+    log = models.ForeignKey(Log, on_delete=models.CASCADE, related_name="sessions", null=True, blank=True)
+
 
     def __str__(self):
         formatted_date = self.practice_date.strftime("%d/%m/%Y") if self.practice_date else "Unknown Date"
@@ -156,6 +174,7 @@ class Session(models.Model):
             "id": self.id,
             "bpm": self.bpm,
             "speed": self.speed,
+            "score": self.score,
             "session_date": formatted_date,
         }
 

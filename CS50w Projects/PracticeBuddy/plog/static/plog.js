@@ -490,7 +490,6 @@ function save_log(new_log) {
 
     const logTemplate = new_log.dataset.templateId || null;
 
-
     const exercises = [];
 
     const allExercises = new_log.querySelectorAll(".exercise-container");

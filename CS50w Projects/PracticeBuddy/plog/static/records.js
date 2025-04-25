@@ -14,18 +14,115 @@ function show_records_view() {
 
     const records_view_container = document.querySelector(".records-view-container");
   
-    const records_content = document.createElement("div");
-    records_content.className = "records-view-content";
-    records_content.innerHTML = RECORDS_CONTENT_HTML;
+    const records_view_content = document.createElement("div");
+    records_view_content.className = "records-view-content";
+    records_view_content.innerHTML = RECORDS_CONTENT_HTML;
   
-    records_view_container.append(records_content);
-  
-  }
+    records_view_container.append(records_view_content);
+
+    // Populate the records based on selection
+
+    const exercise_dropdown = records_view_container.querySelector(".exercise-selector");
+
+    fetch(`user/1/exercises`)
+    .then((response) => response.json())
+    .then((exercises) => {
+
+        exercises.forEach((exercise) => {
+
+            const exercise_option = document.createElement("option");
+            exercise_option.value = exercise.exercise_id;
+            exercise_option.textContent = exercise.exercise_name;
+            
+            exercise_dropdown.appendChild(exercise_option);
+        })
+    })
+
+    // Handle after user has made the selection
+    exercise_dropdown.addEventListener("change", (event) => {
+        const selectedExercise = event.target.value;
+
+        if (selectedExercise) {
+            display_exercise_records(records_view_content, selectedExercise);
+        }
+    });
+ 
+}
+
+function display_exercise_records(records_view_content, exerciseID) {
+
+    const exercise_record_content = records_view_content.querySelector(".exercise-records-content");
+
+    fetch(`exercise/${exerciseID}`)
+    .then((response) => response.json())
+    .then((data) => {
+
+        const log_from_exercise = data.sessions_by_log;
+
+        log_from_exercise.forEach((log) => {
+
+            const exerciseCard = document.createElement("div");
+
+            filled_in_card = EXERCISE_RECORD_BY_LOG_HTML
+            .replace(/__EXERCISE_NAME__/g, data.exercise_name)
+            .replace(/__SESSION_DATE__/g, log.entry_date)
+
+            exerciseCard.className = "exercise-card";
+            exerciseCard.innerHTML = filled_in_card;
+    
+            exercise_record_content.append(exerciseCard);
+
+            const session_table_body = exerciseCard.querySelector(".session-table-body");
+
+            const sessions_from_log = log.sessions;
+
+            sessions_from_log.forEach((session) => {
+
+                const session_record = document.createElement("tr");
+                session_record.className = "session-record";
+
+                session_record.innerHTML = `
+                    <td>${session.bpm}</td>
+                    <td>${session.speed}</td>
+                    <td>${session.score}</td>
+                `;
+
+                session_table_body.appendChild(session_record);
+
+            });
+
+        })
+        
+        // Populate the sessions from each log
+    })
+
+
+
+}
 
 const RECORDS_CONTENT_HTML = `
 <h3>Select your exercise</h3>
-<select name="exercise-selector">
+<select name="exercise-selector" class="exercise-selector">
     <option value="">-- Select an exercise --</option>
 </select>
+<dio class="exercise-records-content"></div>
+`;
+
+const EXERCISE_RECORD_BY_LOG_HTML = `
+    
+    <h4>__EXERCISE_NAME__</h4>
+    <p>__SESSION_DATE__</p>
+    <table>
+        <thead>
+            <tr>
+                <th>BPM</th>
+                <th>Speed</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody class="session-table-body">
+            
+        </tbody>
+    </table>
 `;
 

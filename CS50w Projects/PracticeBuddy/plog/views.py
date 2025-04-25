@@ -100,6 +100,17 @@ def get_log_data(request, logID):
         requested_log = Log.objects.get(pk=logID)
 
         return JsonResponse(requested_log.serialize(), safe=False)
+
+
+def get_exercise_data(request, exerciseID):
+    
+    if request.method == 'GET':
+
+        exercise = Exercise.objects.get(pk=exerciseID)
+
+        return JsonResponse(exercise.serialize(), safe=False)
+    
+
     
 def get_all_exercises_fr_users(request, userID):
     
