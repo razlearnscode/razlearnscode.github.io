@@ -5,8 +5,8 @@
     --green-tertiary: #a5d4a7;
 
     --light-primary: #f8faed;
-    --light-secondary: #F5F5F5;   /* Card backgrounds */
-    --light-tertiary: #EAEAE0;    /* Soft outlines or inner borders */
+    --light-secondary: rgb(245, 245, 245);   /* Card backgrounds */
+    --light-tertiary: rgb(234, 234, 224);    /* Soft outlines or inner borders */
 
     --dark-primary: #1C1C1C;      /* Primary text */
     --dark-secondary: #2E2E2E;    /* Secondary text */
@@ -467,6 +467,10 @@ p {
 /* ------------------------------------------------------------------------- */
 /* -*- RECORD PAGE styles -*- */
 
+.chart-container {
+    width: 100%;
+}
+
 
 .exercise-card {
     display: flex;
@@ -521,6 +525,35 @@ p {
   .component-header {
     margin: 1rem 0;
   }
+
+  .score-legend {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.5rem auto;
+    font-size: 0.9rem;
+    color: var(--dark-secondary); /* match your text tone */
+    background-color: var(--light-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+  }
+  
+  .score-box {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 100px;
+    border: 1px solid var(--green-primary);
+    display: inline-block;
+  }
+
+.score-5 { background-color: rgba(80, 166, 92, 1); } /* darkest */
+.score-4 { background-color: rgba(80, 166, 92, 0.8); }
+.score-3 { background-color: rgba(80, 166, 92, 0.4); }
+.score-2 { background-color: rgba(80, 166, 92, 0.2); }
+.score-1 { background-color: rgba(80, 166, 92, 0.01); }
 
 
 /* ------------------------------------------------------------------------- */

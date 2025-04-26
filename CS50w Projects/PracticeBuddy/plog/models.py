@@ -13,6 +13,8 @@ class User(AbstractUser):
             "id": self.id
         }
     
+def get_best_session(sessions_queryset):
+    return sessions_queryset.order_by('-speed', '-bpm', '-score').first()
 
 # Can be practice exercise, drill, or even songs
 class Exercise(models.Model):
@@ -47,6 +49,9 @@ class Exercise(models.Model):
             #Filter only sessions of this exercise in this log
             sessions = log.sessions.filter(exercise=self)
 
+            # Get best session
+            best_session = get_best_session(sessions)
+
             exercise_note = log.exercise_notes.filter(exercise=self).first()
 
             # append the log only if it has sessions, else abort and move to the the next log
@@ -56,9 +61,10 @@ class Exercise(models.Model):
             sessions_grouped_by_log.append({
                 "log_id": log.id,
                 "log_name": log.name,
-                "entry_date": log.entry_date.strftime("%d/%m/%Y"),
+                "entry_date": log.entry_date,
                 "exercise_notes": exercise_note.content if exercise_note else None,
-                "sessions": [session.serialize() for session in sessions]
+                "sessions": [session.serialize() for session in sessions],
+                "best_session": best_session.serialize() if best_session else None
             })
 
         return {
