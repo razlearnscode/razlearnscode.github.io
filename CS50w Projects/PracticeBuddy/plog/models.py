@@ -47,6 +47,8 @@ class Exercise(models.Model):
             #Filter only sessions of this exercise in this log
             sessions = log.sessions.filter(exercise=self)
 
+            exercise_note = log.exercise_notes.filter(exercise=self).first()
+
             # append the log only if it has sessions, else abort and move to the the next log
             if not sessions.exists():
                 continue # Skip logs where this exercise has no sessions
@@ -55,6 +57,7 @@ class Exercise(models.Model):
                 "log_id": log.id,
                 "log_name": log.name,
                 "entry_date": log.entry_date.strftime("%d/%m/%Y"),
+                "exercise_notes": exercise_note.content if exercise_note else None,
                 "sessions": [session.serialize() for session in sessions]
             })
 
@@ -62,7 +65,6 @@ class Exercise(models.Model):
             "exercise_id": self.id,
             "exercise_name": self.name,
             "exercise_cat": self.category.lower() if self.category else None, # convert to lowercase because my option value is all lowercase
-            "exercise_notes": [note.serialize() for note in self.notes.all()], 
             "sessions_by_log": sessions_grouped_by_log
         }
     

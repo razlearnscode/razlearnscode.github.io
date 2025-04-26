@@ -467,7 +467,10 @@ p {
 /* ------------------------------------------------------------------------- */
 /* -*- RECORD PAGE styles -*- */
 
+
 .exercise-card {
+    display: flex;
+    flex-direction: column;
     background-color: var(--light-secondary);
     padding: 1rem;
     border-radius: 0.75rem;
@@ -475,30 +478,46 @@ p {
     margin-bottom: 1.5rem;
     width: 100%;
     max-width: 500px;
+    gap: 0.5rem;
+  }
+
+  .exercise-selector {
+    font-size: 1rem;      /* Or 16px, or adjust to your design */
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    border-radius: 0.5rem;
+    border: 1px solid var(--gray);
+    background-color: #fff;
+    color: var(--dark-primary);
+    margin: 1rem 0;
+    text-indent: 0;
+  }
+
+  .exercise-selector option {
+    font-size: 1rem; /* or 16px */
   }
   
   .log-date {
     font-weight: 500;
-    margin-bottom: 0.75rem;
+    color: var(--gray)
   }
   
   .exercise-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.95rem;
+    margin-top: 0.5rem;
   }
   
   .exercise-table th,
   .exercise-table td {
-    border: 1px solid #ccc;
-    padding: 0.5rem;
+    padding: 0.25rem;
     text-align: center;
   }
   
   .exercise-table thead {
-    background-color: #f8f8f8;
+    background-color: var(--light-tertiary);
   }
-
 
 
 /* ------------------------------------------------------------------------- */

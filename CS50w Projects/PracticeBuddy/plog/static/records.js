@@ -42,6 +42,11 @@ function show_records_view() {
     exercise_dropdown.addEventListener("change", (event) => {
         const selectedExercise = event.target.value;
 
+        // Clear any existing cards
+        const existingCards = records_view_content.querySelectorAll(".exercise-card");
+        existingCards.forEach((card) => card.remove());
+
+
         if (selectedExercise) {
             display_exercise_records(records_view_content, selectedExercise);
         }
@@ -66,6 +71,15 @@ function display_exercise_records(records_view_content, exerciseID) {
             filled_in_card = EXERCISE_RECORD_BY_LOG_HTML
             .replace(/__EXERCISE_NAME__/g, data.exercise_name)
             .replace(/__SESSION_DATE__/g, log.entry_date)
+
+            // Only insert the note if it exists
+            if (log.exercise_notes) {
+                filled_in_card = filled_in_card.replace(/__EXERCISE_NOTE__/, log.exercise_notes);
+            } else {
+                // Remove the entire <p class="exercise-record-notes">...</p> line
+                filled_in_card = filled_in_card.replace(/<p class="exercise-record-notes">__EXERCISE_NOTE__<\/p>/, "");
+            }
+
 
             exerciseCard.className = "exercise-card";
             exerciseCard.innerHTML = filled_in_card;
@@ -105,14 +119,15 @@ const RECORDS_CONTENT_HTML = `
 <select name="exercise-selector" class="exercise-selector">
     <option value="">-- Select an exercise --</option>
 </select>
-<dio class="exercise-records-content"></div>
+<div class="exercise-records-content"></div>
 `;
 
 const EXERCISE_RECORD_BY_LOG_HTML = `
     
     <h4>__EXERCISE_NAME__</h4>
-    <p>__SESSION_DATE__</p>
-    <table>
+    <p class="log-date">__SESSION_DATE__</p>
+    <p class="exercise-record-notes">__EXERCISE_NOTE__</p>
+    <table class="exercise-table">
         <thead>
             <tr>
                 <th>BPM</th>
