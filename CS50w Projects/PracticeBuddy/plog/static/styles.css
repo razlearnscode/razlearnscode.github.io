@@ -477,7 +477,6 @@ p {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     margin-bottom: 1.5rem;
     width: 100%;
-    max-width: 500px;
     gap: 0.5rem;
   }
 
@@ -517,6 +516,10 @@ p {
   
   .exercise-table thead {
     background-color: var(--light-tertiary);
+  }
+
+  .component-header {
+    margin: 1rem 0;
   }
 
 

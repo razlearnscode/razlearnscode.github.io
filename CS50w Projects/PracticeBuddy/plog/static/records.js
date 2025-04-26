@@ -56,7 +56,7 @@ function show_records_view() {
 
 function display_exercise_records(records_view_content, exerciseID) {
 
-    const exercise_record_content = records_view_content.querySelector(".exercise-records-content");
+    const exercise_log_history = records_view_content.querySelector(".exercise-log-history");
 
     fetch(`exercise/${exerciseID}`)
     .then((response) => response.json())
@@ -84,7 +84,7 @@ function display_exercise_records(records_view_content, exerciseID) {
             exerciseCard.className = "exercise-card";
             exerciseCard.innerHTML = filled_in_card;
     
-            exercise_record_content.append(exerciseCard);
+            exercise_log_history.appendChild(exerciseCard);
 
             const session_table_body = exerciseCard.querySelector(".session-table-body");
 
@@ -110,8 +110,6 @@ function display_exercise_records(records_view_content, exerciseID) {
         // Populate the sessions from each log
     })
 
-
-
 }
 
 const RECORDS_CONTENT_HTML = `
@@ -119,7 +117,16 @@ const RECORDS_CONTENT_HTML = `
 <select name="exercise-selector" class="exercise-selector">
     <option value="">-- Select an exercise --</option>
 </select>
-<div class="exercise-records-content"></div>
+<div class="exercise-records-content">
+
+    <div class="exercise-log-tracker">
+        <h2 class="component-header">Tracker</h2>
+    </div>
+
+    <div class="exercise-log-history">
+        <h2 class="component-header">History</h2>
+    </div>
+</div>
 `;
 
 const EXERCISE_RECORD_BY_LOG_HTML = `
@@ -127,17 +134,18 @@ const EXERCISE_RECORD_BY_LOG_HTML = `
     <h4>__EXERCISE_NAME__</h4>
     <p class="log-date">__SESSION_DATE__</p>
     <p class="exercise-record-notes">__EXERCISE_NOTE__</p>
-    <table class="exercise-table">
-        <thead>
-            <tr>
-                <th>BPM</th>
-                <th>Speed</th>
-                <th>Score</th>
-            </tr>
-        </thead>
-        <tbody class="session-table-body">
-            
-        </tbody>
-    </table>
+
+        <table class="exercise-table">
+            <thead>
+                <tr>
+                    <th>BPM</th>
+                    <th>Speed</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody class="session-table-body">
+                
+            </tbody>
+        </table>
 `;
 
