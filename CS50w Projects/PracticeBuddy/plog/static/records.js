@@ -214,10 +214,6 @@ function create_chart(dateLabels, bpmValues, speedValues, scoreValues) {
         },
         scales: {
             x: {
-            title: {
-                display: true,
-                text: "Practice Date",
-            },
             grid: {
                 drawOnChartArea: false, // removes right-side grid to make it cleaner
             },
@@ -301,7 +297,11 @@ const EXERCISE_RECORD_BY_LOG_HTML = `
     
     <h4>__EXERCISE_NAME__</h4>
     <p class="log-date">__SESSION_DATE__</p>
-    <p class="exercise-record-notes">__EXERCISE_NOTE__</p>
+    <div class="quote-container">
+        <div><i class="fa-solid fa-quote-left"></i></div>
+         <p class="exercise-record-notes">__EXERCISE_NOTE__</p>
+    </div>
+   
 
         <table class="exercise-table">
             <thead>

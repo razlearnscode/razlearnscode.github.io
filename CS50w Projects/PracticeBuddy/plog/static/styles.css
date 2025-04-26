@@ -519,7 +519,7 @@ p {
   }
   
   .exercise-table thead {
-    background-color: var(--light-tertiary);
+    background-color: var(--dark-border);
   }
 
   .component-header {
@@ -555,6 +555,14 @@ p {
 .score-2 { background-color: rgba(80, 166, 92, 0.2); }
 .score-1 { background-color: rgba(80, 166, 92, 0.01); }
 
+.fa-quote-left {
+    color: var(--dark-border);
+    font-size: 1.5rem;
+}
+
+.exercise-record-notes {
+    font-style: italic;
+}
 
 /* ------------------------------------------------------------------------- */
 
