@@ -491,7 +491,7 @@ p {
 .streak-map-wrapper {
     display: flex;
     justify-content: flex-end; /* ⚡ Align streak-map to the right */
-    width: fit-content; /* To ensure the wrapper width is only enough to host the scrollable wrapper, nothing more */
+    width: fit-content; /* To ensure the wrapper width is only enough to host the scrollable wrapper, */
 }
 
 
