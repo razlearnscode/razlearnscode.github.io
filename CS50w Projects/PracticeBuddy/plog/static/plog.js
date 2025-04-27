@@ -588,10 +588,26 @@ const HOME_VIEW_HTML = `
       <h2>Log Streaks</h2>
       <h1 style="margin-left:auto;">150</h1>
     </div>
-    <div class="streak-container">
-      <div id="streak-map" class="streak-map"></div>
-      <div id="month-labels" class="month-labels"></div>
+
+    <div class="streak-row-wrapper">
+        <div class="day-labels">
+          <div class="day-label">Sun</div>
+          <div class="day-label">Mon</div>
+          <div class="day-label">Tue</div>
+          <div class="day-label">Wed</div>
+          <div class="day-label">Thu</div>
+          <div class="day-label">Fri</div>
+          <div class="day-label">Sat</div>
+        </div>
+
+        <div class="streak-container">
+          <div id="streak-map" class="streak-map"></div>
+          <div id="month-labels" class="month-labels"></div>
+        </div>
     </div>
+    
+
+
     <div class="my-template-container">
       <div class="my-template-header">
         <h2>Templates</h2>
