@@ -91,7 +91,28 @@ function home_global_events_handler() {
 
 function display_heatmap() {
 
-  renderStreak("streak-map", "month-labels");
+  const today = new Date();
+  const endDate = new Date(today);
+  const startDate = new Date(today);
+  startDate.setDate(startDate.getDate() - 90); // starts from 30 days ago
+
+  const logDates = [];
+
+  fetch(`user/1/logs`)
+  .then((response) => response.json())
+  .then((logs) => {
+
+    logs.forEach((log) => {
+      
+      const logDate = new Date(log.entry_date);
+      const logDateString = logDate.toISOString().split("T")[0];
+
+      logDates.push(logDateString);
+    })
+
+    renderStreak("streak-map", logDates, startDate, endDate, "month-labels");
+
+  });
 
 }
 
@@ -601,7 +622,9 @@ const HOME_VIEW_HTML = `
         </div>
 
         <div class="streak-container">
-          <div id="streak-map" class="streak-map"></div>
+          <div class="streak-map-wrapper">
+            <div id="streak-map" class="streak-map"></div>
+          </div>
           <div id="month-labels" class="month-labels"></div>
         </div>
     </div>

@@ -120,6 +120,16 @@ def get_all_exercises_fr_users(request, userID):
         exercises = Exercise.objects.filter(user=user).all()
 
         return JsonResponse([exercise.serialize() for exercise in exercises], safe=False)
+    
+
+def get_all_logs_fr_users(request, userID):
+
+    if request.method == 'GET':
+        
+        user = User.objects.get(pk=userID)
+        logs = Log.objects.filter(user=user).all()
+
+        return JsonResponse([log.serialize() for log in logs], safe=False)
 
     
 

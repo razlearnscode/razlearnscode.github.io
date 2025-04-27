@@ -1,21 +1,4 @@
-export function renderStreak(containerId, monthLabelId) {
-
-    const activeDates = [
-        "2025-07-01",
-        "2025-07-02",
-        "2025-07-03",
-        "2025-07-04",
-        "2025-07-05",
-        "2025-08-01",
-        "2025-08-03",
-        "2025-08-15",
-        "2025-09-01",
-        "2025-09-02",
-      ];
-    
-    // Generate days (you can define the range you want)
-    const startDate = new Date("2025-07-01");
-    const endDate = new Date("2026-05-30");
+export function renderStreak(containerId, activeDates, startDate, endDate, monthLabelId) {
 
     // Create a Set for faster lookup
     const activeSet = new Set(activeDates);
@@ -84,7 +67,7 @@ export function renderStreak(containerId, monthLabelId) {
             const dayDiv = document.createElement("div");
             dayDiv.classList.add("day");
 
-            const dateString= d.toISOString().split("T")[0] // so you only get the date, no timestamp
+            const dateString= d.toISOString().split("T")[0]; // so you only get the date, no timestamp
             if (activeSet.has(dateString)) {
                 dayDiv.classList.add("active");
             }
@@ -93,6 +76,12 @@ export function renderStreak(containerId, monthLabelId) {
             d.setDate(d.getDate() + 1); // increment the day to go through the loop
         }
 
+    }
+
+    // ⚡ Scroll the container to the right after rendering
+    const container = streakMap.closest(".streak-container");
+    if (container) {
+        container.scrollLeft = container.scrollWidth;
     }
 
 
