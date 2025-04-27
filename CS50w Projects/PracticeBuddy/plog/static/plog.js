@@ -1,4 +1,5 @@
-import { renderStreak } from './streak.js';
+import { renderStreak } from './components/streak.js';
+
 
 
 let logged_in_user = null; // get the user info globally
@@ -90,7 +91,7 @@ function home_global_events_handler() {
 
 function display_heatmap() {
 
-  renderStreak("streak-map");
+  renderStreak("streak-map", "month-labels");
 
 }
 
@@ -589,6 +590,7 @@ const HOME_VIEW_HTML = `
     </div>
     <div class="streak-container">
       <div id="streak-map" class="streak-map"></div>
+      <div id="month-labels" class="month-labels"></div>
     </div>
     <div class="my-template-container">
       <div class="my-template-header">

@@ -1,0 +1,99 @@
+export function renderStreak(containerId, monthLabelId) {
+
+    const activeDates = [
+        "2025-07-01",
+        "2025-07-02",
+        "2025-07-03",
+        "2025-07-04",
+        "2025-07-05",
+        "2025-08-01",
+        "2025-08-03",
+        "2025-08-15",
+        "2025-09-01",
+        "2025-09-02",
+      ];
+    
+    // Generate days (you can define the range you want)
+    const startDate = new Date("2025-07-01");
+    const endDate = new Date("2026-05-30");
+
+    // Create a Set for faster lookup
+    const activeSet = new Set(activeDates);
+
+    // Populate the streak map
+    const streakMap = document.getElementById(containerId);
+    const monthLabels = document.getElementById(monthLabelId);
+
+    let currentMonth = "";
+    let dayCounter = 0;
+    let columnCounter = 0;
+
+    if (!streakMap) {
+        console.error(`Container with ID '${containerId}' not found.`);
+        return;
+    }
+
+    if (!monthLabels) {
+        console.error(`Month label component not found.`);
+        return;
+    }
+
+    streakMap.innerHTML = ""; // Create empty string in advance so I can append to it
+    monthLabels.innerHTML = ""; // same as above
+
+    let d = new Date(startDate); // start counting from the start date
+
+    const dayOfStartDate = d.getDay(); // Sunday = 0, Monday=1, etc
+
+    // Start looping from first day of the week (Sunday) to the startDate. Hide if they are from the previous month
+    // This makes the startDate clearer 
+    for (let i = 0; i < dayOfStartDate; i++) {
+        
+        // Create but hide days if they are from previous month
+        // This helps add padding so that the calendar don't always start with the current date, but the Sunday instead
+        const emptyDiv = document.createElement("div");
+        emptyDiv.classList.add("day"); // still create the day div, but hide it
+        emptyDiv.style.visibility = "hidden"; // hide so that the startDate will starts the week 
+        streakMap.appendChild(emptyDiv);
+
+        // Display empty month labels if not the first week of the month
+        const emptyMonthDiv = document.createElement("div");
+        emptyMonthDiv.classList.add("month-label");
+        emptyMonthDiv.textContent = "";
+        monthLabels.appendChild(emptyMonthDiv);
+    }
+
+    while (d <= endDate) {
+
+        // get the month from the current iterated date
+        const nextMonth = d.toLocaleString("default", { month: "short"}); 
+
+        const monthDiv = document.createElement("div");
+        monthDiv.classList.add("month-label");
+
+        if (nextMonth !== currentMonth) {
+            monthDiv.textContent = nextMonth;
+            currentMonth = nextMonth; // when we first start off with currentMonth = "", it will just be assigned to nextMonth
+        } else {
+            monthDiv.textContent = ""; // if not new month, then set to empty
+        }
+        monthLabels.appendChild(monthDiv);
+
+        // Draw 7 days (one column)
+        for (let i = 0; i < 7 && d <= endDate; i++) {
+            const dayDiv = document.createElement("div");
+            dayDiv.classList.add("day");
+
+            const dateString= d.toISOString().split("T")[0] // so you only get the date, no timestamp
+            if (activeSet.has(dateString)) {
+                dayDiv.classList.add("active");
+            }
+
+            streakMap.appendChild(dayDiv);
+            d.setDate(d.getDate() + 1); // increment the day to go through the loop
+        }
+
+    }
+
+
+}
