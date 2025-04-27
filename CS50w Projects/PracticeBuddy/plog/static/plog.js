@@ -1,9 +1,13 @@
+import { renderStreak } from './streak.js';
+
+
 let logged_in_user = null; // get the user info globally
 
 document.addEventListener("DOMContentLoaded", async () => {
   // Having await helps that I don't have to wait for user to load, I can still proceed with the below function call
   logged_in_user = await get_user(); // Fetch one and reuse for all functions
   get_home_view();
+  display_heatmap();
 });
 
 function get_user() {
@@ -38,6 +42,8 @@ function get_new_template_view() {
   document.querySelector(".create-template-view").style.display = "block";
   document.querySelector(".navbar").style.display = "none";
 }
+
+
 
 function home_global_events_handler() {
   
@@ -80,6 +86,12 @@ function home_global_events_handler() {
     };
 
   });
+}
+
+function display_heatmap() {
+
+  renderStreak("streak-map");
+
 }
 
 function forms_events_handler() {
@@ -571,7 +583,13 @@ const HOME_VIEW_HTML = `
         <h3>Quick Start</h3>
         <button class="button button--primary button--full start-empty-log-btn">Start Plogging</button>
     </div>
-    <div class="record-container"></div>
+    <div class="streak-header">
+      <h2>Log Streaks</h2>
+      <h1 style="margin-left:auto;">150</h1>
+    </div>
+    <div class="streak-container">
+      <div id="streak-map" class="streak-map"></div>
+    </div>
     <div class="my-template-container">
       <div class="my-template-header">
         <h2>Templates</h2>

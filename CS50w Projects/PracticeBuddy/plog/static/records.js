@@ -146,8 +146,12 @@ function show_chart(exerciseID) {
         logs_from_exercise.forEach((log) => {
             if (log.best_session) {
 
-                const formattedDate = formatDate(log.entry_date);
-                dateLabels.push(formattedDate);
+                const date = new Date(log.entry_date);
+                const monthLabel = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }); 
+                dateLabels.push({
+                    formatted: monthLabel, // for x-axis
+                    raw: log.entry_date    // real date for tooltip
+                });
                 bestSessionBPM.push(log.best_session.bpm);
                 bestSessionSpeed.push(log.best_session.speed);
                 bestSessionScore.push(log.best_session.score);
@@ -161,6 +165,20 @@ function show_chart(exerciseID) {
 
 let currentChart = null;
 
+// 🧩 Plugin to auto-hide tooltip after a short delay
+const autohidePlugin = {
+    id: 'autohide',
+    afterDraw(chart) {
+        if (chart.tooltip._active && chart.tooltip._active.length) {
+            clearTimeout(chart.tooltipHideTimeout);
+            chart.tooltipHideTimeout = setTimeout(() => {
+                chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+                chart.update();
+            }, chart.options.plugins.autohide.delay);
+        }
+    }
+};
+
 function create_chart(dateLabels, bpmValues, speedValues, scoreValues) {
 
     if (currentChart) {
@@ -172,7 +190,7 @@ function create_chart(dateLabels, bpmValues, speedValues, scoreValues) {
     currentChart = new Chart(exerciseChart, {
         type: "bar", // base type
         data: {
-        labels: dateLabels, // x-axis = dates
+        labels: dateLabels.map(d => d.formatted), // x-axis = dates
         datasets: [
             {
             label: "BPM",
@@ -209,14 +227,30 @@ function create_chart(dateLabels, bpmValues, speedValues, scoreValues) {
         options: {
         responsive: true,
         interaction: {
-            mode: "index",
+            mode: "nearest",
+            axis: "x",
             intersect: false,
         },
         scales: {
             x: {
-            grid: {
-                drawOnChartArea: false, // removes right-side grid to make it cleaner
-            },
+                type: "category",
+                title: {
+                  display: true,
+                  text: "Practice Month",
+                  color: "#2E2E2E",
+                },
+                ticks: {
+                  color: "#2E2E2E",
+                  callback: function(value, index, ticks) {
+                    const label = this.getLabelForValue(value);
+                    if (index === 0) return label;
+                    const previousLabel = this.getLabelForValue(ticks[index - 1].value);
+                    return label !== previousLabel ? label : "";
+                  }
+                },
+                grid: {
+                  drawOnChartArea: false,
+                },
             },
             "y-bpm": {
             type: "linear",
@@ -252,15 +286,26 @@ function create_chart(dateLabels, bpmValues, speedValues, scoreValues) {
 
             tooltip: {
                 callbacks: {
+                    title: function(context) {
+                        const index = context[0].dataIndex;
+                        const rawDate = dateLabels[index].raw; // retrieve raw date
+                        const fullDate = new Date(rawDate);
+                        return fullDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+                        // e.g., "20 Apr 2025"
+                    },
                     afterBody: function(context) {
-                      const index = context[0].dataIndex;
-                      const score = scoreValues[index]; // you already pass this to create_chart
-                      return `Score: ${score}/5`;
+                        const index = context[0].dataIndex;
+                        const score = scoreValues[index];
+                        return `Score: ${score}/5`;
                     }
                   }
             },
+            autohide: {
+                delay: 2000 // 2 seconds
+            },
         },
         },
+        plugins: [autohidePlugin],
     });
 }
 
