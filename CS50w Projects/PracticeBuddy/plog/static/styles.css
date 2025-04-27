@@ -499,8 +499,8 @@ p {
     margin-left: auto;
     display: grid;
     grid-auto-flow: column;
-    grid-template-rows: repeat(7, 1.25rem);
-    grid-auto-columns: 1.25rem; /* Required to fix the column width in the width, otherwise everything will be compressed */
+    grid-template-rows: repeat(7, 1.5rem);
+    grid-auto-columns: 1.5rem; /* Required to fix the column width in the width, otherwise everything will be compressed */
     gap: 0.5rem; 
     min-width: max-content;
     
@@ -512,8 +512,10 @@ p {
     flex-direction: column;
     gap: 0.5rem;
     font-size: 0.75rem;
+    font-weight: 600;
     text-align: center;
     min-width: 2rem;
+    color: var(--gray);
 
     position: sticky;
     background-color: var(--light-primary);
@@ -525,18 +527,20 @@ p {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    height: 1.25rem;
+    height: 1.5rem; /* same as the grid-auto-columns */
 }
   
   .month-labels {
     display: grid;
     grid-auto-flow: column;
     grid-template-rows: 1fr;
-    grid-auto-columns: 1.25rem;
+    grid-auto-columns: 1.5rem;
     gap: 0.5rem;
     min-width: max-content;
     margin-top: 0.5rem;
     font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gray);
     text-align: center;
   }
   
