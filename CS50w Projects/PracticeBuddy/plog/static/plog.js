@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Having await helps that I don't have to wait for user to load, I can still proceed with the below function call
   logged_in_user = await get_user(); // Fetch one and reuse for all functions
   get_home_view();
-  display_heatmap();
+  display_streakmap();
 });
 
 function get_user() {
@@ -89,7 +89,10 @@ function home_global_events_handler() {
   });
 }
 
-function display_heatmap() {
+function display_streakmap() {
+
+  // Clear existing streakmap before display new one
+  document.getElementById("streak-map").innerHTML = "";
 
   const today = new Date();
   const endDate = new Date(today);
@@ -119,6 +122,7 @@ function display_heatmap() {
 function forms_events_handler() {
   // SAVE SESSION event
   // Handle click event when the save button is pressed
+  
   document.addEventListener("click", function (e) {
     if (e.target.classList.contains("session-status")) {
       const row = e.target.closest(".session-row");
@@ -404,6 +408,7 @@ function start_log(templateID = null) {
   log_form.addEventListener("submit", function(event) {
     event.preventDefault();
     save_log(new_log);
+
   });
 
   return new_log;
@@ -588,6 +593,7 @@ function save_log(new_log) {
       // Clear the old log after successful submission
       document.querySelector(".log-container").remove();
       get_home_view(); // return back to Home
+      display_streakmap();
     })
     .catch((error) => {
       console.error("Error saving log:", error);
