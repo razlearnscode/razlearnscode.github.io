@@ -119,25 +119,26 @@ function display_streakmap() {
 
 }
 
-function forms_events_handler() {
-  // SAVE SESSION event
-  // Handle click event when the save button is pressed
-  
-  document.addEventListener("click", function (e) {
-    if (e.target.classList.contains("session-status")) {
-      const row = e.target.closest(".session-row");
-      toggle_session_timer(row); // I only want this to trigger when this is for new template
-    }
-  });
+function forms_events_handler(logContainer) {
+    
+  logContainer.addEventListener("click", function (e) {
 
-  // DELETE SESSION event
-  document.addEventListener("click", function (e) {
-    if (e.target.classList.contains("delete-btn")) {
-      const row = e.target.closest(".session-row");
-      if (row) row.remove();
+    const targetButton = e.target.closest("button"); // Set target to button to ensure the entire button is targeted (and not the icon inside it)
+
+    if (!targetButton) return; // Not clcik if not a button
+
+    const row = targetButton.closest(".session-row");
+    if (!row) return;
+
+    // SAVE Event
+    if (targetButton.classList.contains("session-status")) {
+      toggle_session_timer(row); // Only for new template
+    } else if (targetButton.classList.contains("delete-btn")) { // DELETE session event
+      row.remove();
     }
   });
 }
+
 
 
 // 0000000000 --*-- HOME VIEW --*-- 0000000000 //
@@ -374,7 +375,6 @@ function delete_template(templateID) {
 // 0000000000 --*-- LOG VIEW --*-- 0000000000 //
 function start_log(templateID = null) {
 
-  forms_events_handler();
   const log_view_container = document.querySelector(".log-view-container");
 
   const new_log = document.createElement("div");
@@ -398,6 +398,8 @@ function start_log(templateID = null) {
     const new_exercise = add_exercise(EXERCISE_CONTENT_HTML, SESSION_ROW_HTML);
     exercise_list.append(new_exercise);
   });
+
+  forms_events_handler(new_log);
 
   cancel_btn.addEventListener("click", function(event) {
     event.preventDefault();

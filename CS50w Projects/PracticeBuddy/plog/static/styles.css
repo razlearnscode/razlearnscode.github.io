@@ -759,4 +759,6 @@ p {
 }
 
 
-
+button, .session-status, .delete-btn {
+    touch-action: manipulation;
+  }
