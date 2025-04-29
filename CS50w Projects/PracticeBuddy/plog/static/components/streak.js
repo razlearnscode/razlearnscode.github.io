@@ -79,10 +79,11 @@ export function renderStreak(containerId, activeDates, startDate, endDate, month
     }
 
     // ⚡ Scroll the container to the right after rendering
-    const container = streakMap.closest(".streak-container");
+    const container = document.querySelector(".streak-container");
     if (container) {
-        container.scrollLeft = container.scrollWidth;
+      container.scrollLeft = 0; // since RTL, this is now the "right end"
     }
+    
 
 
 }

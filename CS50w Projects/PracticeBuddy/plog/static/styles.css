@@ -482,30 +482,39 @@ p {
 }
 
 .streak-container {
+    direction: rtl; /* 👈 THIS is the trick */
     width: 100%;
-    overflow-x: auto; /* Allow horizontal scroll when content is too wide */
-    padding: 0 10px 0; /* Optional: Add some top/bottom padding */
-    margin: 0rem 0 1rem;
+    overflow-x: auto;
+    margin: 0 0 1rem;
+    padding: 0;
+  
+    /* Allow snapping if needed */
+    scroll-snap-type: x mandatory;
 }
 
 .streak-map-wrapper {
     display: flex;
-    justify-content: flex-end; /* ⚡ Align streak-map to the right */
-    width: fit-content; /* To ensure the wrapper width is only enough to host the scrollable wrapper, */
+    justify-content: flex-end; /* Align to right if there's extra space */
+    min-width: 100%;            /* Ensure scroll area stretches full width */
 }
 
 
 .streak-map {
-    margin-left: auto;
     display: grid;
     grid-auto-flow: column;
     grid-template-rows: repeat(7, 1.5rem);
-    grid-auto-columns: 1.5rem; /* Required to fix the column width in the width, otherwise everything will be compressed */
-    gap: 0.5rem; 
+    grid-auto-columns: 1.5rem;
+    gap: 0.5rem;
     min-width: max-content;
+  
+    scroll-snap-align: end;
     
   }
 
+  .streak-map-wrapper,
+  .streak-map {
+    direction: ltr; /* 👈 Reset to normal left-to-right inside */
+  }
 
   .day-labels {
     display: flex;

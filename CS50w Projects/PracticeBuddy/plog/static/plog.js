@@ -97,7 +97,7 @@ function display_streakmap() {
   const today = new Date();
   const endDate = new Date(today);
   const startDate = new Date(today);
-  startDate.setDate(startDate.getDate() - 90); // starts from 30 days ago
+  startDate.setDate(startDate.getDate() - 180); // starts from 30 days ago
 
   const logDates = [];
 
