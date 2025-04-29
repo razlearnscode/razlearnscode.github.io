@@ -482,20 +482,20 @@ p {
 }
 
 .streak-container {
-    direction: rtl; /* 👈 THIS is the trick */
+    direction: rtl; /* Force the content to start from the right to left */
     width: 100%;
     overflow-x: auto;
     margin: 0 0 1rem;
     padding: 0;
   
     /* Allow snapping if needed */
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x mandatory; /* Force scroll snapping to clean edge */
 }
 
 .streak-map-wrapper {
     display: flex;
     justify-content: flex-end; /* Align to right if there's extra space */
-    min-width: 100%;            /* Ensure scroll area stretches full width */
+    min-width: 100%;            /* Ensure scroll area stretches full width. Make sure it extends only to fi the map */
 }
 
 
@@ -507,13 +507,16 @@ p {
     gap: 0.5rem;
     min-width: max-content;
   
-    scroll-snap-align: end;
+    scroll-snap-align: end; /* Forde streak map to the right */
     
   }
 
   .streak-map-wrapper,
   .streak-map {
-    direction: ltr; /* 👈 Reset to normal left-to-right inside */
+    /* In streak-map-container, we already flipped the content to start from right to left */
+    /* But this will also flip the day div and month labels inside --> We don't want that */
+    /* Thus, this helps to correct that */
+    direction: ltr; 
   }
 
   .day-labels {
