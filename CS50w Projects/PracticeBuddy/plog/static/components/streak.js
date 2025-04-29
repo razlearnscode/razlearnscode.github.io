@@ -1,7 +1,7 @@
-export function renderStreak(containerId, activeDates, startDate, endDate, monthLabelId) {
+export function renderStreak(containerId, logDates, startDate, endDate, monthLabelId) {
 
     // Create a Set for faster lookup
-    const activeSet = new Set(activeDates);
+    const activeDatesSet = new Set(logDates.map((log) => log.entry_date)); // Just the dates
 
     // Populate the streak map
     const streakMap = document.getElementById(containerId);
@@ -68,7 +68,7 @@ export function renderStreak(containerId, activeDates, startDate, endDate, month
             dayDiv.classList.add("day");
 
             const dateString= d.toISOString().split("T")[0]; // so you only get the date, no timestamp
-            if (activeSet.has(dateString)) {
+            if (activeDatesSet.has(dateString)) {
                 dayDiv.classList.add("active");
             }
 
@@ -87,3 +87,5 @@ export function renderStreak(containerId, activeDates, startDate, endDate, month
 
 
 }
+
+

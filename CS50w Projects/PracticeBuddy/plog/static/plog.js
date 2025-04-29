@@ -92,31 +92,28 @@ function home_global_events_handler() {
 function display_streakmap() {
 
   // Clear existing streakmap before display new one
-  document.getElementById("streak-map").innerHTML = "";
+  const streakMap = document.getElementById("streak-map");
+  if (streakMap) {
+    streakMap.innerHTML = ""; // Clear before display
+  }
 
   const today = new Date();
-  const endDate = new Date(today);
+  const endDate = today;
+  const dateRangeInDays = 180;
+
+
   const startDate = new Date(today);
-  startDate.setDate(startDate.getDate() - 180); // starts from 30 days ago
+  startDate.setDate(startDate.getDate() - dateRangeInDays); // starts from 30 days ago
 
-  const logDates = [];
 
-  fetch(`user/1/logs`)
+  fetch(`user/1/log-dates/?range=${dateRangeInDays}`)
   .then((response) => response.json())
   .then((logs) => {
-
-    logs.forEach((log) => {
-      
-      const logDate = new Date(log.entry_date);
-      const logDateString = logDate.toISOString().split("T")[0];
-
-      logDates.push(logDateString);
-    })
-
-    renderStreak("streak-map", logDates, startDate, endDate, "month-labels");
-
+    renderStreak("streak-map", logs, startDate, endDate, "month-labels");
+  })
+  .catch((error) => {
+    console.error("Failed to fetch streak map logs:", error);
   });
-
 }
 
 function forms_events_handler(logContainer) {

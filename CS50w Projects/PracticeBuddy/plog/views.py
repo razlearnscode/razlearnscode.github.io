@@ -8,6 +8,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from datetime import timedelta
 from django.shortcuts import get_object_or_404
+from datetime import timedelta
+from django.utils import timezone
 
 from .models import User, Log, Exercise, Session, LogTemplate, ExerciseTemplate, SessionTemplate, ExerciseNote
 
@@ -110,6 +112,32 @@ def get_exercise_data(request, exerciseID):
 
         return JsonResponse(exercise.serialize(), safe=False)
     
+def get_log_dates(request, userID):
+    days = int(request.GET.get("range", 90)) # log-dates/?range=90
+    cutoff_date = timezone.now() - timedelta(days=days) # Now - 90D
+
+    # get only the data I need
+    logs = Log.objects.filter(
+        user_id=userID, 
+        entry_date__gte=cutoff_date # gte = greater than or equal to
+    ).only(
+        "entry_date",
+        "id",
+        "score",
+        "duration"
+    ).order_by("entry_date") 
+
+    logs_summary = [
+        {
+            "id": log.id,
+            "entry_date": log.entry_date.date().isoformat(),
+            "duration": str(log.duration),
+            "score": log.score,
+        }
+        for log in logs
+    ]
+    
+    return JsonResponse(logs_summary, safe=False)
 
     
 def get_all_exercises_fr_users(request, userID):

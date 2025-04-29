@@ -15,6 +15,10 @@ urlpatterns = [
     path("user/<int:userID>/exercises", views.get_all_exercises_fr_users, name="get_all_exercises_fr_users"),
     path("user/<int:userID>/templates", views.get_templates, name="get_templates"),
     path("user/<int:userID>/logs", views.get_all_logs_fr_users, name="get_all_logs_fr_users"),
+
+    path("user/<int:userID>/log-dates/", views.get_log_dates, name="get_log_dates"),
+
+
     path("exercise/<int:exerciseID>", views.get_exercise_data, name="get_exercise_data"),
     path("template/<int:templateID>", views.get_template_data, name="get_template_data"),
     path("template/<int:templateID>/delete", views.delete_template, name="delete_template"),
