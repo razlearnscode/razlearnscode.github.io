@@ -101,7 +101,7 @@ function display_streakmap() {
 
   const today = new Date();
   const endDate = today;
-  const dateRangeInDays = 30;
+  const dateRangeInDays = 90;
 
 
   const startDate = new Date(today);
@@ -616,6 +616,16 @@ const HOME_VIEW_HTML = `
     <div class="streak-header">
       <h2>Log Streaks</h2>
       <h1 class="streak-counter" style="margin-left:auto;"></h1>
+    </div>
+
+    <div class="date-range-selector">
+        <button class="range-btn active start" data-range="7">7d</button>
+        <button class="range-btn" data-range="30">30d</button>
+        <button class="range-btn" data-range="60">60d</button>
+        <button class="range-btn" data-range="90">90d</button>
+        <button class="range-btn custom-dropdown">
+          <i class="fa-solid fa-calendar-day"></i> Custom
+        </button>
     </div>
 
     <div class="streak-row-wrapper">
