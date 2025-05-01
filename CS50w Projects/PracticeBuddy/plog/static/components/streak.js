@@ -84,7 +84,46 @@ export function renderStreak(containerId, logDates, startDate, endDate, monthLab
       container.scrollLeft = 0; // since RTL, this is now the "right end"
     }
     
+}
 
+export function countStreak(logDates, streakHeader) {
+
+    const today = new Date();
+
+    //need to update the mapping to only get dates, because logDates return the full API response, with other info besides entry_date
+    // e.g. logDates return  { id: 1, entry_date: "2025-04-21", ... },
+    // thus logDates.map(log => log.entry_date) means going through the logDates, map every row with only log.entry_date
+    const allLogDates = new Set(logDates.map(log => log.entry_date));
+
+    console.log(allLogDates);
+
+
+    let streak = 0; // start counting streak from 0
+    let currentDate = new Date(today); // start from today
+
+    while (true) {
+
+        const dateStr = currentDate.toISOString().split("T")[0];
+
+        console.log(dateStr);
+
+        // Count the streak from today backward
+        // If the day before current date is not included in the set, then break the loop
+        if (allLogDates.has(dateStr)) {
+            console.log(currentDate);
+            streak++; // add to the streak
+            // continue to go backward, until streak breaks
+            currentDate.setDate(currentDate.getDate() - 1);
+        } else {
+            console.log("Break: Current date is" + currentDate);
+            break;
+        }
+        
+    }
+
+    const streak_counter = streakHeader.querySelector(".streak-counter")
+
+    streak_counter.innerText = `${streak} days`;
 
 }
 

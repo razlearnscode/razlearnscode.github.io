@@ -1,4 +1,4 @@
-import { renderStreak } from './components/streak.js';
+import { renderStreak, countStreak } from './components/streak.js';
 
 
 
@@ -97,9 +97,11 @@ function display_streakmap() {
     streakMap.innerHTML = ""; // Clear before display
   }
 
+  const streak_header = document.querySelector(".streak-header");
+
   const today = new Date();
   const endDate = today;
-  const dateRangeInDays = 180;
+  const dateRangeInDays = 30;
 
 
   const startDate = new Date(today);
@@ -110,6 +112,7 @@ function display_streakmap() {
   .then((response) => response.json())
   .then((logs) => {
     renderStreak("streak-map", logs, startDate, endDate, "month-labels");
+    countStreak(logs, streak_header);
   })
   .catch((error) => {
     console.error("Failed to fetch streak map logs:", error);
@@ -612,7 +615,7 @@ const HOME_VIEW_HTML = `
     </div>
     <div class="streak-header">
       <h2>Log Streaks</h2>
-      <h1 style="margin-left:auto;">150</h1>
+      <h1 class="streak-counter" style="margin-left:auto;"></h1>
     </div>
 
     <div class="streak-row-wrapper">
