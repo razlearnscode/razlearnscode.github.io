@@ -39,7 +39,7 @@ body {
 body {
     font-family: 'DM Sans', sans-serif;
     background-color: var(--dark-primary);
-    color: #222;
+    color: var(--dark-primary);
     line-height: 1.6;
 }
 
@@ -786,6 +786,7 @@ button, .session-status, .delete-btn {
     flex-wrap: nowrap; /* Allow the flex item to wrap on multiple lines -*- */
   }
 
+
   .range-btn {
     border: transparent; /* Prevent applying automatic border -*- */
     padding: 0.25rem 0.75rem;
@@ -810,7 +811,7 @@ button, .session-status, .delete-btn {
     border-right: 0px;
   }
 
-  .range-btn.custom-dropdown {
+  .range-btn.custom-date-btn {
     border-right: 0.5px solid var(--dark-border);
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
@@ -823,12 +824,55 @@ button, .session-status, .delete-btn {
     border-right: 0px;
   }
   
-  .range-btn:hover {
-    background-color: var(--green-tertiary);
-  }
   
   .range-dropdown {
     font-size: 0.875rem;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
   }
+
+
+  .floating-date-picker {
+    position: absolute;
+    top: 100%; /* just below the trigger button */
+    left: 0;
+    margin-top: 0.5rem;
+    z-index: 999;
+    background-color: var(--light-secondary);
+    border: 1px solid var(--dark-border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+  }
+  
+  .floating-date-picker label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .floating-date-picker input[type="date"] {
+    padding: 0.35rem;
+    font-size: 0.875rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    min-width: 140px;
+  }
+  
+  #apply-custom-range {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.875rem;
+    background-color: var(--green-primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  #apply-custom-range:hover {
+    background-color: var(--green-tertiary);
+  }
+  

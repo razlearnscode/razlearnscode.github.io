@@ -93,7 +93,19 @@ function home_global_events_handler() {
 
 function prepare_streakmap(userID) {
 
-  // -- 1. Handle all preset range buttons
+  // -- 1. Display streakmap by default on initial load
+  const defaultButtonSelected = document.querySelector(".range-btn[data-mode='preset'].active");
+  if (defaultButtonSelected) {
+    const defaultRange = parseInt(defaultButtonSelected.dataset.range);
+    const today = new Date();
+    const endDate = today;
+    const startDate = new Date();
+    startDate.setDate(endDate.getDate() - defaultRange);
+
+    display_streakmap(userID, startDate, endDate);
+  }
+
+  // -- 2. Handle all preset range buttons
   // Select only buttons with mode = preset
   document.querySelectorAll(".range-btn[data-mode='preset']").forEach(button => {
     
@@ -114,17 +126,58 @@ function prepare_streakmap(userID) {
     });
   });
 
-  // -- 2. Display streakmap by default on initial load
-  const defaultButtonSelected = document.querySelector(".range-btn[data-mode='preset'].active");
-  if (defaultButtonSelected) {
-    const defaultRange = parseInt(defaultButtonSelected.dataset.range);
-    const today = new Date();
-    const endDate = today;
-    const startDate = new Date();
-    startDate.setDate(endDate.getDate() - defaultRange);
+  // -- 3. Handle custom date range
+  const customBtn = document.getElementById("custom-date-btn");
+  const datePicker = document.getElementById("custom-date-picker");
 
-    display_streakmap(userID, startDate, endDate);
+  // Show/hide the date picker
+  customBtn.addEventListener("click", (e) => {
+    e.stopPropagation(); // Prevent click from bubbling up
+    const isVisible = datePicker.style.display === "block";
+    datePicker.style.display = isVisible ? "none" : "block";
+    positionPickerBelowButton();
+  });
+
+  // Dismiss on outside click
+  document.addEventListener("click", (e) => {
+    if (!datePicker.contains(e.target) && e.target !== customBtn) {
+      datePicker.style.display = "none";
+    }
+  });
+
+  // Optional: also close on "Escape" key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      datePicker.style.display = "none";
+    }
+  });
+
+  function positionPickerBelowButton() {
+
+    // get the position and size of the button
+    const rect = customBtn.getBoundingClientRect();
+    datePicker.style.position = "absolute"; // Unlike static, seting as absolute allow this to be floating component.
+    datePicker.style.top = `${rect.bottom + window.scrollY + 6}px`;
+    datePicker.style.left = `${rect.left + window.scrollX}px`;
   }
+
+  // Apply custom date
+  document.getElementById("apply-custom-range").addEventListener("click", () => { 
+    const start = new Date(document.getElementById("custom-start").value);
+    const end = new Date(document.getElementById("custom-end").value);
+
+    if (!start || !end || start > end) {
+      alert("Invalid date range");
+      return;
+    }
+
+    document.querySelectorAll(".range-btn").forEach(btn => btn.classList.remove("active"));
+    customBtn.classList.add("active");
+    
+    datePicker.style.display = "none";
+    display_streakmap(userID, start, end);
+  });
+
 
 }
 
@@ -649,13 +702,24 @@ const HOME_VIEW_HTML = `
       <h1 class="streak-counter" style="margin-left:auto;"></h1>
     </div>
 
-    <div class="date-range-selector">
-        <button class="range-btn start" data-mode="preset" data-range="30">30d</button>
-        <button class="range-btn active" data-mode="preset" data-range="60">60d</button>
-        <button class="range-btn" data-mode="preset" data-range="90">90d</button>
-        <button class="range-btn custom-dropdown" data-mode="custom" id="custom-date-btn">
-          <i class="fa-solid fa-calendar-day"></i> Custom
-        </button>
+    <div class="date-range-selector">  
+          <button class="range-btn start" data-mode="preset" data-range="30">30d</button>
+          <button class="range-btn active" data-mode="preset" data-range="60">60d</button>
+          <button class="range-btn" data-mode="preset" data-range="90">90d</button>        
+          <button class="range-btn end custom-date-btn" data-mode="custom" id="custom-date-btn">
+            <i class="fa-solid fa-calendar-day"></i> Custom
+          </button>
+
+        <div id="custom-date-picker" class="floating-date-picker">
+           <label>Start:
+              <input type="date" id="custom-start" />
+            </label>
+            <label>End:
+              <input type="date" id="custom-end" />
+            </label>
+            <button id="apply-custom-range">Apply</button>
+        </div>
+
     </div>
 
     <div class="streak-row-wrapper">
