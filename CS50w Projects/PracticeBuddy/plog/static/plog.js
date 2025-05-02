@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Having await helps that I don't have to wait for user to load, I can still proceed with the below function call
   logged_in_user = await get_user(); // Fetch one and reuse for all functions
   get_home_view();
-  display_streakmap();
 });
 
 function get_user() {
@@ -27,6 +26,9 @@ function get_home_view() {
   if (!existing_home_view) {
     show_home_view();
   }
+
+  prepare_streakmap(logged_in_user.id);
+
   
 }
 
@@ -89,7 +91,44 @@ function home_global_events_handler() {
   });
 }
 
-function display_streakmap() {
+function prepare_streakmap(userID) {
+
+  // -- 1. Handle all preset range buttons
+  // Select only buttons with mode = preset
+  document.querySelectorAll(".range-btn[data-mode='preset']").forEach(button => {
+    
+    button.addEventListener("click", () => {
+
+      // Remove "active" class list from all other buttons
+      document.querySelectorAll(".range-btn").forEach(btn => btn.classList.remove("active"));
+      button.classList.add("active");
+
+      const range = parseInt(button.dataset.range); // get the range from data-range="X"
+      const today = new Date();
+      const endDate = today;
+      const startDate = new Date();
+      startDate.setDate(endDate.getDate() - range);
+
+      display_streakmap(userID, startDate, endDate);
+
+    });
+  });
+
+  // -- 2. Display streakmap by default on initial load
+  const defaultButtonSelected = document.querySelector(".range-btn[data-mode='preset'].active");
+  if (defaultButtonSelected) {
+    const defaultRange = parseInt(defaultButtonSelected.dataset.range);
+    const today = new Date();
+    const endDate = today;
+    const startDate = new Date();
+    startDate.setDate(endDate.getDate() - defaultRange);
+
+    display_streakmap(userID, startDate, endDate);
+  }
+
+}
+
+function display_streakmap(userID, startDate, endDate) {
 
   // Clear existing streakmap before display new one
   const streakMap = document.getElementById("streak-map");
@@ -99,16 +138,8 @@ function display_streakmap() {
 
   const streak_header = document.querySelector(".streak-header");
 
-  const today = new Date();
-  const endDate = today;
-  const dateRangeInDays = 90;
 
-
-  const startDate = new Date(today);
-  startDate.setDate(startDate.getDate() - dateRangeInDays); // starts from 30 days ago
-
-
-  fetch(`user/1/log-dates/?range=${dateRangeInDays}`)
+  fetch(`user/${userID}/log-dates/?range=30`)
   .then((response) => response.json())
   .then((logs) => {
     renderStreak("streak-map", logs, startDate, endDate, "month-labels");
@@ -619,11 +650,10 @@ const HOME_VIEW_HTML = `
     </div>
 
     <div class="date-range-selector">
-        <button class="range-btn active start" data-range="7">7d</button>
-        <button class="range-btn" data-range="30">30d</button>
-        <button class="range-btn" data-range="60">60d</button>
-        <button class="range-btn" data-range="90">90d</button>
-        <button class="range-btn custom-dropdown">
+        <button class="range-btn start" data-mode="preset" data-range="30">30d</button>
+        <button class="range-btn active" data-mode="preset" data-range="60">60d</button>
+        <button class="range-btn" data-mode="preset" data-range="90">90d</button>
+        <button class="range-btn custom-dropdown" data-mode="custom" id="custom-date-btn">
           <i class="fa-solid fa-calendar-day"></i> Custom
         </button>
     </div>

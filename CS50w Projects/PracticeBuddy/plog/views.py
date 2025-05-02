@@ -10,6 +10,7 @@ from datetime import timedelta
 from django.shortcuts import get_object_or_404
 from datetime import timedelta
 from django.utils import timezone
+from django.utils.dateparse import parse_date
 
 from .models import User, Log, Exercise, Session, LogTemplate, ExerciseTemplate, SessionTemplate, ExerciseNote
 
@@ -113,13 +114,28 @@ def get_exercise_data(request, exerciseID):
         return JsonResponse(exercise.serialize(), safe=False)
     
 def get_log_dates(request, userID):
-    days = int(request.GET.get("range", 90)) # log-dates/?range=90
-    cutoff_date = timezone.now() - timedelta(days=days) # Now - 90D
+
+    # Attempt to get the startDate and endDate (when available)
+    get_start_date = request.GET.get("start");
+    get_end_date = request.GET.get("end");
+
+    if get_start_date and get_end_date: # if available
+        try:
+            start_date = parse_date(get_start_date);
+            end_date = parse_date(get_end_date);
+        except ValueError:
+            return JsonResponse({"error": "Invalid start or end date"}, status=400)
+    else:
+        # Fall back to getting range instead (by default)
+        days = int(request.GET.get("range", 90)) # log-dates/?range=90
+        end_date = timezone.now().date()
+        start_date = end_date - timedelta(days=days) # Now - 90D
 
     # get only the data I need
     logs = Log.objects.filter(
         user_id=userID, 
-        entry_date__gte=cutoff_date # gte = greater than or equal to
+        entry_date__date__gte=start_date, # gte = greater than or equal to
+        entry_date__date__lte=end_date
     ).only(
         "entry_date",
         "id",
