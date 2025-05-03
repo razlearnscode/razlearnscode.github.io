@@ -1,9 +1,12 @@
 import { renderStreak, countStreak } from './components/streak.js';
-import { toggle_session_timer } from './components/timer.js';
+import { TimerManager, toggle_session_timer } from './components/timer.js';
 
 
+// -- GLOBAL VALUES -- //
 
 let logged_in_user = null; // get the user info globally
+
+const timerManager = new TimerManager(); // initiallize timeManager so I can use it within my functions
 
 document.addEventListener("DOMContentLoaded", async () => {
   // Having await helps that I don't have to wait for user to load, I can still proceed with the below function call
@@ -217,7 +220,7 @@ function forms_events_handler(logContainer) {
 
     // SAVE Event
     if (targetButton.classList.contains("session-status")) {
-      toggle_session_timer(row); // Only for new template
+      toggle_session_timer(row, timerManager); // Only for new template
     } else if (targetButton.classList.contains("delete-btn")) { // DELETE session event
       row.remove();
     }
@@ -293,7 +296,6 @@ function show_saved_template(home_view_container) {
 function start_log_from_template(templateId) {
 
   get_log_view();
-  console.log("Start log for template:", templateId);
 
   // GET API to collect all data related to the templateId for display
   fetch(`template/${templateId}`)
@@ -301,6 +303,13 @@ function start_log_from_template(templateId) {
   .then((data)=> {
 
     const logName = data.name;
+
+    // Start timer
+    timerManager.startLogTimer(formatted => {
+      document.querySelector(".log-timer").textContent = formatted;
+    })
+
+
     const all_exercises = data.exercises;
 
       const log_container = start_log(templateId);
@@ -547,7 +556,7 @@ function create_session_row(session_body, sessionHTML, setData = null) {
   session_body.append(row);
 
   if (row.querySelector(".session-status")) {
-    toggle_session_timer(row); // Only toggle this if the session duration is available
+    toggle_session_timer(row, timerManager); // Only toggle this if the session duration is available
   }
 
   return row;
@@ -555,6 +564,9 @@ function create_session_row(session_body, sessionHTML, setData = null) {
 
 
 function save_log(new_log) {
+
+    // Stop the log timer 
+    const timerResult = timerManager.stopLogTimer();
 
     const logName = new_log.querySelector(".log-name").value.trim();
     const logNotes = new_log.querySelector(".log-notes").value.trim();
@@ -607,6 +619,7 @@ function save_log(new_log) {
     const logData = {
       name: logName,
       notes: logNotes,
+      duration: timerResult.seconds,
       exercises,
       template_id: logTemplate,
     }
@@ -769,7 +782,7 @@ const LOG_FORM_HTML = `
         <div class="log-form-header">
             <input type="submit" class="button button--primary" style="margin-left: auto;" value="Finish">
             <input type="text" class="log-name" placeholder="New Log">
-            <p>[00:00]</p>
+            <p class="log-timer">00:00</p>
             <textarea placeholder="Notes" id="log-notes" class="log-notes" name="log-notes" rows="2"></textarea>
         </div>
 

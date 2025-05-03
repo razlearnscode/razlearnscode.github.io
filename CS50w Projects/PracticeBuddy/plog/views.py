@@ -196,6 +196,7 @@ def save_log(request):
             data = json.loads(request.body)
             user = request.user
             log_name = data.get("name")
+            log_duration = data.get("duration")
             notes = data.get("notes", "")
 
             template_id = data.get("template_id", None)
@@ -212,6 +213,7 @@ def save_log(request):
                 name=log_name,
                 user=user,
                 notes=notes,
+                duration=timedelta(seconds=log_duration),
                 template=log_template,
             )
 
@@ -253,7 +255,7 @@ def save_log(request):
                         "bpm": s.get("bpm"),
                         "speed": s.get("speed"),
                         "score": s.get("score"),
-                        "duration": timedelta(seconds=s.get("duration", 0)),
+                        "duration": timedelta(seconds=s.get("duration", 0)), # converts the seconds (e.g. 150) to timedelta object (e.g. 0:02:30)
                         "exercise": exercise,
                         "log": newLog,
                     }
