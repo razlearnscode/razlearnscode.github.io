@@ -97,7 +97,9 @@ export function countStreak(logDates, streakHeader) {
 
 
     let streak = 0; // start counting streak from 0
-    let currentDate = new Date(today); // start from today
+    let currentDate = new Date(today); // get today's date
+    currentDate.setDate(currentDate.getDate() - 1); // for streak, I want to start from the day previous today
+    // this way, if the user hasn't done a log for today, it still shows the current streak instead of resetting to 0
 
     while (true) {
 
