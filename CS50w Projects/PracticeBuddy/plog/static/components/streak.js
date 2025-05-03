@@ -89,18 +89,28 @@ export function renderStreak(containerId, logDates, startDate, endDate, monthLab
 export function countStreak(logDates, streakHeader) {
 
     const today = new Date();
+    const todayStr = today.toISOString().split("T")[0];
 
     //need to update the mapping to only get dates, because logDates return the full API response, with other info besides entry_date
     // e.g. logDates return  { id: 1, entry_date: "2025-04-21", ... },
     // thus logDates.map(log => log.entry_date) means going through the logDates, map every row with only log.entry_date
     const allLogDates = new Set(logDates.map(log => log.entry_date));
 
+    console.log(allLogDates);
+
 
     let streak = 0; // start counting streak from 0
     let currentDate = new Date(today); // get today's date
-    currentDate.setDate(currentDate.getDate() - 1); // for streak, I want to start from the day previous today
+
     // this way, if the user hasn't done a log for today, it still shows the current streak instead of resetting to 0
 
+    // If today is not in logDates, start from yesterday
+    // This helps to prevent reset the streak to 0 when user can still create the log today
+    if (!allLogDates.has(todayStr)) {
+        currentDate.setDate(currentDate.getDate() - 1);
+    }
+
+    // else, just start counting streak from today as normal
     while (true) {
 
         const dateStr = currentDate.toISOString().split("T")[0];
