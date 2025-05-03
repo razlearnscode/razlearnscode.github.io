@@ -549,15 +549,21 @@ function toggle_session_timer(sessionRow) {
   // If the timing is available and running, then click on the button will save the timer
   if (isRunning) {
     clearInterval(Number(sessionRow.dataset.timerId));
-    delete sessionRow.dataset.timerId; // notice that I'm only removing the timerID, I still keep the duration intact
-    sessionRow.dataset.paused = "true";
-    session_save_btn.classList.add("is-selected");
+    delete sessionRow.dataset.timerId; // Only remove timerID, but keep the duration intact. We'll use the duration to save
+    sessionRow.dataset.paused = "true"; // set timer to pause
+    session_save_btn.classList.add("is-selected"); // apply special UX for saved sessions to the button
     session_save_btn.classList.remove("is-unselected");
 
     // Styling the remaning elements
-    sessionRow.querySelectorAll("input").forEach((inputBox) => {
-      inputBox.classList.add("is-saved");
-      inputBox.readOnly = true;
+
+    // Make only the session timer readonly
+    const session_timer = sessionRow.querySelector(".session-duration");
+    session_timer.classList.add("is-saved");
+    session_timer.readOnly = true;
+
+    // For other session values, still allow manual input
+    sessionRow.querySelectorAll(".session-input[data-mode='manual']").forEach((manualInputBox) => {
+      manualInputBox.classList.add("is-saved");
     });
   } else {
     // if no timer, then starts new one
@@ -862,10 +868,10 @@ const EXERCISE_CONTENT_HTML = `
 `;
 
 const SESSION_ROW_HTML = `
-    <td class="score-cell"><input type="number" class="session-score" placeholder="1-5" min="1" max="5"></td>    
-    <td class="duration-cell"><input type="text" class="session-duration" placeholder="00:00" readonly></td>
-    <td class="bpm-cell"><input type="number" class="session-bpm" placeholder="0" min="0"></td>
-    <td class="speed-cell"><input type="number" class="session-speed" placeholder="0" min="0" max="200"></td> 
+    <td class="score-cell"><input type="number" data-mode="manual" class="session-input session-score" placeholder="1-5" min="1" max="5"></td>    
+    <td class="duration-cell"><input type="text" data-mode="auto" class="session-input session-duration" placeholder="00:00" readonly></td>
+    <td class="bpm-cell"><input type="number" data-mode="manual" class="session-input session-bpm" placeholder="0" min="0"></td>
+    <td class="speed-cell"><input type="number" data-mode="manual" class="session-input session-speed" placeholder="0" min="0" max="200"></td> 
     <td class="status-cell"><button type="button" class="button is-unselected button--compact session-status"><i class="fa-solid fa-bookmark"></i></button></td>
     <td class="delete-cell"><button type="button" class="button button--danger button--compact delete-btn"><i class="fa-solid fa-trash"></i></button></td>
     `;

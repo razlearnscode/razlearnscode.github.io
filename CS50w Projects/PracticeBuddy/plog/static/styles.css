@@ -454,12 +454,13 @@ p {
     color: var(--light-primary);
 }
 
-.session-table input.is-saved { /* Color all the input box green */
+.session-input.is-saved { /* Color all the input box green */
     background-color: var(--green-primary);
+    color: var(--light-primary);
     cursor: default;
 }
 
-.session-table input.is-saved::placeholder {  /* Make the placeholder text white */
+.session-input.is-saved::placeholder {  /* Make the placeholder text white */
     color: var(--light-primary);
 }
 
