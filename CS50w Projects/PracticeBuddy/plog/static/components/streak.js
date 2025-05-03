@@ -95,8 +95,6 @@ export function countStreak(logDates, streakHeader) {
     // thus logDates.map(log => log.entry_date) means going through the logDates, map every row with only log.entry_date
     const allLogDates = new Set(logDates.map(log => log.entry_date));
 
-    console.log(allLogDates);
-
 
     let streak = 0; // start counting streak from 0
     let currentDate = new Date(today); // start from today
@@ -105,17 +103,13 @@ export function countStreak(logDates, streakHeader) {
 
         const dateStr = currentDate.toISOString().split("T")[0];
 
-        console.log(dateStr);
-
         // Count the streak from today backward
         // If the day before current date is not included in the set, then break the loop
         if (allLogDates.has(dateStr)) {
-            console.log(currentDate);
             streak++; // add to the streak
             // continue to go backward, until streak breaks
             currentDate.setDate(currentDate.getDate() - 1);
         } else {
-            console.log("Break: Current date is" + currentDate);
             break;
         }
         

@@ -209,7 +209,7 @@ function forms_events_handler(logContainer) {
 
     const targetButton = e.target.closest("button"); // Set target to button to ensure the entire button is targeted (and not the icon inside it)
 
-    if (!targetButton) return; // Not clcik if not a button
+    if (!targetButton) return; // Not click if not a button
 
     const row = targetButton.closest(".session-row");
     if (!row) return;
@@ -679,7 +679,6 @@ function save_log(new_log) {
       // Clear the old log after successful submission
       document.querySelector(".log-container").remove();
       get_home_view(); // return back to Home
-      display_streakmap();
     })
     .catch((error) => {
       console.error("Error saving log:", error);
